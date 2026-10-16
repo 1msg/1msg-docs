@@ -1,0 +1,1614 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/v1/inbox/channels": {
+      "get": {
+        "operationId": "InboxController_listChannels",
+        "summary": "List channels visible to this key",
+        "description": "An account key sees every channel. A user key sees only channels that user can open.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InboxChannelSummaryDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Inbox"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/inbox/channels/{channelId}/assignees": {
+      "get": {
+        "operationId": "InboxController_listChannelAssignees",
+        "summary": "People who can be assigned on this channel",
+        "description": "The account owner, plus operators who already have this channel. Use the returned id as userId when assigning a conversation.",
+        "parameters": [
+          {
+            "name": "channelId",
+            "required": true,
+            "in": "path",
+            "description": "Channel id from GET /inbox/channels",
+            "schema": {
+              "example": "QAF261225002",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InboxAssigneeDto"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Channel not found or the key cannot see it"
+          }
+        },
+        "tags": [
+          "Inbox"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/inbox/conversations": {
+      "get": {
+        "operationId": "InboxController_getDialogs",
+        "summary": "List conversations",
+        "description": "Newest lastMessageAt first. Pass pagination.nextCursor as cursor for the next page.",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Page size. Default 50.",
+            "schema": {
+              "example": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "pagination.nextCursor from the previous page (ISO lastMessageAt).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "channelId",
+            "required": false,
+            "in": "query",
+            "description": "Limit to one channel.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Conversation status.",
+            "schema": {
+              "enum": [
+                "OPEN",
+                "CLOSED"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "unread",
+            "required": false,
+            "in": "query",
+            "description": "true keeps only conversations with unread messages.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "tab",
+            "required": false,
+            "in": "query",
+            "description": "mine_open: open and assigned to this key. unassigned: open and nobody assigned. all: no extra tab filter.",
+            "schema": {
+              "enum": [
+                "mine_open",
+                "unassigned",
+                "all"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "assigneeId",
+            "required": false,
+            "in": "query",
+            "description": "Only conversations assigned to this user id.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InboxDialogListDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Inbox"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/inbox/conversations/search": {
+      "get": {
+        "operationId": "InboxController_searchDialogs",
+        "summary": "Search conversations",
+        "description": "Matches contact name, phone, and message text in one channel. channelId is required. query must be at least 3 characters; a shorter query returns two empty lists.",
+        "parameters": [
+          {
+            "name": "query",
+            "required": true,
+            "in": "query",
+            "description": "At least 3 characters.",
+            "schema": {
+              "example": "7900",
+              "type": "string"
+            }
+          },
+          {
+            "name": "channelId",
+            "required": true,
+            "in": "query",
+            "description": "Channel to search. Required.",
+            "schema": {
+              "example": "QAF261225002",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InboxDialogSearchDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Inbox"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/inbox/conversations/counts": {
+      "get": {
+        "operationId": "InboxController_getDialogCounts",
+        "summary": "Conversation counts",
+        "description": "mine_open and unassigned count only OPEN conversations. all counts every visible conversation.",
+        "parameters": [
+          {
+            "name": "channelId",
+            "required": false,
+            "in": "query",
+            "description": "Limit the counts to one channel.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InboxDialogCountsDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Inbox"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/inbox/conversations/{conversationId}": {
+      "get": {
+        "operationId": "InboxController_getDialog",
+        "summary": "One conversation",
+        "description": "Includes the contact, assignee, and customer phone.",
+        "parameters": [
+          {
+            "name": "conversationId",
+            "required": true,
+            "in": "path",
+            "description": "Conversation id",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InboxDialogDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Conversation not found, or the key cannot see its channel"
+          }
+        },
+        "tags": [
+          "Inbox"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/inbox/conversations/{conversationId}/messages": {
+      "get": {
+        "operationId": "InboxController_getMessages",
+        "summary": "Messages in a conversation",
+        "description": "Newest first. Omit kind, or pass kind=all, to include SYSTEM events (status, assignee, block, title) together with messages. kind=messages hides SYSTEM events. kind=system returns only SYSTEM events. Notes stay with messages. Pass nextCursor as cursor to load older rows of the same kind.",
+        "parameters": [
+          {
+            "name": "conversationId",
+            "required": true,
+            "in": "path",
+            "description": "Conversation id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Page size. Default 50.",
+            "schema": {
+              "example": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "nextCursor from the previous page (ISO createdAt). Returns rows older than that instant, still filtered by kind.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "kind",
+            "required": false,
+            "in": "query",
+            "description": "all (default when omitted): every row. messages: everything except SYSTEM. system: only SYSTEM.",
+            "schema": {
+              "enum": [
+                "all",
+                "messages",
+                "system"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InboxMessageListDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Conversation not found, or the key cannot see its channel"
+          }
+        },
+        "tags": [
+          "Inbox"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/inbox/conversations/{conversationId}/assignee": {
+      "patch": {
+        "operationId": "InboxController_updateDialogAssignee",
+        "summary": "Assign, reassign, or clear the conversation assignee",
+        "description": "userId is the id from GET /api/v1/inbox/channels/{channelId}/assignees. That person must already be able to open this channel. null clears the assignee. Setting the same assignee does nothing and writes no system message. A real change writes one SYSTEM message.",
+        "parameters": [
+          {
+            "name": "conversationId",
+            "required": true,
+            "in": "path",
+            "description": "Conversation id",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDialogAssigneeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated conversation row.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InboxDialogDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Conversation not found, the key cannot see the channel, or the user cannot be assigned on it"
+          }
+        },
+        "tags": [
+          "Inbox"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/inbox/conversations/{conversationId}/status": {
+      "patch": {
+        "operationId": "InboxController_updateDialogStatus",
+        "summary": "Open or close a conversation",
+        "description": "Send status OPEN or CLOSED in the JSON body. The conversation id alone does not change anything. A change writes a SYSTEM message. The same status again returns 409.",
+        "parameters": [
+          {
+            "name": "conversationId",
+            "required": true,
+            "in": "path",
+            "description": "Conversation id",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDialogStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InboxDialogDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Conversation not found, or the key cannot see its channel"
+          },
+          "409": {
+            "description": "Conversation is already open, or already closed"
+          }
+        },
+        "tags": [
+          "Inbox"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/inbox/conversations/{conversationId}/block": {
+      "post": {
+        "operationId": "InboxController_blockContact",
+        "summary": "Block the contact",
+        "description": "No body. Incoming messages from this contact are rejected. Writes a SYSTEM message. Blocking an already blocked contact returns 409.",
+        "parameters": [
+          {
+            "name": "conversationId",
+            "required": true,
+            "in": "path",
+            "description": "Conversation id",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InboxDialogDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Conversation not found, or the key cannot see its channel"
+          },
+          "409": {
+            "description": "Contact is already blocked"
+          }
+        },
+        "tags": [
+          "Inbox"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/inbox/conversations/{conversationId}/unblock": {
+      "post": {
+        "operationId": "InboxController_unblockContact",
+        "summary": "Unblock the contact",
+        "description": "No body. Messages can be sent and received again. Writes a SYSTEM message. Unblocking a contact that is not blocked returns 409.",
+        "parameters": [
+          {
+            "name": "conversationId",
+            "required": true,
+            "in": "path",
+            "description": "Conversation id",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InboxDialogDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Conversation not found, or the key cannot see its channel"
+          },
+          "409": {
+            "description": "Contact is already unblocked"
+          }
+        },
+        "tags": [
+          "Inbox"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/inbox/conversations/{conversationId}/title": {
+      "patch": {
+        "operationId": "InboxController_updateDialogTitle",
+        "summary": "Rename a conversation",
+        "description": "Body title replaces the conversation title and writes a SYSTEM message.",
+        "parameters": [
+          {
+            "name": "conversationId",
+            "required": true,
+            "in": "path",
+            "description": "Conversation id",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDialogTitleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InboxDialogDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Conversation not found, or the key cannot see its channel"
+          }
+        },
+        "tags": [
+          "Inbox"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/inbox/webhook": {
+      "get": {
+        "operationId": "InboxWebhookController_get",
+        "summary": "Read the account inbox webhook",
+        "description": "One HTTPS URL per account. The owner sets it here or in Settings → Developer → API Settings. A user key cannot. When inbox state changes, 1MSG POSTs InboxWebhookEnvelope to that URL. Headers: Content-Type application/json, X-1msg-Event (the type), X-1msg-Delivery (the id), X-1msg-Signature sha256=<hex HMAC of the raw body with the signing secret>. Compare the signature with HMAC-SHA256 over the exact request body. Reject a mismatch. This is not the channel webhook. Incoming messages and delivery statuses stay on the channel URL. Delivery does not change the API response. A failed POST is stored as lastDeliveryStatus and lastDeliveryError. Events: inbox.conversation.status_changed — Conversation opened or closed. status is OPEN or CLOSED. data fields: conversationId, channelId, status, previousStatus, actorUserId. inbox.conversation.assigned — An assignee was set. assigneeUserId is the new assignee. data fields: conversationId, channelId, assigneeUserId, previousAssigneeUserId, actorUserId. inbox.conversation.unassigned — The assignee was cleared. assigneeUserId is null. data fields: conversationId, channelId, assigneeUserId, previousAssigneeUserId, actorUserId. inbox.conversation.blocked — The contact was blocked. Incoming messages are rejected. data fields: conversationId, channelId, actorUserId. inbox.conversation.unblocked — The contact was unblocked. data fields: conversationId, channelId, actorUserId. inbox.conversation.title_changed — The conversation title was renamed. data fields: conversationId, channelId, title, previousTitle, actorUserId. inbox.user.invited — The owner invited a user. They are not a member until they accept. data fields: inviteId, email, channelIds, actorUserId. inbox.user.added — The invited person accepted and is now an operator. data fields: memberId, userId, email, channelIds. inbox.user.removed — An operator was removed from the account. data fields: memberId, userId, actorUserId. inbox.user.channels_changed — The channels an operator can open were replaced. data fields: memberId, userId, channelIds, actorUserId. inbox.user.invite_revoked — A pending invite was cancelled before it was accepted. data fields: inviteId, email, actorUserId.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InboxWebhookViewDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Inbox"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "put": {
+        "operationId": "InboxWebhookController_save",
+        "summary": "Set the account inbox webhook URL",
+        "description": "Creates the webhook and returns the signing secret once, or updates the URL and keeps the existing secret.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertInboxWebhookDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InboxWebhookSavedDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Inbox"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "InboxWebhookController_remove",
+        "summary": "Remove the account inbox webhook",
+        "description": "Later inbox changes are not delivered until a URL is saved again.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InboxWebhookRemovedDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Inbox"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/inbox/webhook/secret": {
+      "post": {
+        "operationId": "InboxWebhookController_rotate",
+        "summary": "Rotate the inbox webhook signing secret",
+        "description": "Returns the new secret once. The previous secret stops verifying deliveries immediately. 404 when no URL is saved.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InboxWebhookSavedDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Inbox"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "1MSG Platform API",
+    "description": "Inbox API for an account or user key. It lists conversations, assigns them, blocks a contact, sets a title, and reads messages. It does not send messages: sending stays on the channel API, and incoming messages stay on the channel webhook. The account owner can set one webhook for conversation and user changes. Issue keys in the cabinet under Settings → Developer → API Settings. Authorize with Bearer 1msg_live_… or 1msg_test_…, not a cabinet session. An account key sees every channel. A user key sees only the channels that user can open.",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [
+    {
+      "name": "Inbox",
+      "description": "Inbox API manages Inbox over HTTP: read conversations and messages, assign users, change conversation status, and block contacts. It also delivers notifications about actions in Inbox. It does not send messages."
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://api.stage.1msg.io",
+      "description": "Send API requests to this host"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "API key",
+        "type": "http",
+        "description": "Key issued in the cabinet: Settings → Developer → API Settings."
+      }
+    },
+    "schemas": {
+      "InboxChannelSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "QAF261225002"
+          },
+          "name": {
+            "type": "string",
+            "example": "QA FMF"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "INCOMPLETE",
+              "PENDING",
+              "ACTIVE",
+              "SUSPENDED",
+              "DISCONNECTED",
+              "DELETED"
+            ],
+            "example": "ACTIVE"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "status"
+        ]
+      },
+      "InboxAssigneeDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "b2bb82f0-2253-4e05-b955-a21f3d699caa"
+          },
+          "name": {
+            "type": "string",
+            "example": "QA Stage"
+          },
+          "avatar": {
+            "type": "string",
+            "nullable": true,
+            "example": null
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "OWNER",
+              "OPERATOR"
+            ],
+            "example": "OPERATOR"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "role"
+        ]
+      },
+      "InboxDialogListDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InboxDialogDto"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/InboxDialogPageDto"
+          }
+        },
+        "required": [
+          "data",
+          "pagination"
+        ]
+      },
+      "InboxDialogSearchDto": {
+        "type": "object",
+        "properties": {
+          "contacts": {
+            "description": "Conversations matched by contact name or phone.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InboxDialogDto"
+            }
+          },
+          "messages": {
+            "description": "Conversations matched by message text. A conversation already listed in contacts is not repeated here.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InboxDialogDto"
+            }
+          }
+        },
+        "required": [
+          "contacts",
+          "messages"
+        ]
+      },
+      "InboxDialogCountsDto": {
+        "type": "object",
+        "properties": {
+          "mine_open": {
+            "type": "number",
+            "description": "Open conversations assigned to the key actor.",
+            "example": 0
+          },
+          "unassigned": {
+            "type": "number",
+            "description": "Open conversations with no assignee.",
+            "example": 0
+          },
+          "all": {
+            "type": "number",
+            "description": "All conversations visible to the key, any status.",
+            "example": 1
+          }
+        },
+        "required": [
+          "mine_open",
+          "unassigned",
+          "all"
+        ]
+      },
+      "InboxDialogDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "channelId": {
+            "type": "string",
+            "description": "Channel id, for example QAF261225002"
+          },
+          "contactId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "CLOSED",
+              "ASSIGNED",
+              "RESOLVED",
+              "BLOCKED"
+            ],
+            "description": "The key sets only OPEN or CLOSED. Other values can appear on older rows."
+          },
+          "assignedTo": {
+            "type": "string",
+            "nullable": true,
+            "description": "User id of the assignee. Null when unassigned."
+          },
+          "assignedUser": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/InboxUserDto"
+              }
+            ]
+          },
+          "lastMessageAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "isUnread": {
+            "type": "boolean"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "lastMessagePreview": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastMessageType": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastMessageDirection": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "INBOUND",
+              "OUTBOUND"
+            ]
+          },
+          "lastMessageStatus": {
+            "type": "string",
+            "nullable": true
+          },
+          "unreadCount": {
+            "type": "number",
+            "example": 0
+          },
+          "isBlocked": {
+            "type": "boolean"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true,
+            "description": "Custom title. Null until renamed."
+          },
+          "lastCustomerMessageAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "Last inbound customer message. Used for the WhatsApp service window."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "contact": {
+            "nullable": true,
+            "description": "Present on GET conversation, list, and search. Absent on block, title, and status writes.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/InboxContactDto"
+              }
+            ]
+          },
+          "channelType": {
+            "type": "string",
+            "example": "WABA",
+            "description": "Present on reads."
+          },
+          "customerPhone": {
+            "type": "string",
+            "nullable": true,
+            "description": "Customer phone taken from the contact."
+          }
+        },
+        "required": [
+          "id",
+          "channelId",
+          "contactId",
+          "status",
+          "isUnread",
+          "tags",
+          "unreadCount",
+          "isBlocked",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "InboxMessageListDto": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "description": "Newest first. Includes SYSTEM events.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InboxMessageDto"
+            }
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "Pass back as cursor to load older messages. Null on the last page."
+          },
+          "hasMore": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "messages",
+          "hasMore"
+        ]
+      },
+      "UpdateDialogAssigneeDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "nullable": true,
+            "example": "66c21609-01ed-4f83-8058-9b6ac090db3f",
+            "description": "User id from GET /api/v1/inbox/channels/{channelId}/assignees. Null clears the assignee. The same assignee is a no-op."
+          }
+        },
+        "required": [
+          "userId"
+        ]
+      },
+      "UpdateDialogStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "CLOSED"
+            ],
+            "example": "CLOSED",
+            "description": "OPEN reopens the conversation. CLOSED closes it. Repeating the current value returns 409."
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "UpdateDialogTitleDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Billing question",
+            "description": "Replaces the dialog title. A system message records the change."
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "InboxWebhookViewDto": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "nullable": true,
+            "example": "https://example.com/1msg/inbox",
+            "description": "HTTPS URL that receives POST deliveries. Null when no webhook is saved."
+          },
+          "secretPrefix": {
+            "type": "string",
+            "nullable": true,
+            "example": "whsec_abc123",
+            "description": "First 12 characters of the signing secret. The full secret is not returned here."
+          },
+          "createdAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "lastDeliveryAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "When the last delivery attempt finished."
+          },
+          "lastDeliveryStatus": {
+            "type": "number",
+            "nullable": true,
+            "example": 200,
+            "description": "HTTP status from the last delivery. Null when the request did not get a response."
+          },
+          "lastDeliveryError": {
+            "type": "string",
+            "nullable": true,
+            "description": "Short error from the last failed delivery."
+          },
+          "events": {
+            "description": "Every event this webhook can send. Message and delivery-status events stay on the channel webhook.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InboxWebhookEventExampleDto"
+            }
+          },
+          "envelope": {
+            "description": "Example of the JSON body 1MSG POSTs. data matches events[].example for the type in the body.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/InboxWebhookEnvelopeDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "events",
+          "envelope"
+        ]
+      },
+      "UpsertInboxWebhookDto": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "example": "https://example.com/1msg/inbox",
+            "description": "HTTPS endpoint. 1MSG POSTs a JSON event here. Credentials in the URL are rejected."
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "InboxWebhookSavedDto": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "nullable": true,
+            "example": "https://example.com/1msg/inbox",
+            "description": "HTTPS URL that receives POST deliveries. Null when no webhook is saved."
+          },
+          "secretPrefix": {
+            "type": "string",
+            "nullable": true,
+            "example": "whsec_abc123",
+            "description": "First 12 characters of the signing secret. The full secret is not returned here."
+          },
+          "createdAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "lastDeliveryAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "When the last delivery attempt finished."
+          },
+          "lastDeliveryStatus": {
+            "type": "number",
+            "nullable": true,
+            "example": 200,
+            "description": "HTTP status from the last delivery. Null when the request did not get a response."
+          },
+          "lastDeliveryError": {
+            "type": "string",
+            "nullable": true,
+            "description": "Short error from the last failed delivery."
+          },
+          "events": {
+            "description": "Every event this webhook can send. Message and delivery-status events stay on the channel webhook.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InboxWebhookEventExampleDto"
+            }
+          },
+          "envelope": {
+            "description": "Example of the JSON body 1MSG POSTs. data matches events[].example for the type in the body.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/InboxWebhookEnvelopeDto"
+              }
+            ]
+          },
+          "secret": {
+            "type": "string",
+            "nullable": true,
+            "example": "whsec_example_secret",
+            "description": "Full signing secret. Present only when the webhook is created or the secret is rotated. Store it. Later reads return secretPrefix only."
+          },
+          "created": {
+            "type": "boolean",
+            "description": "True when this call created the webhook. False when it updated the URL or rotated the secret."
+          }
+        },
+        "required": [
+          "events",
+          "envelope",
+          "created"
+        ]
+      },
+      "InboxWebhookRemovedDto": {
+        "type": "object",
+        "properties": {
+          "removed": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "removed"
+        ]
+      },
+      "InboxDialogPageDto": {
+        "type": "object",
+        "properties": {
+          "hasMore": {
+            "type": "boolean"
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "Pass this back as cursor. It is the lastMessageAt of the last conversation on this page."
+          },
+          "limit": {
+            "type": "number",
+            "example": 50
+          }
+        },
+        "required": [
+          "hasMore",
+          "limit"
+        ]
+      },
+      "InboxUserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "b2bb82f0-2253-4e05-b955-a21f3d699caa"
+          },
+          "name": {
+            "type": "string",
+            "example": "QA Stage"
+          },
+          "avatar": {
+            "type": "string",
+            "nullable": true,
+            "example": null
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "InboxContactDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "example": "79001234567"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "avatar": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "phoneNumber"
+        ]
+      },
+      "InboxMessageDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "conversationId": {
+            "type": "string"
+          },
+          "channelId": {
+            "type": "string"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "INBOUND",
+              "OUTBOUND"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "TEXT",
+              "IMAGE",
+              "VIDEO",
+              "AUDIO",
+              "DOCUMENT",
+              "LOCATION",
+              "LOCATION_REQUEST",
+              "CONTACT",
+              "TEMPLATE",
+              "SYSTEM",
+              "NOTE"
+            ],
+            "description": "SYSTEM is an inbox event (status, assignee, block, title), not a chat message."
+          },
+          "content": {
+            "type": "string"
+          },
+          "mediaUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "mediaType": {
+            "type": "string",
+            "nullable": true
+          },
+          "fileName": {
+            "type": "string",
+            "nullable": true
+          },
+          "fileSize": {
+            "type": "number",
+            "nullable": true
+          },
+          "mediaDuration": {
+            "type": "number",
+            "nullable": true
+          },
+          "thumbnailUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "templateName": {
+            "type": "string",
+            "nullable": true
+          },
+          "templateLanguage": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "SENT",
+              "DELIVERED",
+              "READ",
+              "FAILED"
+            ]
+          },
+          "externalId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Channel message id."
+          },
+          "sentAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "deliveredAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "readAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "systemEventSource": {
+            "type": "string",
+            "description": "Set on SYSTEM events started by an operator."
+          },
+          "systemEventOperatorName": {
+            "type": "string"
+          },
+          "systemEventOperatorEmail": {
+            "type": "string"
+          },
+          "assignmentEvent": {
+            "$ref": "#/components/schemas/InboxAssignmentEventDto"
+          },
+          "author": {
+            "nullable": true,
+            "description": "User who sent an outbound message.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/InboxUserDto"
+              }
+            ]
+          },
+          "quotedMessage": {
+            "$ref": "#/components/schemas/InboxQuotedMessageDto"
+          },
+          "latitude": {
+            "type": "number",
+            "description": "Set when type is LOCATION."
+          },
+          "longitude": {
+            "type": "number",
+            "description": "Set when type is LOCATION."
+          }
+        },
+        "required": [
+          "id",
+          "conversationId",
+          "channelId",
+          "direction",
+          "type",
+          "content",
+          "status",
+          "createdAt"
+        ]
+      },
+      "InboxWebhookEventExampleDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "inbox.conversation.status_changed"
+          },
+          "description": {
+            "type": "string",
+            "example": "Conversation opened or closed. status is OPEN or CLOSED."
+          },
+          "example": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Fields inside the delivered event data object for this type.",
+            "example": {
+              "conversationId": "d94a047f-5984-42af-9f89-0f26c7e70ef1",
+              "channelId": "QAF261225002",
+              "status": "CLOSED",
+              "previousStatus": "OPEN",
+              "actorUserId": "b2bb82f0-2253-4e05-b955-a21f3d699caa"
+            }
+          }
+        },
+        "required": [
+          "type",
+          "description",
+          "example"
+        ]
+      },
+      "InboxWebhookEnvelopeDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Delivery id. Also sent as the X-1msg-Delivery header."
+          },
+          "type": {
+            "type": "string",
+            "example": "inbox.conversation.status_changed",
+            "description": "Event name. Also sent as the X-1msg-Event header."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "data": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Event fields. Shape depends on type. See events[].example on GET /inbox/webhook."
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "createdAt",
+          "data"
+        ]
+      },
+      "InboxAssignmentEventDto": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "assign",
+              "unassign"
+            ]
+          },
+          "actor": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/InboxUserDto"
+              }
+            ]
+          },
+          "target": {
+            "nullable": true,
+            "description": "Present when kind is assign.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/InboxUserDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "InboxQuotedMessageDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "INBOUND",
+              "OUTBOUND"
+            ]
+          },
+          "contactName": {
+            "type": "string"
+          },
+          "contactPhone": {
+            "type": "string"
+          },
+          "mediaUrl": {
+            "type": "string"
+          },
+          "fileName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "content",
+          "type",
+          "direction"
+        ]
+      }
+    }
+  }
+}
