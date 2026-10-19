@@ -746,7 +746,7 @@
   },
   "info": {
     "title": "1MSG Platform API",
-    "description": "Inbox API for an account or user key. It lists conversations, assigns them, blocks a contact, sets a title, and reads messages. It does not send messages: sending stays on the channel API, and incoming messages stay on the channel webhook. The account owner can set one webhook for conversation and user changes. Issue keys in the cabinet under Settings → Developer → API Settings. Authorize with Bearer 1msg_live_… or 1msg_test_…, not a cabinet session. An account key sees every channel. A user key sees only the channels that user can open.",
+    "description": "WhatsApp Inbox API is an HTTP API for 1MSG Inbox. Your code does in Inbox what an operator does on the Platform: list conversations, assign them, open and close them, and block a contact. Your team keeps working in Inbox as usual and sees every change your code makes. Each action leaves a system message in the chat.\n\nThe two APIs split the work. The [WhatsApp Business API](https://docs.1msg.io/) sends and receives messages. Inbox API manages who handles a conversation, what state it is in, and what has changed. You still reply to customers through the WhatsApp Business API. Incoming messages and delivery statuses still arrive at your channel webhook. Inbox events go to their own webhook, and each one is signed.\n\n## API key\n\nSign in at [platform.1msg.io](https://platform.1msg.io). Open Settings → Developer → API Settings, generate a key, and copy it. The full key is shown once.\n\nSend it on every request:\n\n```\nAuthorization: Bearer 1msg_live_••••••••\n```\n\nThe key belongs to a user and has that user's permissions. It sees the same channels, and every action is made on that user's behalf. For all channels, the account owner creates a key for themselves. To work within a teammate's permissions, create a key for that teammate.",
     "version": "1.0",
     "contact": {}
   },
@@ -758,8 +758,12 @@
   ],
   "servers": [
     {
+      "url": "https://api.1msg.io",
+      "description": "Production"
+    },
+    {
       "url": "https://api.stage.1msg.io",
-      "description": "Send API requests to this host"
+      "description": "Staging"
     }
   ],
   "components": {
