@@ -98,6 +98,6 @@ POST http://api.1msg.io/{{channel_id}}/sendMessage?token=•••••••�
 
 Туториал по подключению канала WABA:
 
-[Подключение WABA from 1MSG](../whatsapp/waba-from-1msg.ru.md)
+[Подключение WABA from 1MSG](../whatsapp/connect-waba/waba-from-1msg.ru.md)
 
-[Подключение Bring your own WABA](../whatsapp/bring-your-own-waba.ru.md)
+[Подключение Bring your own WABA](../whatsapp/connect-waba/bring-your-own-waba.ru.md)

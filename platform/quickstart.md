@@ -100,4 +100,4 @@ Ready to launch for real customers?
 
 For a tutorial on connecting a WABA channel, see:
 
-[Connection WABA](../whatsapp/connect-waba.md)
+[Connection WABA](../whatsapp/connect-waba/README.md)
