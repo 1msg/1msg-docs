@@ -3,7 +3,7 @@ title: Início rápido
 description: Crie uma conta, teste a API em um canal de teste gratuito e conecte seu próprio número do WhatsApp Business.
 ---
 
-Este guia leva você do envio de uma mensagem de teste ao uso completo da WhatsApp Business API (WABA) em seis passos simples.
+Este guia leva você do envio de uma mensagem de teste ao uso completo da WhatsApp Business API (WABA) em sete passos simples.
 
 ## Passo 1. Crie uma conta
 
@@ -47,7 +47,7 @@ Clique em **"Enviar"** e confira a mensagem no chat do WhatsApp com o número WA
 **Exemplo de requisição**
 
 ```http
-POST http://platform.1msg.io/{{channel_id}}/sendMessage?token=••••••••
+POST https://platform.1msg.io/{{channel_id}}/sendMessage?token=••••••••
 ```
 
 O **channel ID** e o **token** estão na página do canal.
@@ -91,7 +91,7 @@ Quando o fluxo estiver claro, passe para a automação. Use nossos recursos para
 - [**SDK**](https://github.com/1msg/1msg-sdk) — bibliotecas prontas para Node.js, Python e PHP, com exemplos de código.
 - [**MCP (Model Context Protocol)**](https://platform.1msg.io/pt/dashboard/mcp) — conecte nossa API direto ao seu assistente de IA (Cursor, Claude Desktop) para gerar código de integração na hora.
 
-## Passo 6: Vá para produção
+## Passo 7: Vá para produção
 
 Pronto para lançar para clientes de verdade?
 

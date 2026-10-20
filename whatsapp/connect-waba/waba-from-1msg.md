@@ -85,7 +85,7 @@ After a successful authorization you'll be redirected to your 1msg.io account. O
 
 ![Channel Settings tab with the API URL and JWT token](./assets/channel-settings-api.png)
 
-## Step 5. Verify your phone number
+## Step 5. Use the number
 
 Now you're ready to go. You can send and get messages and check your number with:
 
