@@ -86,7 +86,7 @@ Após a autorização, você será redirecionado para a sua conta 1msg.io. Abra 
 
 ![Aba Settings do canal com a API URL e o token JWT](./assets/channel-settings-api.png)
 
-## Passo 5. Verifique o número de telefone
+## Passo 5. Use o número
 
 Pronto para começar. Você pode enviar e receber mensagens e conferir o número em:
 

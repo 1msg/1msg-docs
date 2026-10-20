@@ -70,7 +70,7 @@ After Coexistence is enabled, the app still works, but some features are restric
 
 Connection is built into the 1MSG UI and takes a few minutes.
 
-1. **Start Embedded Signup.** Use the standard flow and choose:
+1. **Start Embedded Signup.** Use the standard flow.
 2. **Connect the WhatsApp Business app.** Continue with **“Connect existing WhatsApp Business app”**
 
 ![WhatsApp Business account list with the option to connect an existing WhatsApp Business app](./assets/coexistence-connect-app.jpg)
