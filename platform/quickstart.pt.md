@@ -102,4 +102,4 @@ Pronto para lançar para clientes de verdade?
 
 Para um tutorial de conexão de um canal WABA, veja:
 
-[Conexão da WABA](../whatsapp/connect-waba.pt.md)
+[Conexão da WABA](../whatsapp/connect-waba/README.pt.md)

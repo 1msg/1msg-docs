@@ -5,8 +5,8 @@ description: "Подключение WhatsApp Business Account (WABA) к 1MSG: �
 
 Инструкции по подключению WhatsApp Business Account (WABA) к 1MSG.
 
-- [Подключение WABA](./connect-waba.ru.md) — выбор между WABA from 1MSG и Bring your own WABA.
-- [Подключение WABA from 1MSG](./waba-from-1msg.ru.md) — сообщения оплачиваются через 1MSG.
-- [Подключение Bring your own WABA](./bring-your-own-waba.ru.md) — сообщения оплачиваются напрямую Meta.
-- [WABA Coexistence](./coexistence.md) — номер работает и в приложении WhatsApp Business, и через API (статья на английском).
-- [Ошибки при подключении WABA](./connection-errors.ru.md)
+- [Подключение WABA](./connect-waba/README.ru.md) — выбор между WABA from 1MSG и Bring your own WABA.
+  - [Подключение WABA from 1MSG](./connect-waba/waba-from-1msg.ru.md) — сообщения оплачиваются через 1MSG.
+  - [Подключение Bring your own WABA](./connect-waba/bring-your-own-waba.ru.md) — сообщения оплачиваются напрямую Meta.
+  - [WABA Coexistence](./connect-waba/coexistence.md) — номер работает и в приложении WhatsApp Business, и через API (статья на английском).
+  - [Ошибки при подключении WABA](./connect-waba/connection-errors.ru.md)
