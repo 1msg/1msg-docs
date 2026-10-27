@@ -37,7 +37,7 @@ You can manage your subscription through the **Stripe Customer Portal**.
 
 To open it:
 
-1. Go to [**Billing**](https://platform.1msg.io/en/dashboard/billing) **→ Subscriptions**.
+1. Go to [**Billing**](https://platform.1msg.io/manage/billing) **→ Subscriptions**.
 2. Find the channel you want to manage.
 3. Click **Open Stripe Customer Portal**.
 
@@ -83,7 +83,7 @@ To continue using the channel after the free period, you need to activate the pa
 
 You can activate the paid subscription at any time during the free period.
 
-1. Go to [**Billing**](https://platform.1msg.io/en/dashboard/billing) **→ Subscriptions**.
+1. Go to [**Billing**](https://platform.1msg.io/manage/billing) **→ Subscriptions**.
 2. Find the channel.
 3. Click **Open Stripe Customer Portal**.
 4. On the Stripe page, click **Don't cancel**.
