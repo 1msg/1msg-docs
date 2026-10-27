@@ -37,7 +37,7 @@ Until 11:00 AM the next day, the business can:
 
 ### Pricing
 
-[Cost per message in USD on the WhatsApp Business Platform, effective July 1, 2026 (XLSX)](./assets/whatsapp-rates-2026-07-01.xlsx)
+[Cost per message in USD on the WhatsApp Business Platform, effective October 1, 2026 (XLSX)](./assets/whatsapp-rates-2026-10-01.xlsx)
 
 ### 1. Marketing Templates
 
