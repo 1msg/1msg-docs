@@ -1,0 +1,56 @@
+name: Checks
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  links:
+    name: Links and anchors
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      # Offline: relative links between articles, to assets/ and to translations (name.ru.md),
+      # and their #anchors, which lychee derives from headings the way GitHub and the site do.
+      # A site-absolute link (/docs/...) fails too: it is broken on GitHub.
+      # External links are checked weekly by external-links.yml.
+      - name: Check links
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          args: --offline --include-fragments --no-progress './**/*.md'
+
+  images:
+    name: Image sizes
+    runs-on: ubuntu-latest
+    env:
+      MAX_KB: 500
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      # Everything in assets/ folders, plus any image the site could serve from elsewhere.
+      - name: Check image sizes
+        run: |
+          status=0
+          count=0
+          while IFS= read -r -d '' file; do
+            count=$((count + 1))
+            bytes=$(wc -c < "$file")
+            if (( bytes > MAX_KB * 1024 )); then
+              echo "::error file=${file#./}::${file#./} is $(( (bytes + 1023) / 1024 )) KB, over the ${MAX_KB} KB limit. Resize it to at most 1600 px wide or compress it."
+              status=1
+            fi
+          done < <(find . -path ./.git -prune -o -type f \( -path '*/assets/*' -o -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.gif' -o -iname '*.webp' \) -print0)
+          echo "Checked ${count} files against the ${MAX_KB} KB limit."
+          exit "$status"
