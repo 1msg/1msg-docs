@@ -82,7 +82,7 @@ POST https://api.1msg.io/{{channel_id}}/sendMessage?token=•••••••�
 Используйте наши ресурсы, чтобы быстрее выйти в прод:
 
 - [**Документация API**](https://docs.1msg.io/) — полное описание всех методов в формате OpenAPI
-- [**SDK**](https://help.1msg.io/platform-1msg/ru/razrabotka/sdk) — готовые библиотеки для Node.js, Python и PHP с примерами кода.
+- [**SDK**](../developer-tools/sdk.ru.md) — готовые библиотеки для Node.js, Python и PHP с примерами кода.
 - [**MCP (Model Context Protocol)**](https://github.com/1msg/1msg-mcp) — подключите наш API напрямую к AI-ассистенту (Cursor, Claude Desktop), чтобы генерировать код интеграции на лету.
 - [**CLI**](https://github.com/1msg/1msg-cli) — выполняйте действия одной командой в терминале. Подходит для скриптов, автоматизации и задач по расписанию. Не требует ИИ-помощника.
 - [**Skills**](https://github.com/1msg/1msg-for-agents) — инструкции для ИИ-помощника по работе с 1MSG: от выбора инструмента и отправки сообщений до настройки вебхуков и поиска причин ошибок доставки.

@@ -62,7 +62,7 @@ Depois do cadastro, escolha **Bring your own WABA** e clique em **Obtenha teste 
 * **Recorrência.** A assinatura **termina** quando o mês grátis acaba. O mês seguinte não é cobrado, a menos que você continue o plano.
 * **Depois do mês grátis.** O preço mensal (ou anual) mostrado no card. Ele não começa sozinho. Se você não fizer nada, o canal **para** na data de término.
 
-Saiba mais sobre os [planos de assinatura](https://help.1msg.io/platform-1msg/pt/primeiros-passos/planos-de-assinatura#condicoes-da-assinatura-own-waba) Bring your own WABA.
+Saiba mais sobre os [planos de assinatura](../../platform/billing/subscription-plans.pt.md#condições-da-assinatura-bring-your-own-waba) Bring your own WABA.
 
 Em seguida:
 

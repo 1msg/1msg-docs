@@ -30,7 +30,7 @@ O número não está confirmado no momento, então este passo é obrigatório.
 
 Depois dos dois passos, atualize a página **Status** do canal. O status **External WABA channel** não deve mais aparecer como **blocked**.
 
-Se algo não ficar claro ou surgir um problema, fale com [o suporte](https://help.1msg.io/platform-1msg/pt/primeiros-passos/suporte) e envie capturas de tela — vamos ajudar a resolver.
+Se algo não ficar claro ou surgir um problema, fale com [o suporte](../../platform/support.pt.md) e envie capturas de tela — vamos ajudar a resolver.
 
 ## There is an error with the payment method. This will block business-initiated conversations
 
@@ -57,4 +57,4 @@ Se já houver um cartão cadastrado na empresa, mas ele não estiver vinculado a
 
 Abra o canal em [platform.1msg.io](https://platform.1msg.io/). O banner desaparecerá assim que a Meta aceitar o cartão — geralmente em poucos minutos.
 
-Se o banner continuar aparecendo após uma hora, entre em contato com o [suporte](https://help.1msg.io/platform-1msg/pt/primeiros-passos/suporte) e envie capturas de tela do banner e da tela de pagamento na Meta.
+Se o banner continuar aparecendo após uma hora, entre em contato com o [suporte](../../platform/support.pt.md) e envie capturas de tela do banner e da tela de pagamento na Meta.

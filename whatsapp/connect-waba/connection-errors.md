@@ -30,7 +30,7 @@ The number is not verified right now, so this step is required.
 
 After both steps, refresh the channel **Status** page. **External WABA channel** should no longer show as **blocked**.
 
-If anything is unclear or you run into a problem, [contact support](https://help.1msg.io/platform-1msg/getting-start/support) and attach screenshots — we will help you sort it out.
+If anything is unclear or you run into a problem, [contact support](../../platform/support.md) and attach screenshots — we will help you sort it out.
 
 ## There is an error with the payment method. This will block business-initiated conversations
 
@@ -57,4 +57,4 @@ You need payment permissions to do this. The account owner has these permissions
 
 Open the channel on [platform.1msg.io](https://platform.1msg.io/). The banner disappears once Meta accepts the card — usually within a few minutes.
 
-If the banner is still there after an hour, contact [support](https://help.1msg.io/platform-1msg/getting-start/support) and attach screenshots of the banner and the payment screen in Meta.
+If the banner is still there after an hour, contact [support](../../platform/support.md) and attach screenshots of the banner and the payment screen in Meta.
