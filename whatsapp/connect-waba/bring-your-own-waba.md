@@ -62,7 +62,7 @@ After registration choose **Bring your own WABA** and click **30-day free trial*
 * **Recurring**. Subscription to **end** when the free month is over. The next month is not charged unless you continue the plan.
 * **After the free month.** The monthly (or yearly) price shown on the card. It does not start by itself. If you do nothing, the channel **stops** on the end date.
 
-More about [Subscriptions](https://help.1msg.io/platform-1msg/getting-start/pricing-and-billing/subscription-plans#own-waba-subscription-terms) plans BYOW.
+More about [Subscriptions](../../platform/billing/subscription-plans.md#own-waba-subscription-terms) plans BYOW.
 
 Then:
 

@@ -7,7 +7,7 @@ description: "Два способа подключить WhatsApp Business Accou
 
 ## WABA from 1MSG
 
-Комиссия за сообщения оплачивается через 1MSG [по тарифам WhatsApp + 5% наценка](https://help.1msg.io/platform-1msg/getting-start/pricing-and-billing/messaging-costs#pricing)
+Комиссия за сообщения оплачивается через 1MSG [по тарифам WhatsApp + 5% наценка](../../platform/billing/messaging-costs.md#pricing)
 
 * Бесплатный тестовый канал
 * История сообщений

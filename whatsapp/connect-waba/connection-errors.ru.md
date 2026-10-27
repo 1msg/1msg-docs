@@ -30,7 +30,7 @@ description: Что делать, если после подключения WAB
 
 После выполнения обоих шагов обновите страницу **Status** канала. Статус **External WABA channel** больше не должен отображаться как **blocked**.
 
-Если что-то непонятно или возникли проблемы, [обратитесь в поддержку](https://help.1msg.io/platform-1msg/ru/podderzhka) и приложите скриншоты — мы поможем разобраться.
+Если что-то непонятно или возникли проблемы, [обратитесь в поддержку](../../platform/support.ru.md) и приложите скриншоты — мы поможем разобраться.
 
 ## There is an error with the payment method. This will block business initiated conversations.
 

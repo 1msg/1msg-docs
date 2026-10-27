@@ -7,7 +7,7 @@ There are two ways to connect a WABA:
 
 ## WABA from 1MSG
 
-Message fees are paid through 1MSG at [WhatsApp rates + a 5% markup](https://help.1msg.io/platform-1msg/getting-start/pricing-and-billing/messaging-costs#pricing)
+Message fees are paid through 1MSG at [WhatsApp rates + a 5% markup](../../platform/billing/messaging-costs.md#pricing)
 
 * Free test channel
 * Message history
