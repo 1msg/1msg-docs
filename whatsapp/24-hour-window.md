@@ -43,7 +43,7 @@ More on templates — in the section on creating and sending templates.
 
 ## How much it costs
 
-An open window does not mean “free.” As of July 1, 2025, Meta charges for each delivered template message, not for the conversation. Inside the window, free-form messages do not require templates; utility templates (UTILITY) inside the window are free; marketing templates are always paid.
+An open window does not mean “free.” As of July 1, 2025, Meta charges for each delivered template message, not for the conversation. Inside the window, free-form messages do not require templates; utility (UTILITY) and marketing templates are always paid, even inside the window.
 
 Details — [Messaging costs](../platform/billing/messaging-costs.md).
 

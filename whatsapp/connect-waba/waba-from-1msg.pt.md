@@ -7,10 +7,7 @@ O que você precisa:
 
 * **Sua página pessoal do Facebook**, em nome da qual você vai criar as contas Meta Business e WhatsApp Business.
 * **Sua conta Meta Business.** Você pode criá-la na [página do Facebook Business](https://business.facebook.com/) ou usar uma que já exista.
-* **O número de telefone** que você quer vincular ao WABA. Veja a nota abaixo:
-
-> [!NOTE]
-> Atenção: se o número já foi usado nos apps WhatsApp ou WhatsApp Business, você precisa excluir a conta primeiro. Depois disso, esse número não poderá mais ser usado como um WhatsApp comum — só via WABA. Se quiser usar o número em um messenger no celular, temos o [aplicativo Android](https://play.google.com/store/apps/details?id=app.onemessage.io); o app para iOS está em desenvolvimento.
+* **O número de telefone** que você quer vincular ao WABA.
 
 <details>
 

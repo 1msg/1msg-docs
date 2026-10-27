@@ -15,7 +15,7 @@ The platform uses two separate payment mechanisms:
 
 Platform subscriptions are processed through Stripe Billing.
 
-After subscribing, you can manage your subscription through the Stripe Customer Portal available in the [Billing](https://platform.1msg.io/dashboard/billing) section inside the platform.
+After subscribing, you can manage your subscription through the Stripe Customer Portal available in the [Billing](https://platform.1msg.io/manage/billing) section inside the platform.
 
 The Customer Portal allows you to:
 

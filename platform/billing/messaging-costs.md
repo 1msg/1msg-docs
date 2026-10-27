@@ -39,20 +39,6 @@ Until 11:00 AM the next day, the business can:
 
 [Cost per message in USD on the WhatsApp Business Platform, effective July 1, 2026 (XLSX)](./assets/whatsapp-rates-2026-07-01.xlsx)
 
-<details>
-
-<summary><strong>The pricing tables were take effect on July 1, 2026.</strong></summary>
-
-Starting at 00:00 on July 1, 2026, according to the WhatsApp Business account time zone, the updated rates below will come into effect. These rates reflect the following changes:
-
-* **Italy, Spain, and the United Kingdom** — an increase in the rate for marketing messages.
-* **Poland** — a decrease in the rate for marketing messages and messages in the **"Utility"** and **"Authentication"** categories.
-* *Hong Kong, Hungary*, Qatar\*, Romania\*, and Singapore\*\*\* — an increase in the rates for messages in the **"Utility"** and **"Authentication"** categories.
-
-\* Currently, messages sent to users in these countries are charged according to the corresponding regional **"Rest of the World"** rate. Starting July 1, 2026, these markets will be removed from the **"Rest of the World"** region and will have separate pricing tables.
-
-</details>
-
 ### 1. Marketing Templates
 
 Marketing templates are **ALWAYS** paid. Even if the user messaged you just a minute ago.
