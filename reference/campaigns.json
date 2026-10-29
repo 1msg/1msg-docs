@@ -1,0 +1,1444 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/v1/campaigns/segments": {
+      "post": {
+        "operationId": "CampaignSegmentsController_create",
+        "summary": "Create a segment",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCampaignSegmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "name is required, up to 200 characters. description is optional, up to 2000 characters. Returns the segment id used when creating a campaign."
+      },
+      "get": {
+        "operationId": "CampaignSegmentsController_list",
+        "summary": "List segments",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Page size. Defaults to 50, maximum 100.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "nextCursor from the previous page. Leave empty for the first page.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Newest first. limit is the page size, default 50, maximum 100. cursor is the nextCursor from the previous page. Leave cursor empty for the first page."
+      }
+    },
+    "/api/v1/campaigns/segments/{segmentId}/members": {
+      "get": {
+        "operationId": "CampaignSegmentsController_listMembers",
+        "summary": "List segment members",
+        "parameters": [
+          {
+            "name": "segmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Segment id returned by create or list."
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Page size. Defaults to 50, maximum 100.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "nextCursor from the previous page. Leave empty for the first page.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "limit is the page size, default 50, maximum 100. cursor is the nextCursor from the previous page."
+      },
+      "post": {
+        "operationId": "CampaignSegmentsController_addMembers",
+        "summary": "Add segment members",
+        "description": "members is a non-empty list. Each item needs name. phone is E.164 or omitted. bsuid is the provider id, for example ab.abc123xyz, or omitted. One of phone or bsuid is required. A duplicate phone or BSUID in the segment is rejected. The segment cannot exceed 500 members.",
+        "parameters": [
+          {
+            "name": "segmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Segment id returned by create or list."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCampaignSegmentMembersDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "put": {
+        "operationId": "CampaignSegmentsController_replaceMembers",
+        "summary": "Replace segment members",
+        "description": "Deletes every current member and inserts this list. The same name, phone, and bsuid rules apply as when adding members. The new list cannot exceed 500 members.",
+        "parameters": [
+          {
+            "name": "segmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Segment id returned by create or list."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplaceCampaignSegmentMembersDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "CampaignSegmentsController_removeMembers",
+        "summary": "Remove segment members",
+        "parameters": [
+          {
+            "name": "segmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Segment id returned by create or list."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveCampaignSegmentMembersDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "memberIds is a non-empty list of member ids from the member list. Other members stay."
+      }
+    },
+    "/api/v1/campaigns/segments/{segmentId}/members/{memberId}": {
+      "patch": {
+        "operationId": "CampaignSegmentsController_patchMember",
+        "summary": "Update one segment member",
+        "parameters": [
+          {
+            "name": "segmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Segment id returned by create or list."
+          },
+          {
+            "name": "memberId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Member id returned by the member list."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchCampaignSegmentMemberDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Send only the fields that change. phone must stay E.164. bsuid must stay in the provider format. The member still needs a phone or a BSUID after the update."
+      }
+    },
+    "/api/v1/campaigns/segments/{segmentId}": {
+      "get": {
+        "operationId": "CampaignSegmentsController_get",
+        "summary": "Get a segment",
+        "parameters": [
+          {
+            "name": "segmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Segment id returned by create or list."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "segmentId is the id returned when the segment was created."
+      },
+      "patch": {
+        "operationId": "CampaignSegmentsController_update",
+        "summary": "Update a segment",
+        "parameters": [
+          {
+            "name": "segmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Segment id returned by create or list."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCampaignSegmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Send only the fields that change. name up to 200 characters. description up to 2000 characters. segmentId is the id from create."
+      },
+      "delete": {
+        "operationId": "CampaignSegmentsController_remove",
+        "summary": "Delete a segment",
+        "parameters": [
+          {
+            "name": "segmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Segment id returned by create or list."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Deletes the segment and its members. Fails while a draft, sending, paused, or scheduled campaign still uses it."
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/analytics": {
+      "get": {
+        "operationId": "CampaignAnalyticsController_summary",
+        "summary": "Analytics summary",
+        "description": "Counts for the snapshot taken at send. dailyLimit is the channel tier, not a campaign setting. Rates are fractions from 0 to 1.",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Campaign id returned by create or list."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Analytics"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/analytics/recipients": {
+      "get": {
+        "operationId": "CampaignAnalyticsController_recipients",
+        "summary": "Recipient analytics",
+        "description": "One row per recipient. filter is a comma-separated list of sent, delivered, read, replied, failed, skipped, or cancelled. filter=clicked is rejected; use filter=replied with replyType=button. fields limits the columns. conversationId is the Inbox dialog. providerConversationId is the provider chat id. messageId and providerMessageId are the provider message id. limit max 100. cursor is nextCursor.",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Campaign id returned by create or list."
+          },
+          {
+            "name": "filter",
+            "required": false,
+            "in": "query",
+            "description": "Comma-separated: sent, delivered, read, replied, failed, skipped, cancelled. filter=clicked is rejected — use replied with replyType=button.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "replied",
+            "required": false,
+            "in": "query",
+            "description": "true keeps only people who replied. false keeps people who did not.",
+            "schema": {
+              "enum": [
+                "true",
+                "false"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "replyType",
+            "required": false,
+            "in": "query",
+            "description": "button keeps button taps. text keeps free-text replies.",
+            "schema": {
+              "enum": [
+                "button",
+                "text"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "buttonId",
+            "required": false,
+            "in": "query",
+            "description": "One template button id. Use with replyType=button.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reason",
+            "required": false,
+            "in": "query",
+            "description": "Exact skip or fail reason from the errors feed.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "required": false,
+            "in": "query",
+            "description": "Comma-separated columns to return. Include providerConversationId and providerMessageId when you need the provider ids. conversationId is the Inbox dialog id. messageId is the provider message id.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Page size, from 1 to 100. Default 50.",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "nextCursor from the previous page. Leave empty for the first page.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Analytics"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/analytics/replies": {
+      "get": {
+        "operationId": "CampaignAnalyticsController_replies",
+        "summary": "Reply feed",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Campaign id returned by create or list."
+          },
+          {
+            "name": "replyType",
+            "required": false,
+            "in": "query",
+            "description": "button keeps button taps. text keeps free-text replies. Omit to return both.",
+            "schema": {
+              "enum": [
+                "button",
+                "text"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "buttonId",
+            "required": false,
+            "in": "query",
+            "description": "One template button id.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "phone",
+            "required": false,
+            "in": "query",
+            "description": "E.164 phone of one recipient.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bsuid",
+            "required": false,
+            "in": "query",
+            "description": "Provider BSUID of one recipient, for example ab.abc123xyz.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateFrom",
+            "required": false,
+            "in": "query",
+            "description": "ISO-8601 start, inclusive, for example 2026-11-01T00:00:00Z.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateTo",
+            "required": false,
+            "in": "query",
+            "description": "ISO-8601 end, inclusive, for example 2026-11-02T00:00:00Z.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Page size, from 1 to 100. Default 50.",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "nextCursor from the previous page. Leave empty for the first page.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Analytics"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "replyType is button or text. buttonId filters one button. phone and bsuid filter one recipient. dateFrom and dateTo are ISO-8601. providerConversationId is the provider chat id. messageId and providerMessageId are the provider message id."
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/analytics/errors": {
+      "get": {
+        "operationId": "CampaignAnalyticsController_errors",
+        "summary": "Errors by reason",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Campaign id returned by create or list."
+          },
+          {
+            "name": "recipientsLimit",
+            "required": false,
+            "in": "query",
+            "description": "Recipients shown per reason. Default 20, max 100.",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "description": "failed keeps send errors. skipped keeps recipients that were not sent. Omit to return both.",
+            "schema": {
+              "enum": [
+                "failed",
+                "skipped"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Analytics"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Groups failed and skipped recipients by reason. type is failed or skipped. recipientsLimit is how many recipients to include per reason, default 20, maximum 100. Each recipient includes providerConversationId and providerMessageId."
+      }
+    },
+    "/api/v1/campaigns": {
+      "post": {
+        "operationId": "CampaignsController_create",
+        "summary": "Create a campaign draft",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCampaignDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "name is the campaign title. channelId is the channel that will send. segmentId is the audience. content.mode is template or text. For a template set content.templateName, content.language, and content.params (the sendTemplate array). content.messageSendTtlSeconds is optional, in seconds, and sits beside params. For text set content.text. status, if sent, must be draft."
+      },
+      "get": {
+        "operationId": "CampaignsController_list",
+        "summary": "List campaigns",
+        "description": "Newest first, for the whole account. channelId limits the list to those channels. Repeat the parameter or pass a comma-separated list. Omit channelId to return every channel. limit defaults to 50, maximum 100. cursor is nextCursor from the previous page.",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Page size. Defaults to 50, maximum 100.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "nextCursor from the previous page. Leave empty for the first page.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "channelId",
+            "required": false,
+            "in": "query",
+            "description": "Channel id. Repeat the parameter or pass a comma-separated list. Omit to list every channel.",
+            "schema": {
+              "type": "array",
+              "items": {}
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/preview": {
+      "get": {
+        "operationId": "CampaignsController_previewCampaign",
+        "summary": "Preview a campaign",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Campaign id returned by create or list."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Counts recipients and how many are outside the 24-hour window. tierDailyLimit is the channel tier. No price and no cost are returned. Nothing is sent."
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/send": {
+      "post": {
+        "operationId": "CampaignsController_send",
+        "summary": "Send or schedule a campaign",
+        "description": "Copies the segment into the send snapshot. scheduledAt is a future ISO-8601 instant with Z or a numeric offset. Omit it or send null to start now. Template sends pause when the channel tier for the rolling 24 hours is used up. There is no separate per-day field.",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Campaign id returned by create or list."
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendCampaignDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/schedule": {
+      "patch": {
+        "operationId": "CampaignsController_schedule",
+        "summary": "Change the scheduled time",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Campaign id returned by create or list."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCampaignScheduleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "scheduledAt is a new future ISO-8601 instant with Z or a numeric offset. Only a campaign that is already scheduled can be moved."
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/unschedule": {
+      "post": {
+        "operationId": "CampaignsController_unschedule",
+        "summary": "Return a scheduled campaign to draft",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Campaign id returned by create or list."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Clears scheduledAt and sets status back to draft. No body."
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/pause": {
+      "post": {
+        "operationId": "CampaignsController_pause",
+        "summary": "Pause a sending campaign",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Campaign id returned by create or list."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Stops taking new recipients from the queue. No body. Resume continues the same snapshot."
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/resume": {
+      "post": {
+        "operationId": "CampaignsController_resume",
+        "summary": "Resume a paused campaign",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Campaign id returned by create or list."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Continues the same snapshot. No body. The daily cap is still the channel tier."
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/complete": {
+      "post": {
+        "operationId": "CampaignsController_complete",
+        "summary": "Complete a campaign",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Campaign id returned by create or list."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Marks a sending or paused campaign completed and drops recipients that were not sent. No body."
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/test": {
+      "post": {
+        "operationId": "CampaignsController_test",
+        "summary": "Send one test",
+        "description": "Sends the draft content to one recipient and does not change campaign status or analytics. Provide exactly one of phone (E.164) or bsuid (provider format). A provider rejection is an error, not an accepted send. conversationId is the Inbox dialog. messageId and providerMessageId are the same provider message id, or null when the provider accepted the send without an id.",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Campaign id returned by create or list."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CampaignTestSendDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/campaigns/{campaignId}": {
+      "get": {
+        "operationId": "CampaignsController_get",
+        "summary": "Get a campaign",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Campaign id returned by create or list."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "campaignId is the id from create. dailyLimit is the channel tier for a rolling 24 hours. It is not a value you set. scheduledAt is the future send time, or null."
+      },
+      "patch": {
+        "operationId": "CampaignsController_update",
+        "summary": "Update a draft campaign",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Campaign id returned by create or list."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCampaignDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Only a draft can be changed. Send at least one of name, channelId, segmentId, or content. content follows the same template and text rules as create."
+      }
+    }
+  },
+  "info": {
+    "title": "1MSG Campaigns API",
+    "description": "Campaigns API is an HTTP API for 1MSG campaigns. Your code builds a segment of contacts, creates a campaign draft, checks it with a preview and a test send, and then sends it now or at a set time. While a campaign runs, you can pause, resume, or complete it, and read its analytics. Campaigns API is in beta.\n\nThe two APIs split the work. The [WhatsApp Business API](https://docs.1msg.io/) sends and receives single messages. Campaigns API sends one message to a whole segment. A template goes out with `params`, the same way as `sendTemplate`. Free text reaches only people whose 24-hour window is open. The daily template limit comes from the tier of the channel's phone number.\n\n## Beta limits\n\n- A segment holds up to 500 people. The limit applies when you add members, replace the member list, and send. A send whose snapshot is larger is rejected.\n- A segment that a completed or failed campaign uses cannot be deleted.\n\n## API key\n\nSign in at [platform.1msg.io](https://platform.1msg.io). Open Settings → Developer → API Settings, generate a key with the Campaigns scope, and copy it. The full key is shown once.\n\nSend it on every request:\n\n```\nAuthorization: Bearer 1msg_live_••••••••\n```\n\nThe key belongs to a user and has that user's permissions. It sees the same channels, and every action is made on that user's behalf.",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [
+    {
+      "name": "Segments",
+      "description": "Create a segment, then add people. Each member needs a name and a phone in E.164 or a BSUID."
+    },
+    {
+      "name": "Campaigns",
+      "description": "Create a draft, set the template or text, preview, then send or schedule. The daily template cap is the channel tier, not a field on the campaign."
+    },
+    {
+      "name": "Analytics",
+      "description": "Read the send snapshot: who was reached, what they replied, and why a send failed. conversationId is the Inbox dialog. providerConversationId is the provider chat id. messageId and providerMessageId are the same provider message id."
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://api.1msg.io",
+      "description": "Production"
+    },
+    {
+      "url": "https://api.stage.1msg.io",
+      "description": "Staging"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "API key",
+        "type": "http",
+        "description": "Key issued in Settings → Developer → API key. Inbox methods need the Inbox scope. Campaigns methods need the Campaigns scope."
+      }
+    },
+    "schemas": {
+      "CreateCampaignSegmentDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Segment name, up to 200 characters.",
+            "example": "April buyers"
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional note, up to 2000 characters."
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "AddCampaignSegmentMembersDto": {
+        "type": "object",
+        "properties": {
+          "members": {
+            "description": "Non-empty list. Each item needs name and a phone or a BSUID. A duplicate phone or BSUID in the segment is rejected. The segment cannot exceed 500 members.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignSegmentMemberInputDto"
+            }
+          }
+        },
+        "required": [
+          "members"
+        ]
+      },
+      "ReplaceCampaignSegmentMembersDto": {
+        "type": "object",
+        "properties": {
+          "members": {
+            "description": "Replaces every current member. Same name, phone, and bsuid rules as when adding members. An empty list clears the segment. The new list cannot exceed 500 members.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignSegmentMemberInputDto"
+            }
+          }
+        },
+        "required": [
+          "members"
+        ]
+      },
+      "RemoveCampaignSegmentMembersDto": {
+        "type": "object",
+        "properties": {
+          "memberIds": {
+            "description": "Member ids from the member list. Other members stay.",
+            "example": [
+              "mem_1"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "memberIds"
+        ]
+      },
+      "PatchCampaignSegmentMemberDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "New name, up to 200 characters."
+          },
+          "phone": {
+            "type": "string",
+            "description": "E.164 phone, for example +15551234567. After the update the member still needs a phone or a BSUID."
+          },
+          "bsuid": {
+            "type": "string",
+            "description": "Provider BSUID, for example ab.abc123xyz. A trailing @lid is stored without it."
+          }
+        }
+      },
+      "UpdateCampaignSegmentDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "New name, up to 200 characters. Send only the fields that change."
+          },
+          "description": {
+            "type": "string",
+            "description": "New note, up to 2000 characters."
+          }
+        }
+      },
+      "CreateCampaignDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Campaign title shown in the list.",
+            "example": "Spring promo"
+          },
+          "channelId": {
+            "type": "string",
+            "description": "Id of the channel that sends. The key must be allowed to use this channel."
+          },
+          "segmentId": {
+            "type": "string",
+            "description": "Segment id from POST /campaigns/segments. Members are copied when you send."
+          },
+          "content": {
+            "description": "template or text. For a template set templateName, language, and params.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CampaignContentDto"
+              }
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft"
+            ],
+            "description": "Only draft is accepted. Omit to store draft."
+          }
+        },
+        "required": [
+          "name",
+          "channelId",
+          "segmentId",
+          "content"
+        ]
+      },
+      "SendCampaignDto": {
+        "type": "object",
+        "properties": {
+          "scheduledAt": {
+            "type": "string",
+            "nullable": true,
+            "description": "Future ISO-8601 instant with a Z or a numeric offset, for example 2026-11-01T09:00:00Z. Omit or null to start now. There is no per-day field. Template sends use the channel tier."
+          }
+        }
+      },
+      "UpdateCampaignScheduleDto": {
+        "type": "object",
+        "properties": {
+          "scheduledAt": {
+            "type": "string",
+            "description": "New future ISO-8601 instant with a Z or a numeric offset, for example 2026-11-02T09:00:00Z. Required. Only a campaign that is already scheduled can be moved."
+          }
+        },
+        "required": [
+          "scheduledAt"
+        ]
+      },
+      "CampaignTestSendDto": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "description": "E.164 phone, for example +15551234567. Send exactly one of phone or bsuid. Does not change campaign status or analytics."
+          },
+          "bsuid": {
+            "type": "string",
+            "description": "Provider BSUID, for example ab.abc123xyz. A trailing @lid is accepted. Send exactly one of phone or bsuid."
+          }
+        }
+      },
+      "UpdateCampaignDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "New title. Send at least one of name, channelId, segmentId, or content. Only a draft can be changed."
+          },
+          "channelId": {
+            "type": "string",
+            "description": "Another channel this account owns."
+          },
+          "segmentId": {
+            "type": "string",
+            "description": "Another segment id. The new members are copied when you send."
+          },
+          "content": {
+            "description": "Replaces the whole content object. Same template and text rules as create.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CampaignContentDto"
+              }
+            ]
+          }
+        }
+      },
+      "CampaignSegmentMemberInputDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Person name, up to 200 characters.",
+            "example": "Ana"
+          },
+          "phone": {
+            "type": "string",
+            "description": "E.164 phone, for example +15551234567. Required when bsuid is omitted."
+          },
+          "bsuid": {
+            "type": "string",
+            "description": "Provider BSUID, for example ab.abc123xyz. A trailing @lid is accepted and stored without it. Phone or BSUID is required."
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "CampaignContentDto": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "template",
+              "text"
+            ],
+            "description": "template sends a WABA template. text sends session text and only reaches people inside the 24-hour window."
+          },
+          "templateName": {
+            "type": "string",
+            "description": "WABA template name. Required when mode is template."
+          },
+          "language": {
+            "type": "string",
+            "description": "Template language code, for example en or pt_BR. Required when mode is template."
+          },
+          "variables": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "example": {
+              "1": "Ana"
+            },
+            "description": "Flat body placeholders only, for example { \"1\": \"Ana\" }. A numeric key fills the body. Header, buttons, and carousel are not filled here — use params. Ignored when params is set."
+          },
+          "params": {
+            "type": "array",
+            "description": "Preferred template fill. The same array sendTemplate accepts. Each item is a component with type (header, body, button, carousel, or a newer WABA type). The array is forwarded as-is, including a header image link. When this is set, variables is ignored. An empty array is valid.",
+            "example": [
+              {
+                "type": "header",
+                "parameters": [
+                  {
+                    "type": "image",
+                    "image": {
+                      "link": "https://example.com/image.jpg"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "body",
+                "parameters": [
+                  {
+                    "type": "text",
+                    "text": "Ana"
+                  }
+                ]
+              }
+            ]
+          },
+          "messageSendTtlSeconds": {
+            "type": "number",
+            "example": 86400,
+            "description": "How many seconds WhatsApp keeps trying to deliver this template. Same field as sendTemplate messageSendTtlSeconds. It sits beside params, not inside the params array. Omit it to use the template default."
+          },
+          "text": {
+            "type": "string",
+            "description": "Session text. Required when mode is text. Not counted against the channel tier."
+          }
+        },
+        "required": [
+          "mode"
+        ]
+      }
+    }
+  }
+}
