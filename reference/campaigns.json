@@ -18,7 +18,14 @@
         },
         "responses": {
           "201": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentCreatedDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -56,7 +63,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentPageDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -105,7 +119,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentMemberPageDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -145,7 +166,14 @@
         },
         "responses": {
           "201": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentMemberBatchDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -184,7 +212,14 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentMemberBatchDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -222,7 +257,14 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentMembersRemovedDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -272,7 +314,14 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentMemberDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -303,7 +352,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -342,7 +398,14 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -403,7 +466,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignAnalyticsSummaryDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -514,7 +584,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignAnalyticsRecipientPageDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -620,7 +697,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignAnalyticsRepliesDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -673,7 +757,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignAnalyticsErrorsDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -704,7 +795,14 @@
         },
         "responses": {
           "201": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -753,7 +851,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignPageDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -783,7 +888,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignPreviewDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -825,7 +937,14 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -865,7 +984,14 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -896,7 +1022,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -927,7 +1060,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -958,7 +1098,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -989,7 +1136,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1031,7 +1185,14 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignTestSendResponseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1061,7 +1222,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1100,7 +1268,14 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1171,6 +1346,83 @@
           "name"
         ]
       },
+      "CampaignSegmentCreatedDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Segment id.",
+            "example": "cm3segment01"
+          },
+          "name": {
+            "type": "string",
+            "description": "Segment name, up to 200 characters.",
+            "example": "April buyers"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "Optional note, up to 2000 characters, or null when none was stored.",
+            "example": "People who bought in April"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the segment was created.",
+            "example": "2026-11-01T09:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "createdAt"
+        ]
+      },
+      "CampaignSegmentPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "description": "Segments on this page, newest first.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignSegmentListItemDto"
+            }
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Cursor for the next page, or null on the last page.",
+            "example": null
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
+        ]
+      },
+      "CampaignSegmentMemberPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "description": "Members on this page, newest first.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignSegmentMemberDto"
+            }
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Cursor for the next page, or null on the last page.",
+            "example": null
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
+        ]
+      },
       "AddCampaignSegmentMembersDto": {
         "type": "object",
         "properties": {
@@ -1184,6 +1436,21 @@
         },
         "required": [
           "members"
+        ]
+      },
+      "CampaignSegmentMemberBatchDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "description": "Members written by this request.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignSegmentMemberDto"
+            }
+          }
+        },
+        "required": [
+          "items"
         ]
       },
       "ReplaceCampaignSegmentMembersDto": {
@@ -1219,6 +1486,19 @@
           "memberIds"
         ]
       },
+      "CampaignSegmentMembersRemovedDto": {
+        "type": "object",
+        "properties": {
+          "removed": {
+            "type": "number",
+            "description": "How many members were deleted.",
+            "example": 2
+          }
+        },
+        "required": [
+          "removed"
+        ]
+      },
       "PatchCampaignSegmentMemberDto": {
         "type": "object",
         "properties": {
@@ -1236,6 +1516,84 @@
           }
         }
       },
+      "CampaignSegmentMemberDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Member id.",
+            "example": "cm3member01"
+          },
+          "name": {
+            "type": "string",
+            "description": "Member name.",
+            "example": "Ana"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "description": "Phone in E.164, or null when the member is stored by BSUID.",
+            "example": "+15551234567"
+          },
+          "bsuid": {
+            "type": "string",
+            "nullable": true,
+            "description": "Provider BSUID without a trailing @lid, or null when the member is stored by phone.",
+            "example": "ab.abc123xyz"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "phone",
+          "bsuid"
+        ]
+      },
+      "CampaignSegmentDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Segment id.",
+            "example": "cm3segment01"
+          },
+          "name": {
+            "type": "string",
+            "description": "Segment name, up to 200 characters.",
+            "example": "April buyers"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "Optional note, up to 2000 characters, or null when none was stored."
+          },
+          "memberCount": {
+            "type": "number",
+            "description": "How many people are in the segment.",
+            "example": 12
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the segment was created.",
+            "example": "2026-11-01T09:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the segment was last updated.",
+            "example": "2026-11-01T09:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "memberCount",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
       "UpdateCampaignSegmentDto": {
         "type": "object",
         "properties": {
@@ -1248,6 +1606,231 @@
             "description": "New note, up to 2000 characters."
           }
         }
+      },
+      "CampaignAnalyticsSummaryDto": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "Campaign id.",
+            "example": "cm3campaign01"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "sending",
+              "pause",
+              "completed",
+              "failed",
+              "scheduled"
+            ],
+            "description": "Campaign status."
+          },
+          "recipients": {
+            "type": "number",
+            "description": "Recipients in the send snapshot.",
+            "example": 12
+          },
+          "sent": {
+            "type": "number",
+            "description": "Recipients whose status is sent, delivered, or read.",
+            "example": 10
+          },
+          "delivered": {
+            "type": "number",
+            "description": "Recipients whose status is delivered or read.",
+            "example": 8
+          },
+          "read": {
+            "type": "number",
+            "description": "Recipients whose status is read.",
+            "example": 4
+          },
+          "failed": {
+            "type": "number",
+            "description": "Recipients whose status is failed.",
+            "example": 1
+          },
+          "skipped": {
+            "type": "number",
+            "description": "Recipients whose status is skipped.",
+            "example": 1
+          },
+          "cancelled": {
+            "type": "number",
+            "description": "Recipients removed from the queue before send.",
+            "example": 0
+          },
+          "queued": {
+            "type": "number",
+            "description": "Recipients whose status is queued or leasing.",
+            "example": 0
+          },
+          "replied": {
+            "type": "number",
+            "description": "Recipients who sent at least one reply.",
+            "example": 2
+          },
+          "textReplies": {
+            "type": "number",
+            "description": "Recipients who sent at least one text reply.",
+            "example": 1
+          },
+          "clicks": {
+            "type": "number",
+            "description": "Button replies in the snapshot.",
+            "example": 3
+          },
+          "uniqueClicks": {
+            "type": "number",
+            "description": "Recipients who clicked at least one button.",
+            "example": 2
+          },
+          "rates": {
+            "description": "Shares of recipients, from 0 to 1, rounded to 4 decimal places. Each rate is 0 when there are no recipients.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CampaignAnalyticsRatesDto"
+              }
+            ]
+          },
+          "buttons": {
+            "description": "Button clicks grouped by button id.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignAnalyticsButtonDto"
+            }
+          },
+          "queuedRemaining": {
+            "type": "number",
+            "description": "Recipients still waiting to be sent.",
+            "example": 0
+          },
+          "sentThisPortion": {
+            "type": "number",
+            "description": "Template sends already started in the current tier window.",
+            "example": 0
+          },
+          "dailyLimit": {
+            "type": "number",
+            "nullable": true,
+            "description": "How many template sends this channel may start in a rolling 24 hours, or null when the tier is unknown or unlimited.",
+            "example": 1000
+          },
+          "nextPortionAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "When the next template portion can start, or null when a portion is not waiting.",
+            "example": null
+          }
+        },
+        "required": [
+          "campaignId",
+          "status",
+          "recipients",
+          "sent",
+          "delivered",
+          "read",
+          "failed",
+          "skipped",
+          "cancelled",
+          "queued",
+          "replied",
+          "textReplies",
+          "clicks",
+          "uniqueClicks",
+          "rates",
+          "buttons",
+          "queuedRemaining",
+          "sentThisPortion",
+          "dailyLimit",
+          "nextPortionAt"
+        ]
+      },
+      "CampaignAnalyticsRecipientPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "description": "Recipients on this page. When the fields query is set, each item contains only the named keys.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignAnalyticsRecipientDto"
+            }
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Cursor for the next page, or null on the last page.",
+            "example": null
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
+        ]
+      },
+      "CampaignAnalyticsRepliesDto": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "Campaign id.",
+            "example": "cm3campaign01"
+          },
+          "totalReplies": {
+            "type": "number",
+            "description": "Reply count for the whole campaign, not just this page.",
+            "example": 4
+          },
+          "uniqueRepliers": {
+            "type": "number",
+            "description": "How many recipients replied at least once in the whole campaign.",
+            "example": 3
+          },
+          "items": {
+            "description": "Replies on this page, oldest first.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignAnalyticsReplyItemDto"
+            }
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Cursor for the next page, or null on the last page.",
+            "example": null
+          }
+        },
+        "required": [
+          "campaignId",
+          "totalReplies",
+          "uniqueRepliers",
+          "items",
+          "nextCursor"
+        ]
+      },
+      "CampaignAnalyticsErrorsDto": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "Campaign id.",
+            "example": "cm3campaign01"
+          },
+          "items": {
+            "description": "Errors grouped by reason, code, title, and type.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignAnalyticsErrorGroupDto"
+            }
+          }
+        },
+        "required": [
+          "campaignId",
+          "items"
+        ]
       },
       "CreateCampaignDto": {
         "type": "object",
@@ -1288,6 +1871,205 @@
           "content"
         ]
       },
+      "CampaignResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Campaign id.",
+            "example": "cm3campaign01"
+          },
+          "name": {
+            "type": "string",
+            "description": "Campaign title.",
+            "example": "April restock"
+          },
+          "channelId": {
+            "type": "string",
+            "description": "Channel that sends the campaign.",
+            "example": "cm3channel01"
+          },
+          "segmentId": {
+            "type": "string",
+            "description": "Segment used as the audience.",
+            "example": "cm3segment01"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "sending",
+              "pause",
+              "completed",
+              "failed",
+              "scheduled"
+            ],
+            "description": "Campaign status."
+          },
+          "content": {
+            "description": "Template or session text stored on the campaign.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CampaignTextContentResponseDto"
+              },
+              {
+                "$ref": "#/components/schemas/CampaignTemplateParamsContentResponseDto"
+              },
+              {
+                "$ref": "#/components/schemas/CampaignTemplateVariablesContentResponseDto"
+              }
+            ]
+          },
+          "sentAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "When sending started, or null if it has not started.",
+            "example": "2026-11-01T09:00:00.000Z"
+          },
+          "scheduledAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "UTC instant for a scheduled send, or null.",
+            "example": "2026-11-01T09:00:00.000Z"
+          },
+          "queuedRemaining": {
+            "type": "number",
+            "description": "Recipients still waiting to be sent.",
+            "example": 0
+          },
+          "sentThisPortion": {
+            "type": "number",
+            "description": "Template sends already started in the current tier window.",
+            "example": 0
+          },
+          "dailyLimit": {
+            "type": "number",
+            "nullable": true,
+            "description": "How many template sends this channel may start in a rolling 24 hours. Taken from the channel tier (waba_info.current_limit), not from a campaign setting. Null when the tier is unknown or unlimited. Session text is not counted.",
+            "example": 1000
+          },
+          "nextPortionAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "When the next template portion can start after the tier window is full. Null when a portion is not waiting.",
+            "example": null
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the campaign was created.",
+            "example": "2026-11-01T09:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the campaign was last updated.",
+            "example": "2026-11-01T09:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "channelId",
+          "segmentId",
+          "status",
+          "content",
+          "sentAt",
+          "scheduledAt",
+          "queuedRemaining",
+          "sentThisPortion",
+          "dailyLimit",
+          "nextPortionAt",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CampaignPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "description": "Campaigns on this page, newest first.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignResponseDto"
+            }
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Cursor for the next page, or null on the last page.",
+            "example": null
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
+        ]
+      },
+      "CampaignPreviewDto": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "Campaign id.",
+            "example": "cm3campaign01"
+          },
+          "segmentId": {
+            "type": "string",
+            "description": "Segment id used as the audience.",
+            "example": "cm3segment01"
+          },
+          "contentMode": {
+            "type": "string",
+            "enum": [
+              "template",
+              "text"
+            ],
+            "description": "Whether the campaign sends a template or session text."
+          },
+          "recipientCount": {
+            "type": "number",
+            "description": "Members in the segment.",
+            "example": 12
+          },
+          "closedWindowCount": {
+            "type": "number",
+            "description": "Members outside the 24-hour window.",
+            "example": 3
+          },
+          "tierDailyLimit": {
+            "type": "number",
+            "nullable": true,
+            "description": "How many template sends this channel may start in a rolling 24 hours. Taken from the channel tier, not from a field you set. Null when the tier is unknown or unlimited.",
+            "example": 1000
+          },
+          "exceedsTierDailyLimit": {
+            "type": "boolean",
+            "description": "True when a template send would pass the channel tier.",
+            "example": false
+          },
+          "warnings": {
+            "description": "Warnings for this preview. Nothing is sent.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignPreviewWarningDto"
+            }
+          }
+        },
+        "required": [
+          "campaignId",
+          "segmentId",
+          "contentMode",
+          "recipientCount",
+          "closedWindowCount",
+          "tierDailyLimit",
+          "exceedsTierDailyLimit",
+          "warnings"
+        ]
+      },
       "SendCampaignDto": {
         "type": "object",
         "properties": {
@@ -1323,6 +2105,75 @@
           }
         }
       },
+      "CampaignTestSendResponseDto": {
+        "type": "object",
+        "properties": {
+          "accepted": {
+            "type": "boolean",
+            "description": "Always true when the test was accepted.",
+            "example": true
+          },
+          "campaignId": {
+            "type": "string",
+            "description": "Campaign id.",
+            "example": "cm3campaign01"
+          },
+          "campaignStatus": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "sending",
+              "pause",
+              "completed",
+              "failed",
+              "scheduled"
+            ],
+            "description": "Campaign status after the test. A test does not change it."
+          },
+          "excludedFromAnalytics": {
+            "type": "boolean",
+            "description": "Always true. This send is left out of analytics.",
+            "example": true
+          },
+          "conversationId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Inbox conversation id, or null when the provider did not return one.",
+            "example": "cm3dialog01"
+          },
+          "messageId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Provider message id, or null when the provider accepted the send without an id.",
+            "example": "wamid.HBgM"
+          },
+          "providerMessageId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Same value as messageId.",
+            "example": "wamid.HBgM"
+          },
+          "phone": {
+            "type": "string",
+            "description": "E.164 phone. Present when the test was sent to a phone. Exactly one of phone or bsuid is returned.",
+            "example": "+15551234567"
+          },
+          "bsuid": {
+            "type": "string",
+            "description": "Provider BSUID. Present when the test was sent to a BSUID. Exactly one of phone or bsuid is returned.",
+            "example": "ab.abc123xyz"
+          }
+        },
+        "required": [
+          "accepted",
+          "campaignId",
+          "campaignStatus",
+          "excludedFromAnalytics",
+          "conversationId",
+          "messageId",
+          "providerMessageId"
+        ]
+      },
       "UpdateCampaignDto": {
         "type": "object",
         "properties": {
@@ -1348,6 +2199,37 @@
           }
         }
       },
+      "CampaignSegmentListItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Segment id.",
+            "example": "cm3segment01"
+          },
+          "name": {
+            "type": "string",
+            "description": "Segment name, up to 200 characters.",
+            "example": "April buyers"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "Optional note, up to 2000 characters, or null when none was stored."
+          },
+          "memberCount": {
+            "type": "number",
+            "description": "How many people are in the segment.",
+            "example": 12
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "memberCount"
+        ]
+      },
       "CampaignSegmentMemberInputDto": {
         "type": "object",
         "properties": {
@@ -1367,6 +2249,349 @@
         },
         "required": [
           "name"
+        ]
+      },
+      "CampaignAnalyticsRatesDto": {
+        "type": "object",
+        "properties": {
+          "sent": {
+            "type": "number",
+            "description": "Share of recipients counted as sent, delivered, or read.",
+            "example": 0.5
+          },
+          "delivery": {
+            "type": "number",
+            "description": "Share of recipients counted as delivered or read.",
+            "example": 0.4
+          },
+          "read": {
+            "type": "number",
+            "description": "Share of recipients counted as read.",
+            "example": 0.25
+          },
+          "reply": {
+            "type": "number",
+            "description": "Share of recipients who replied.",
+            "example": 0.1
+          },
+          "click": {
+            "type": "number",
+            "description": "Share of recipients who clicked a button.",
+            "example": 0.05
+          },
+          "failed": {
+            "type": "number",
+            "description": "Share of recipients counted as failed.",
+            "example": 0
+          }
+        },
+        "required": [
+          "sent",
+          "delivery",
+          "read",
+          "reply",
+          "click",
+          "failed"
+        ]
+      },
+      "CampaignAnalyticsButtonDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Button id from the template reply.",
+            "example": "shop"
+          },
+          "title": {
+            "type": "string",
+            "description": "Button title, or the button id when no title was stored.",
+            "example": "Shop"
+          },
+          "clicks": {
+            "type": "number",
+            "description": "How many times this button was clicked.",
+            "example": 4
+          },
+          "uniqueClicks": {
+            "type": "number",
+            "description": "How many recipients clicked this button.",
+            "example": 3
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "clicks",
+          "uniqueClicks"
+        ]
+      },
+      "CampaignAnalyticsRecipientDto": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "description": "Phone in E.164, or null when the recipient is stored by BSUID.",
+            "example": "+15551234567"
+          },
+          "bsuid": {
+            "type": "string",
+            "nullable": true,
+            "description": "Provider BSUID, or null when the recipient is stored by phone.",
+            "example": "ab.abc123xyz"
+          },
+          "name": {
+            "type": "string",
+            "description": "Recipient name.",
+            "example": "Ana"
+          },
+          "conversationId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Inbox conversation id, or null when none is linked.",
+            "example": "cm3dialog01"
+          },
+          "providerConversationId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Provider chat id: phone digits plus @c.us, otherwise the BSUID plus @lid, or null.",
+            "example": "15551234567@c.us"
+          },
+          "messageId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Provider message id, or null before the provider accepts the send.",
+            "example": "wamid.HBgM"
+          },
+          "providerMessageId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Same value as messageId.",
+            "example": "wamid.HBgM"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "queued",
+              "leasing",
+              "sent",
+              "delivered",
+              "read",
+              "failed",
+              "skipped",
+              "cancelled"
+            ],
+            "description": "Snapshot delivery status."
+          },
+          "sentAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "When the message was sent, or null.",
+            "example": "2026-11-01T09:00:00.000Z"
+          },
+          "deliveredAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "When the message was delivered, or null.",
+            "example": "2026-11-01T09:00:00.000Z"
+          },
+          "readAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "When the message was read, or null.",
+            "example": "2026-11-01T09:00:00.000Z"
+          },
+          "replies": {
+            "description": "Replies from this recipient, oldest first.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignAnalyticsRecipientReplyDto"
+            }
+          },
+          "error": {
+            "type": "object",
+            "nullable": true,
+            "description": "Error details, or null when the recipient has no error code, title, or failed time. When present, code, title, and failedAt are always included.",
+            "properties": {
+              "code": {
+                "type": "string",
+                "nullable": true,
+                "description": "Provider or skip error code, or null when none was stored."
+              },
+              "title": {
+                "type": "string",
+                "nullable": true,
+                "description": "Error title, or null when none was stored."
+              },
+              "failedAt": {
+                "type": "string",
+                "nullable": true,
+                "format": "date-time",
+                "description": "When the send failed or was skipped, or null when no time was stored.",
+                "example": "2026-11-01T09:00:00.000Z"
+              }
+            }
+          }
+        },
+        "required": [
+          "phone",
+          "bsuid",
+          "name",
+          "conversationId",
+          "providerConversationId",
+          "messageId",
+          "providerMessageId",
+          "status",
+          "sentAt",
+          "deliveredAt",
+          "readAt",
+          "replies",
+          "error"
+        ]
+      },
+      "CampaignAnalyticsReplyItemDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "button",
+              "text"
+            ],
+            "description": "button for a template quick reply, or text inside the 24-hour window."
+          },
+          "buttonId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Button id, or null for a text reply.",
+            "example": "shop"
+          },
+          "text": {
+            "type": "string",
+            "nullable": true,
+            "description": "Reply text or button title, or null when none was stored."
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "description": "Phone in E.164, or null when the recipient is stored by BSUID.",
+            "example": "+15551234567"
+          },
+          "bsuid": {
+            "type": "string",
+            "nullable": true,
+            "description": "Provider BSUID, or null when the recipient is stored by phone.",
+            "example": "ab.abc123xyz"
+          },
+          "name": {
+            "type": "string",
+            "description": "Recipient name.",
+            "example": "Ana"
+          },
+          "conversationId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Inbox conversation id, or null when none is linked.",
+            "example": "cm3dialog01"
+          },
+          "providerConversationId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Provider chat id: phone digits plus @c.us, otherwise the BSUID plus @lid, or null.",
+            "example": "15551234567@c.us"
+          },
+          "receivedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the reply was received.",
+            "example": "2026-11-01T09:00:00.000Z"
+          },
+          "messageId": {
+            "type": "string",
+            "description": "Provider message id of the reply.",
+            "example": "wamid.HBgM"
+          },
+          "providerMessageId": {
+            "type": "string",
+            "description": "Same value as messageId.",
+            "example": "wamid.HBgM"
+          }
+        },
+        "required": [
+          "type",
+          "buttonId",
+          "text",
+          "phone",
+          "bsuid",
+          "name",
+          "conversationId",
+          "providerConversationId",
+          "receivedAt",
+          "messageId",
+          "providerMessageId"
+        ]
+      },
+      "CampaignAnalyticsErrorGroupDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "description": "Stored error reason. Groups without a reason are omitted.",
+            "example": "closed_window"
+          },
+          "code": {
+            "type": "string",
+            "nullable": true,
+            "description": "Provider or skip error code, or null when none was stored."
+          },
+          "title": {
+            "type": "string",
+            "nullable": true,
+            "description": "Error title, or null when none was stored."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "failed",
+              "skipped"
+            ],
+            "description": "failed is a provider failure. skipped was not sent."
+          },
+          "count": {
+            "type": "number",
+            "description": "Recipients in this group.",
+            "example": 2
+          },
+          "share": {
+            "type": "number",
+            "description": "Share of all campaign recipients in this group, from 0 to 1, rounded to 4 decimal places.",
+            "example": 0.1667
+          },
+          "recipients": {
+            "description": "Recipients in this group, up to recipientsLimit.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignAnalyticsErrorRecipientDto"
+            }
+          },
+          "hasMore": {
+            "type": "boolean",
+            "description": "True when more recipients share this reason than recipientsLimit returned.",
+            "example": false
+          }
+        },
+        "required": [
+          "reason",
+          "code",
+          "title",
+          "type",
+          "count",
+          "share",
+          "recipients",
+          "hasMore"
         ]
       },
       "CampaignContentDto": {
@@ -1436,6 +2661,254 @@
         },
         "required": [
           "mode"
+        ]
+      },
+      "CampaignTextContentResponseDto": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "text"
+            ],
+            "example": "text",
+            "description": "Session text sent only inside the 24-hour window."
+          },
+          "text": {
+            "type": "string",
+            "description": "Session text body. Empty when none was stored.",
+            "example": "Hello"
+          }
+        },
+        "required": [
+          "mode",
+          "text"
+        ]
+      },
+      "CampaignTemplateParamsContentResponseDto": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "template"
+            ],
+            "example": "template",
+            "description": "Approved WABA template."
+          },
+          "templateName": {
+            "type": "string",
+            "description": "WABA template name. Empty when none was stored.",
+            "example": "order_update"
+          },
+          "language": {
+            "type": "string",
+            "description": "Template language code. Empty when none was stored.",
+            "example": "en"
+          },
+          "params": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              ]
+            },
+            "description": "Template params stored for sendTemplate. Each item is a string or an object."
+          },
+          "messageSendTtlSeconds": {
+            "type": "number",
+            "example": 86400,
+            "description": "Seconds WhatsApp keeps trying to deliver this template. Omitted when the template default is used."
+          }
+        },
+        "required": [
+          "mode",
+          "templateName",
+          "language",
+          "params"
+        ]
+      },
+      "CampaignTemplateVariablesContentResponseDto": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "template"
+            ],
+            "example": "template",
+            "description": "Approved WABA template."
+          },
+          "templateName": {
+            "type": "string",
+            "description": "WABA template name. Empty when none was stored.",
+            "example": "order_update"
+          },
+          "language": {
+            "type": "string",
+            "description": "Template language code. Empty when none was stored.",
+            "example": "en"
+          },
+          "variables": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "example": {
+              "1": "Ana"
+            },
+            "description": "Flat template placeholders. Present when params were not stored."
+          },
+          "messageSendTtlSeconds": {
+            "type": "number",
+            "example": 86400,
+            "description": "Seconds WhatsApp keeps trying to deliver this template. Omitted when the template default is used."
+          }
+        },
+        "required": [
+          "mode",
+          "templateName",
+          "language",
+          "variables"
+        ]
+      },
+      "CampaignPreviewWarningDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "closed_window_skipped",
+              "session_consumes_free_window",
+              "exceeds_tier_daily_limit",
+              "recipient_cap_exceeded"
+            ],
+            "description": "Warning code."
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable warning.",
+            "example": "Closed-window recipients will be skipped."
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ]
+      },
+      "CampaignAnalyticsRecipientReplyDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "button",
+              "text"
+            ],
+            "description": "button for a template quick reply, or text inside the 24-hour window."
+          },
+          "buttonId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Button id, or null for a text reply.",
+            "example": "shop"
+          },
+          "text": {
+            "type": "string",
+            "nullable": true,
+            "description": "Reply text or button title, or null when none was stored."
+          },
+          "receivedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the reply was received.",
+            "example": "2026-11-01T09:00:00.000Z"
+          },
+          "messageId": {
+            "type": "string",
+            "description": "Provider message id of the reply.",
+            "example": "wamid.HBgM"
+          },
+          "providerMessageId": {
+            "type": "string",
+            "description": "Same value as messageId.",
+            "example": "wamid.HBgM"
+          }
+        },
+        "required": [
+          "type",
+          "buttonId",
+          "text",
+          "receivedAt",
+          "messageId",
+          "providerMessageId"
+        ]
+      },
+      "CampaignAnalyticsErrorRecipientDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Recipient id.",
+            "example": "cm3recipient01"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "description": "Phone in E.164, or null when the recipient is stored by BSUID.",
+            "example": "+15551234567"
+          },
+          "bsuid": {
+            "type": "string",
+            "nullable": true,
+            "description": "Provider BSUID, or null when the recipient is stored by phone.",
+            "example": "ab.abc123xyz"
+          },
+          "name": {
+            "type": "string",
+            "description": "Recipient name.",
+            "example": "Ana"
+          },
+          "conversationId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Inbox conversation id, or null when none is linked.",
+            "example": "cm3dialog01"
+          },
+          "messageId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Provider message id, or null when the send did not get one.",
+            "example": "wamid.HBgM"
+          },
+          "providerConversationId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Provider chat id: phone digits plus @c.us, otherwise the BSUID plus @lid, or null.",
+            "example": "15551234567@c.us"
+          },
+          "providerMessageId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Same value as messageId.",
+            "example": "wamid.HBgM"
+          }
+        },
+        "required": [
+          "id",
+          "phone",
+          "bsuid",
+          "name",
+          "conversationId",
+          "messageId",
+          "providerConversationId",
+          "providerMessageId"
         ]
       }
     }
