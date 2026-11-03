@@ -1,0 +1,51 @@
+name: Rollout
+
+# Tells the site about a merge. The site then takes the new version from GitHub itself; the run
+# goes red if it does not start serving that commit. Secrets are never available to pull requests
+# here because the workflow runs on push only.
+on:
+  push:
+    branches:
+      - main
+
+# A newer merge supersedes this one: the site would serve the newer commit, not this run's.
+concurrency:
+  group: rollout
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  rollout:
+    name: ${{ matrix.name }} serves this commit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Stage
+            site: https://site-dev.1msg.io
+            token: DOCS_REVALIDATE_TOKEN_STAGE
+    steps:
+      - name: Signal the site and wait for the commit
+        env:
+          SITE: ${{ matrix.site }}
+          TOKEN: ${{ secrets[matrix.token] }}
+          ATTEMPTS: 18
+          PAUSE: 10
+        run: |
+          endpoint="$SITE/api/docs-revalidate"
+          for attempt in $(seq 1 "$ATTEMPTS"); do
+            # Signal on every attempt: right after a merge GitHub may still answer with the old
+            # commit, and the site would cache that answer until the next signal.
+            curl -sS --max-time 30 -o /dev/null -w "POST %{http_code}\n" -X POST \
+              -H "Authorization: Bearer $TOKEN" "$endpoint" || true
+            served=$(curl -sS --max-time 60 -H "Authorization: Bearer $TOKEN" "$endpoint" \
+              | jq -r '.sha // empty' 2>/dev/null || true)
+            echo "attempt $attempt: site serves ${served:-nothing}, expected $GITHUB_SHA"
+            if [ "$served" = "$GITHUB_SHA" ]; then exit 0; fi
+            sleep "$PAUSE"
+          done
+          echo "::error::$SITE did not start serving $GITHUB_SHA"
+          exit 1
