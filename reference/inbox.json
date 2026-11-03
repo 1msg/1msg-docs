@@ -853,12 +853,12 @@
   ],
   "servers": [
     {
-      "url": "https://api.stage.1msg.io",
-      "description": "Staging"
-    },
-    {
       "url": "https://api.1msg.io",
       "description": "Production"
+    },
+    {
+      "url": "https://api.stage.1msg.io",
+      "description": "Staging"
     }
   ],
   "components": {
