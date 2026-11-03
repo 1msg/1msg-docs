@@ -9,7 +9,7 @@ OpenAPI 3.0 specs of the 1MSG APIs. The site renders them as the API reference:
 | `campaigns.json` | Campaigns API | [1msg.io/docs/reference/campaigns](https://1msg.io/docs/reference/campaigns) |
 | `inbox.json` | Inbox API | [1msg.io/docs/reference/inbox](https://1msg.io/docs/reference/inbox) |
 
-The site picks up a change merged into `main` within about five minutes, the same way as the articles. A new spec needs no change on the site either.
+After a merge into `main`, the Rollout workflow tells the site about the new commit, so the change appears within a few minutes, the same way as the articles. A red Rollout run means the site did not pick it up. A new spec needs no change on the site either.
 
 ## How the site reads the specs
 
