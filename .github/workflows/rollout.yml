@@ -27,6 +27,9 @@ jobs:
           - name: Stage
             site: https://site-dev.1msg.io
             token: DOCS_REVALIDATE_TOKEN_STAGE
+          - name: Production
+            site: https://1msg.io
+            token: DOCS_REVALIDATE_TOKEN_PROD
     steps:
       - name: Signal the site and wait for the commit
         env:
