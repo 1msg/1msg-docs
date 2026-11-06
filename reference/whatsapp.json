@@ -990,7 +990,7 @@
           "Templates"
         ],
         "summary": "Send Template Message",
-        "description": "Send Template Message to a new or existing chat. Only one destination parameter is needed - chatId, phone, or bsuid. In BSUID-centric routing, chatId can be phone@c.us, bsuid@lid, group@g.us, or username@username. The phone field accepts a phone number or BSUID; bsuid can be passed separately.\n\nUse this method for template messages (including Carousel/Catalog templates). If a 24-hour session method (e.g. /sendCarousel) fails because the 24-hour window is closed, send a template via /sendTemplate.\n\nCyrillic characters in file URLs are not supported. Use URL encoding for non-Latin characters.\n\nRequest examples are provided in the payload (requestBody/examples). Available variants:\n- basic template\n- Media Carousel (Cloud API)\n- Catalog Carousel (product cards, Cloud API)\n- Catalog template (catalog button)\n- Coupon Code template (Cloud API)\n- Limited-Time Offer template (Cloud API)\n- WhatsApp Flow template (Cloud API)\n\nOptional MM Lite / TTL fields: `useMMlite`, `messageActivitySharing`, `messageSendTtlSeconds`. Check channel readiness via `GET /mmLiteStatus`.\n\n**Order details (India only):** include a `params` button with `sub_type: order_details` to send an invoice/payment template outside the 24h window. See also `POST /sendOrderDetails`.",
+        "description": "Send Template Message to a new or existing chat. Only one destination parameter is needed - chatId, phone, or bsuid. In BSUID-centric routing, chatId can be phone@c.us, bsuid@lid, group@g.us, or username@username. The phone field accepts a phone number or BSUID; bsuid can be passed separately.\n\nUse this method for template messages (including Carousel/Catalog templates). If a 24-hour session method (e.g. /sendCarousel) fails because the 24-hour window is closed, send a template via /sendTemplate.\n\nCyrillic characters in file URLs are not supported. Use URL encoding for non-Latin characters.\n\nRequest examples are provided in the payload (requestBody/examples). Available variants:\n- basic template\n- Media Carousel (Cloud API)\n- Catalog Carousel (product cards, Cloud API)\n- Catalog template (catalog button)\n- Coupon Code template (Cloud API)\n- Limited-Time Offer template (Cloud API)\n- WhatsApp Flow template (Cloud API)\n\nOptional MM Lite / TTL fields: `useMMlite`, `messageActivitySharing`, `messageSendTtlSeconds`. Check channel readiness via `GET /mmLiteStatus`.\n\n**Order details (India only):** include a `params` button with `sub_type: order_details` to send an invoice/payment template outside the 24h window. See also `POST /sendOrderDetails`.\n\nA `REQUEST_CONTACT_INFO` button (UTILITY or MARKETING only) has no send-time parameters. Do not add a button component for it in `params`, and do not send button text. Create the button with `POST /addTemplate` as `{ \"type\": \"REQUEST_CONTACT_INFO\" }` with no `text`. Inside an open 24-hour window, `POST /sendContactInfo` asks for the number without a template.",
         "operationId": "sendTemplate",
         "responses": {
           "200": {
@@ -1020,7 +1020,7 @@
           "Messaging"
         ],
         "summary": "Send a Message",
-        "description": "Send a message to an existing chat. (Only if the dialogue has an Open Session). The message will be added to the queue for sending and delivered even if the phone is disconnected from the Internet or authorization is not passed.\n\nOnly one destination parameter is needed - chatId, phone, or bsuid. In BSUID-centric routing, chatId can be phone@c.us, bsuid@lid, group@g.us, or username@username. The phone field accepts a phone number or BSUID; bsuid can be passed separately.",
+        "description": "Send a message to an existing chat. (Only if the dialogue has an Open Session). The message will be added to the queue for sending and delivered even if the phone is disconnected from the Internet or authorization is not passed.\n\nOnly one destination parameter is needed - chatId, phone, or bsuid. In BSUID-centric routing, chatId can be phone@c.us, bsuid@lid, group@g.us, or username@username. The phone field accepts a phone number or BSUID; bsuid can be passed separately.\n\nDirect Send is in beta. Meta has not enabled it on every business portfolio, so `category` and `directSend` are a beta option: watch delivery errors before relying on them.\n\nSet `category` to `utility` or `authentication` to send outside the 24-hour window as a Meta Direct Send template instead of the 1MSG marketing auto-template. `authentication` is part of that beta and is not recommended. `directSend.serviceFirst: true` tries a free service message first and uses Direct Send only when Meta rejects it because the window is closed (131047). `directSend.templateName` is only valid with `utility` (`^[a-z0-9_]+$`, max 512). Direct Send text is limited to 1024 characters. Without `templateName`, the first unseen phrase may be delivered as Meta's onboarding template. A named template does not guarantee delivery — wait for webhook errors 131000 or 132021. An open 24-hour window is still billed as utility when `category` is set and `serviceFirst` is not true.",
         "operationId": "sendMessage",
         "responses": {
           "200": {
@@ -1104,6 +1104,70 @@
         ]
       }
     },
+    "/sendContactInfo": {
+      "post": {
+        "tags": [
+          "Messaging"
+        ],
+        "summary": "Request the user's phone number",
+        "description": "Send a service-window interactive message that asks the WhatsApp user to share their phone number (`REQUEST_CONTACT_INFO`).\n\nUse this when you only know the user by BSUID and the 24-hour customer service window is open. `body` is the text above the button. This method has no separate button label — WhatsApp sets that.\n\nOutside that window, create a UTILITY or MARKETING template with a `REQUEST_CONTACT_INFO` button via `POST /addTemplate` (do not send `text` on the button) and send it with `POST /sendTemplate`. That button has no send-time parameters.\n\nWhen the user shares the number, the inbound webhook is a `contacts` message with `origin: contact_request`. The phone is stored on the same BSUID, and the message is written to history.",
+        "operationId": "sendContactInfo",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/SendMessageStatus"
+          }
+        },
+        "security": [
+          {
+            "JWT token": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "body"
+                ],
+                "properties": {
+                  "body": {
+                    "type": "string",
+                    "description": "Text shown above the share-contact button.",
+                    "minLength": 1,
+                    "maxLength": 1024
+                  },
+                  "phone": {
+                    "type": "string",
+                    "description": "Recipient phone with country code. Use phone, chatId, or bsuid."
+                  },
+                  "chatId": {
+                    "type": "string",
+                    "description": "Recipient chat ID (`phone@c.us`, BSUID `@lid`, or username `@username`)."
+                  },
+                  "bsuid": {
+                    "type": "string",
+                    "description": "Business-scoped user id, for example `US.13491208655302741918`."
+                  }
+                }
+              },
+              "example": {
+                "bsuid": "US.13491208655302741918",
+                "body": "Please share your phone number so we can reach you."
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "cURL",
+            "label": "JSON",
+            "source": "curl -X POST 'https://api.1msg.io/{channelId}/sendContactInfo' \\\n  -H 'Authorization: Bearer TOKEN' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"bsuid\":\"US.13491208655302741918\",\"body\":\"Please share your phone number so we can reach you.\"}'"
+          }
+        ]
+      }
+    },
     "/sendCarousel": {
       "post": {
         "tags": [
@@ -1171,7 +1235,7 @@
           "Templates"
         ],
         "summary": "Create message template",
-        "description": "Create a WABA message template (`name`, `category`, `language`, `components`). After create, Meta reviews the template; list it with `GET /templates`. See the request examples for a basic template and Cloud API carousel / catalogue templates.",
+        "description": "Create a WABA message template (`name`, `category`, `language`, `components`). After create, Meta reviews the template; list it with `GET /templates`. See the request examples for a basic template and Cloud API carousel / catalogue templates.\n\nTo ask a BSUID user for their phone number, add a `REQUEST_CONTACT_INFO` button on a `UTILITY` or `MARKETING` template. Do not send `text` on that button — WhatsApp sets the label and rejects a custom one. The button has no send-time parameters. Inside an open 24-hour window, call `POST /sendContactInfo` instead.\n\n```json\n{ \"type\": \"BUTTONS\", \"buttons\": [{ \"type\": \"REQUEST_CONTACT_INFO\" }] }\n```",
         "operationId": "addTemplate",
         "security": [
           {
@@ -5336,6 +5400,31 @@
               "body": {
                 "description": "Message text, UTF-8 or UTF-16 string with emoji 🍏. Can be used with mentionedPhones, example: this text for @556123122026",
                 "type": "string"
+              },
+              "category": {
+                "description": "Optional Direct Send category. Direct Send is in beta: Meta has not enabled it on every business portfolio. `utility` or `authentication` enables it. `authentication` is part of that beta and is not recommended. Omit or `service` keeps a normal service message. `marketing` is rejected.",
+                "type": "string",
+                "enum": [
+                  "utility",
+                  "authentication",
+                  "service"
+                ],
+                "example": "utility"
+              },
+              "directSend": {
+                "description": "Optional. Ignored unless `category` is `utility` or `authentication`. `serviceFirst` is not forwarded to Meta.",
+                "type": "object",
+                "properties": {
+                  "serviceFirst": {
+                    "description": "When true, send a service message first. Success stops there. A closed-window error (131047) retries as Direct Send. Any other error is returned and Direct Send is not attempted.",
+                    "type": "boolean"
+                  },
+                  "templateName": {
+                    "description": "Utility only. Meta creates or reuses a Direct Send template with this exact name (`^[a-z0-9_]+$`, max 512). Do not reuse a template created by hand.",
+                    "type": "string",
+                    "example": "order_shipped"
+                  }
+                }
               }
             },
             "required": [

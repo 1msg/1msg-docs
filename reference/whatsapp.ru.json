@@ -999,7 +999,7 @@
           "Шаблоны"
         ],
         "summary": "Отправить Шаблонное Сообщение",
-        "description": "Отправка шаблона в новый или существующий чат. Нужен только один параметр адресата - chatId, phone или bsuid. В BSUID-centric режиме chatId может быть phone@c.us, bsuid@lid, group@g.us или username@username. Поле phone принимает телефон или BSUID; bsuid можно передать отдельным полем.\n\nИспользуйте этот метод для отправки шаблонных сообщений (включая шаблоны Карусель/Каталог). Если метод из 24-часового окна (например, /sendCarousel) вернул ошибку из-за закрытого окна, отправьте шаблон через /sendTemplate.\n\nКириллические символы в URL файла не поддерживаются. Чтобы корректно передать и обработать ссылку с русским текстом, следует применять кодировку URL.\n\nПримеры запросов находятся в payload (requestBody/examples). Доступные варианты:\n- обычный template\n- Media Carousel (Cloud API)\n- Catalog Carousel (product cards, Cloud API)\n- Catalog template (кнопка каталога)\n- Coupon Code template (Cloud API)\n- Limited-Time Offer template (Cloud API)\n- WhatsApp Flow template (Cloud API)\n\nОпциональные поля MM Lite / TTL: `useMMlite`, `messageActivitySharing`, `messageSendTtlSeconds`. Готовность канала — `GET /mmLiteStatus`.\n\n**Order details (только Индия):** в `params` кнопка с `sub_type: order_details` для оплаты/инвойса вне 24ч. См. также `POST /sendOrderDetails`.",
+        "description": "Отправка шаблона в новый или существующий чат. Нужен только один параметр адресата - chatId, phone или bsuid. В BSUID-centric режиме chatId может быть phone@c.us, bsuid@lid, group@g.us или username@username. Поле phone принимает телефон или BSUID; bsuid можно передать отдельным полем.\n\nИспользуйте этот метод для отправки шаблонных сообщений (включая шаблоны Карусель/Каталог). Если метод из 24-часового окна (например, /sendCarousel) вернул ошибку из-за закрытого окна, отправьте шаблон через /sendTemplate.\n\nКириллические символы в URL файла не поддерживаются. Чтобы корректно передать и обработать ссылку с русским текстом, следует применять кодировку URL.\n\nПримеры запросов находятся в payload (requestBody/examples). Доступные варианты:\n- обычный template\n- Media Carousel (Cloud API)\n- Catalog Carousel (product cards, Cloud API)\n- Catalog template (кнопка каталога)\n- Coupon Code template (Cloud API)\n- Limited-Time Offer template (Cloud API)\n- WhatsApp Flow template (Cloud API)\n\nОпциональные поля MM Lite / TTL: `useMMlite`, `messageActivitySharing`, `messageSendTtlSeconds`. Готовность канала — `GET /mmLiteStatus`.\n\n**Order details (только Индия):** в `params` кнопка с `sub_type: order_details` для оплаты/инвойса вне 24ч. См. также `POST /sendOrderDetails`.\n\nУ кнопки `REQUEST_CONTACT_INFO` (только UTILITY или MARKETING) нет параметров при отправке. Не добавляйте для неё компонент кнопки в `params` и не передавайте текст кнопки. Кнопку создают через `POST /addTemplate` как `{ \"type\": \"REQUEST_CONTACT_INFO\" }` без `text`. В открытом 24-часовом окне номер запрашивает `POST /sendContactInfo`, без шаблона.",
         "operationId": "sendTemplate",
         "responses": {
           "200": {
@@ -1029,7 +1029,7 @@
           "Обмен сообщениями"
         ],
         "summary": "Отправить Сообщение",
-        "description": "Отправка сообщения в существующий чат (только с открытым диалоговым окном). Сообщение будет добавлено в очередь на отправку и доставлено, даже если телефон отключен от интернета или не пройдена авторизация.\n\nНужен только один параметр адресата - chatId, phone или bsuid. В BSUID-centric режиме chatId может быть phone@c.us, bsuid@lid, group@g.us или username@username. Поле phone принимает телефон или BSUID; bsuid можно передать отдельным полем.",
+        "description": "Отправка сообщения в существующий чат (только с открытым диалоговым окном). Сообщение будет добавлено в очередь на отправку и доставлено, даже если телефон отключен от интернета или не пройдена авторизация.\n\nНужен только один параметр адресата - chatId, phone или bsuid. В BSUID-centric режиме chatId может быть phone@c.us, bsuid@lid, group@g.us или username@username. Поле phone принимает телефон или BSUID; bsuid можно передать отдельным полем.\n\nDirect Send в стадии beta. Meta включает его не на каждом бизнес-портфолио, поэтому `category` и `directSend` — бета-опция: смотрите ошибки доставки, прежде чем на них опираться.\n\n`category` `utility` или `authentication` отправляет сообщение вне 24-часового окна как шаблон Meta Direct Send, а не как маркетинговый автошаблон 1MSG. `authentication` тоже в этой beta и не рекомендуется. `directSend.serviceFirst: true` сначала шлёт обычное сервисное сообщение и переходит на Direct Send только если Meta отклоняет его из-за закрытого окна (131047). `directSend.templateName` допустим только с `utility` (`^[a-z0-9_]+$`, максимум 512). Текст Direct Send — не длиннее 1024 символов. Без `templateName` первая новая фраза может уйти онбординг-шаблоном Meta. Имя шаблона не гарантирует доставку — ждите ошибки вебхука 131000 или 132021. Открытое 24-часовое окно всё равно тарифицируется как utility, если задан `category` и `serviceFirst` не true.",
         "operationId": "sendMessage",
         "responses": {
           "200": {
@@ -1113,6 +1113,70 @@
         ]
       }
     },
+    "/sendContactInfo": {
+      "post": {
+        "tags": [
+          "Обмен сообщениями"
+        ],
+        "summary": "Запросить номер телефона",
+        "description": "Сервисное сообщение в открытом окне: просит пользователя WhatsApp поделиться номером телефона (`REQUEST_CONTACT_INFO`).\n\nИспользуйте, когда пользователь известен только по BSUID и 24-часовое окно ещё открыто. `body` — текст над кнопкой. Отдельного текста кнопки у метода нет: подпись ставит WhatsApp.\n\nВне окна создайте шаблон UTILITY или MARKETING с кнопкой `REQUEST_CONTACT_INFO` через `POST /addTemplate` (поле `text` у кнопки не передавайте) и отправьте его через `POST /sendTemplate`. Параметров у этой кнопки при отправке нет.\n\nКогда пользователь делится номером, входящий вебхук — сообщение `contacts` с `origin: contact_request`. Телефон записывается на тот же BSUID, сообщение попадает в историю.",
+        "operationId": "sendContactInfo",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/SendMessageStatus"
+          }
+        },
+        "security": [
+          {
+            "JWT token": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "body"
+                ],
+                "properties": {
+                  "body": {
+                    "type": "string",
+                    "description": "Текст над кнопкой «поделиться контактом».",
+                    "minLength": 1,
+                    "maxLength": 1024
+                  },
+                  "phone": {
+                    "type": "string",
+                    "description": "Телефон получателя с кодом страны. Можно phone, chatId или bsuid."
+                  },
+                  "chatId": {
+                    "type": "string",
+                    "description": "Chat ID получателя (`phone@c.us`, BSUID `@lid` или username `@username`)."
+                  },
+                  "bsuid": {
+                    "type": "string",
+                    "description": "BSUID, например `US.13491208655302741918`."
+                  }
+                }
+              },
+              "example": {
+                "bsuid": "US.13491208655302741918",
+                "body": "Поделитесь номером телефона, чтобы мы могли с вами связаться."
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "cURL",
+            "label": "JSON",
+            "source": "curl -X POST 'https://api.1msg.io/{channelId}/sendContactInfo' \\\n  -H 'Authorization: Bearer TOKEN' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"bsuid\":\"US.13491208655302741918\",\"body\":\"Поделитесь номером телефона, чтобы мы могли с вами связаться.\"}'"
+          }
+        ]
+      }
+    },
     "/sendCarousel": {
       "post": {
         "tags": [
@@ -1180,7 +1244,7 @@
           "Templates"
         ],
         "summary": "Создать шаблон",
-        "description": "Создаёт шаблон WABA (`name`, `category`, `language`, `components`). После создания Meta проверяет шаблон; список — `GET /templates`. Примеры запроса включают базовый шаблон и карусель / каталог Cloud API.",
+        "description": "Создаёт шаблон WABA (`name`, `category`, `language`, `components`). После создания Meta проверяет шаблон; список — `GET /templates`. Примеры запроса включают базовый шаблон и карусель / каталог Cloud API.\n\nЧтобы запросить номер у пользователя, известного только по BSUID, добавьте кнопку `REQUEST_CONTACT_INFO` в шаблон `UTILITY` или `MARKETING`. Поле `text` у кнопки передавать не нужно: WhatsApp сам ставит подпись и отклоняет свою. Параметров кнопки при отправке нет. В открытом 24-часовом окне вместо шаблона вызывайте `POST /sendContactInfo`.\n\n```json\n{ \"type\": \"BUTTONS\", \"buttons\": [{ \"type\": \"REQUEST_CONTACT_INFO\" }] }\n```",
         "operationId": "addTemplate",
         "security": [
           {
@@ -5211,6 +5275,31 @@
               "body": {
                 "description": "Текст сообщения, любая строка включая emoji 🍏. Может использоваться с \"mentionedPhones\", пример: \"Этот текст для @78005553535\"",
                 "type": "string"
+              },
+              "category": {
+                "description": "Необязательная категория Direct Send. Direct Send в стадии beta: Meta включает его не на каждом бизнес-портфолио. `utility` или `authentication` включают Direct Send. `authentication` тоже в этой beta и не рекомендуется. Пусто или `service` — обычное сервисное сообщение. `marketing` отклоняется.",
+                "type": "string",
+                "enum": [
+                  "utility",
+                  "authentication",
+                  "service"
+                ],
+                "example": "utility"
+              },
+              "directSend": {
+                "description": "Необязательно. Игнорируется, если `category` не `utility` и не `authentication`. `serviceFirst` в Meta не уходит.",
+                "type": "object",
+                "properties": {
+                  "serviceFirst": {
+                    "description": "Если true, сначала уходит сервисное сообщение. Успех — стоп. Ошибка закрытого окна (131047) повторяет отправку как Direct Send. Любая другая ошибка возвращается клиенту, Direct Send не отправляется.",
+                    "type": "boolean"
+                  },
+                  "templateName": {
+                    "description": "Только utility. Meta создаёт или переиспользует шаблон Direct Send с этим именем (`^[a-z0-9_]+$`, максимум 512). Не используйте имя шаблона, созданного вручную.",
+                    "type": "string",
+                    "example": "order_shipped"
+                  }
+                }
               }
             },
             "required": [
