@@ -7,7 +7,11 @@ OpenAPI 3.0 specs of the 1MSG APIs. The site renders them as the API reference:
 | `whatsapp.json` | WhatsApp Business API, English | [1msg.io/docs/reference/whatsapp](https://1msg.io/docs/reference/whatsapp) |
 | `whatsapp.ru.json` | WhatsApp Business API, Russian | [1msg.io/ru/docs/reference/whatsapp](https://1msg.io/ru/docs/reference/whatsapp) |
 | `campaigns.json` | Campaigns API | [1msg.io/docs/reference/campaigns](https://1msg.io/docs/reference/campaigns) |
+| `campaigns.ru.json` | Campaigns API, Russian | [1msg.io/ru/docs/reference/campaigns](https://1msg.io/ru/docs/reference/campaigns) |
+| `campaigns.pt.json` | Campaigns API, Portuguese | [1msg.io/br/docs/reference/campaigns](https://1msg.io/br/docs/reference/campaigns) |
 | `inbox.json` | Inbox API | [1msg.io/docs/reference/inbox](https://1msg.io/docs/reference/inbox) |
+| `inbox.ru.json` | Inbox API, Russian | [1msg.io/ru/docs/reference/inbox](https://1msg.io/ru/docs/reference/inbox) |
+| `inbox.pt.json` | Inbox API, Portuguese | [1msg.io/br/docs/reference/inbox](https://1msg.io/br/docs/reference/inbox) |
 
 After a merge into `main`, the Rollout workflow tells the site about the new commit, so the change appears within a few minutes, the same way as the articles. A red Rollout run means the site did not pick it up. A new spec needs no change on the site either.
 
@@ -25,4 +29,4 @@ Anything else in `reference/` (this README, subfolders) is not shown on the site
 ## Where the specs come from
 
 - `whatsapp.json` and `whatsapp.ru.json` mirror `swagger.waba.json` and `swagger.waba.ru.json` in the private `1msg/1msg-front` repo, which Alibek Seksenali (@alibek-seksenali) maintains. That copy builds docs.1msg.io, which my.1msg.io also shows as its API docs. These files are copied by hand, and the sync below does not touch them. Make every change in both repos, and keep the English and Russian specs in step.
-- `inbox.json` and `campaigns.json` come from the API, which generates them from its own code (private `1msg/1msg-developers`). Each production deploy of the API starts a workflow in the private `1msg/1msg-sys-ops` repo. It downloads `https://api.1msg.io/api/docs/inbox-json` and `https://api.1msg.io/api/docs/campaigns-json`. When they differ from `main`, it opens or updates one pull request from `bot/sync-specs`. The pull request lists the added and removed methods and warns when a method's URL changes, and a person reviews and merges it. To change the text, fix it in the API and release it: a hand edit here is lost on the next sync.
+- `inbox.json` and `campaigns.json` come from the API, which generates them from its own code (private `1msg/1msg-developers`). Each production deploy of the API starts a workflow in the private `1msg/1msg-sys-ops` repo. It downloads `https://api.1msg.io/api/docs/inbox-json` and `https://api.1msg.io/api/docs/campaigns-json`. When they differ from `main`, it opens or updates one pull request from `bot/sync-specs`. The pull request lists the added and removed methods and warns when a method's URL changes, and a person reviews and merges it. To change the text, fix it in the API and release it: a hand edit here is lost on the next sync. The sync does not touch the translations (`inbox.ru.json`, `inbox.pt.json`, `campaigns.ru.json`, `campaigns.pt.json`): a method added to the English spec shows in English until a translation adds it, and a changed English text stays old in the translation until someone updates it.
