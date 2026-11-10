@@ -1,6 +1,6 @@
 ---
 title: WhatsApp
-description: "Connect a WhatsApp Business Account (WABA) to 1MSG and send messages: setup, Coexistence, connection errors, API credentials and messaging rules."
+description: "Connect a WhatsApp Business Account (WABA) to 1MSG and send messages: setup, Coexistence, connection errors, the green checkmark, API credentials and messaging rules."
 ---
 
 Guides for connecting your WhatsApp Business Account (WABA) to 1MSG and sending messages through the API.
@@ -10,6 +10,7 @@ Guides for connecting your WhatsApp Business Account (WABA) to 1MSG and sending 
   - [Connect Bring your own WABA](./connect-waba/bring-your-own-waba.md) — messaging is billed by Meta.
   - [WABA Coexistence](./connect-waba/coexistence.md) — keep using the WhatsApp Business app on a number connected to the API.
   - [Errors when connecting a WABA](./connect-waba/connection-errors.md)
+  - [Obtaining the green checkmark badge](./connect-waba/green-checkmark.md) — the Official Business Account (OBA) status.
 - [Channel ID + JWT](./channel-id-and-token.md) — the credentials of a channel and how to pass them in an API request.
 - [Customer consent (opt-in)](./opt-in.md) — why you need consent before you message a customer first.
 - [24-hour conversation window](./24-hour-window.md) — when you can send free-form messages and when only a template.
