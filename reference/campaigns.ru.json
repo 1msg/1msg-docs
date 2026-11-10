@@ -1,0 +1,2916 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/v1/campaigns/segments": {
+      "post": {
+        "operationId": "CampaignSegmentsController_create",
+        "summary": "Создать сегмент",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCampaignSegmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentCreatedDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "name обязателен, до 200 символов. description необязателен, до 2000 символов. Возвращает id сегмента — он нужен при создании рассылки."
+      },
+      "get": {
+        "operationId": "CampaignSegmentsController_list",
+        "summary": "Список сегментов",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Размер страницы. По умолчанию 50, максимум 100.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "nextCursor из предыдущей страницы. Для первой страницы оставьте пустым.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentPageDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Сначала самые новые. limit — размер страницы, по умолчанию 50, максимум 100. cursor — nextCursor из предыдущей страницы. Для первой страницы cursor оставьте пустым."
+      }
+    },
+    "/api/v1/campaigns/segments/{segmentId}/members": {
+      "get": {
+        "operationId": "CampaignSegmentsController_listMembers",
+        "summary": "Участники сегмента",
+        "parameters": [
+          {
+            "name": "segmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id сегмента из ответа на создание или из списка."
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Размер страницы. По умолчанию 50, максимум 100.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "nextCursor из предыдущей страницы. Для первой страницы оставьте пустым.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentMemberPageDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "limit — размер страницы, по умолчанию 50, максимум 100. cursor — nextCursor из предыдущей страницы."
+      },
+      "post": {
+        "operationId": "CampaignSegmentsController_addMembers",
+        "summary": "Добавить участников в сегмент",
+        "description": "members — непустой список. У каждого участника обязателен name. phone — в формате E.164 или не передаётся. bsuid — id у провайдера, например ab.abc123xyz, или не передаётся. Нужен phone или bsuid. Повтор телефона или BSUID в сегменте отклоняется. В сегменте может быть не больше 500 участников.",
+        "parameters": [
+          {
+            "name": "segmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id сегмента из ответа на создание или из списка."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCampaignSegmentMembersDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentMemberBatchDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "put": {
+        "operationId": "CampaignSegmentsController_replaceMembers",
+        "summary": "Заменить участников сегмента",
+        "description": "Удаляет всех текущих участников и добавляет этот список. Правила для name, phone и bsuid те же, что при добавлении. В новом списке может быть не больше 500 участников.",
+        "parameters": [
+          {
+            "name": "segmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id сегмента из ответа на создание или из списка."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplaceCampaignSegmentMembersDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentMemberBatchDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "CampaignSegmentsController_removeMembers",
+        "summary": "Удалить участников из сегмента",
+        "parameters": [
+          {
+            "name": "segmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id сегмента из ответа на создание или из списка."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveCampaignSegmentMembersDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentMembersRemovedDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "memberIds — непустой список id участников из списка участников. Остальные участники остаются."
+      }
+    },
+    "/api/v1/campaigns/segments/{segmentId}/members/{memberId}": {
+      "patch": {
+        "operationId": "CampaignSegmentsController_patchMember",
+        "summary": "Изменить одного участника сегмента",
+        "parameters": [
+          {
+            "name": "segmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id сегмента из ответа на создание или из списка."
+          },
+          {
+            "name": "memberId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id участника из списка участников."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchCampaignSegmentMemberDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentMemberDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Передавайте только поля, которые меняются. phone должен остаться в формате E.164, bsuid — в формате провайдера. После изменения у участника по-прежнему должен быть телефон или BSUID."
+      }
+    },
+    "/api/v1/campaigns/segments/{segmentId}": {
+      "get": {
+        "operationId": "CampaignSegmentsController_get",
+        "summary": "Сегмент",
+        "parameters": [
+          {
+            "name": "segmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id сегмента из ответа на создание или из списка."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "segmentId — id, который вернулся при создании сегмента."
+      },
+      "patch": {
+        "operationId": "CampaignSegmentsController_update",
+        "summary": "Изменить сегмент",
+        "parameters": [
+          {
+            "name": "segmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id сегмента из ответа на создание или из списка."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCampaignSegmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Передавайте только поля, которые меняются. name — до 200 символов, description — до 2000. segmentId — id из ответа на создание."
+      },
+      "delete": {
+        "operationId": "CampaignSegmentsController_remove",
+        "summary": "Удалить сегмент",
+        "parameters": [
+          {
+            "name": "segmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id сегмента из ответа на создание или из списка."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Удаляет сегмент и его участников. Не сработает, пока сегмент используется в рассылке со статусом черновик, отправка, пауза или по расписанию."
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/analytics": {
+      "get": {
+        "operationId": "CampaignAnalyticsController_summary",
+        "summary": "Сводка аналитики",
+        "description": "Цифры по снимку, сделанному при отправке. dailyLimit — лимит канала, а не настройка рассылки. Доли — от 0 до 1.",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id рассылки из ответа на создание или из списка."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignAnalyticsSummaryDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Analytics"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/analytics/recipients": {
+      "get": {
+        "operationId": "CampaignAnalyticsController_recipients",
+        "summary": "Аналитика по получателям",
+        "description": "Одна строка на получателя. filter — список через запятую: sent, delivered, read, replied, failed, skipped или cancelled. filter=clicked отклоняется: используйте filter=replied вместе с replyType=button. fields ограничивает набор колонок. conversationId — диалог в Inbox. providerConversationId — id чата у провайдера. messageId и providerMessageId — id сообщения у провайдера. limit — максимум 100. cursor — nextCursor.",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id рассылки из ответа на создание или из списка."
+          },
+          {
+            "name": "filter",
+            "required": false,
+            "in": "query",
+            "description": "Через запятую: sent, delivered, read, replied, failed, skipped, cancelled. filter=clicked отклоняется — используйте replied вместе с replyType=button.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "replied",
+            "required": false,
+            "in": "query",
+            "description": "true оставляет только тех, кто ответил. false — тех, кто не ответил.",
+            "schema": {
+              "enum": [
+                "true",
+                "false"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "replyType",
+            "required": false,
+            "in": "query",
+            "description": "button оставляет нажатия кнопок. text — ответы текстом.",
+            "schema": {
+              "enum": [
+                "button",
+                "text"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "buttonId",
+            "required": false,
+            "in": "query",
+            "description": "id одной кнопки шаблона. Используйте вместе с replyType=button.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reason",
+            "required": false,
+            "in": "query",
+            "description": "Точная причина пропуска или ошибки из списка ошибок.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "required": false,
+            "in": "query",
+            "description": "Нужные колонки через запятую. Если нужны id у провайдера, добавьте providerConversationId и providerMessageId. conversationId — id диалога в Inbox. messageId — id сообщения у провайдера.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Размер страницы, от 1 до 100. По умолчанию 50.",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "nextCursor из предыдущей страницы. Для первой страницы оставьте пустым.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignAnalyticsRecipientPageDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Analytics"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/analytics/replies": {
+      "get": {
+        "operationId": "CampaignAnalyticsController_replies",
+        "summary": "Ответы",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id рассылки из ответа на создание или из списка."
+          },
+          {
+            "name": "replyType",
+            "required": false,
+            "in": "query",
+            "description": "button оставляет нажатия кнопок. text — ответы текстом. Без параметра вернутся оба вида.",
+            "schema": {
+              "enum": [
+                "button",
+                "text"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "buttonId",
+            "required": false,
+            "in": "query",
+            "description": "id одной кнопки шаблона.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "phone",
+            "required": false,
+            "in": "query",
+            "description": "Телефон одного получателя в формате E.164.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bsuid",
+            "required": false,
+            "in": "query",
+            "description": "BSUID одного получателя у провайдера, например ab.abc123xyz.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateFrom",
+            "required": false,
+            "in": "query",
+            "description": "Начало периода в ISO-8601, включительно, например 2026-11-01T00:00:00Z.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateTo",
+            "required": false,
+            "in": "query",
+            "description": "Конец периода в ISO-8601, включительно, например 2026-11-02T00:00:00Z.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Размер страницы, от 1 до 100. По умолчанию 50.",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "nextCursor из предыдущей страницы. Для первой страницы оставьте пустым.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignAnalyticsRepliesDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Analytics"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "replyType — button или text. buttonId оставляет одну кнопку. phone и bsuid оставляют одного получателя. dateFrom и dateTo — в ISO-8601. providerConversationId — id чата у провайдера. messageId и providerMessageId — id сообщения у провайдера."
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/analytics/errors": {
+      "get": {
+        "operationId": "CampaignAnalyticsController_errors",
+        "summary": "Ошибки по причинам",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id рассылки из ответа на создание или из списка."
+          },
+          {
+            "name": "recipientsLimit",
+            "required": false,
+            "in": "query",
+            "description": "Сколько получателей показать на каждую причину. По умолчанию 20, максимум 100.",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "description": "failed оставляет ошибки отправки. skipped — получателей, которым не отправили. Без параметра вернутся оба вида.",
+            "schema": {
+              "enum": [
+                "failed",
+                "skipped"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignAnalyticsErrorsDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Analytics"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Группирует получателей с ошибкой и пропущенных по причине. type — failed или skipped. recipientsLimit — сколько получателей показать на каждую причину, по умолчанию 20, максимум 100. У каждого получателя есть providerConversationId и providerMessageId."
+      }
+    },
+    "/api/v1/campaigns": {
+      "post": {
+        "operationId": "CampaignsController_create",
+        "summary": "Создать черновик рассылки",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCampaignDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "name — название рассылки. channelId — канал, с которого пойдёт отправка. segmentId — аудитория. content.mode — template или text. Для шаблона задайте content.templateName, content.language и content.params (массив как в sendTemplate). content.messageSendTtlSeconds необязателен, задаётся в секундах и стоит рядом с params. Для текста задайте content.text. Если передаёте status, он должен быть draft."
+      },
+      "get": {
+        "operationId": "CampaignsController_list",
+        "summary": "Список рассылок",
+        "description": "Сначала самые новые, по всему аккаунту. channelId ограничивает список этими каналами: повторите параметр или передайте список через запятую. Без channelId вернутся все каналы. limit по умолчанию 50, максимум 100. cursor — nextCursor из предыдущей страницы.",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Размер страницы. По умолчанию 50, максимум 100.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "nextCursor из предыдущей страницы. Для первой страницы оставьте пустым.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "channelId",
+            "required": false,
+            "in": "query",
+            "description": "id канала. Повторите параметр или передайте список через запятую. Без него вернутся все каналы.",
+            "schema": {
+              "type": "array",
+              "items": {}
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignPageDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/preview": {
+      "get": {
+        "operationId": "CampaignsController_previewCampaign",
+        "summary": "Предпросмотр рассылки",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id рассылки из ответа на создание или из списка."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignPreviewDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Считает получателей и сколько из них вне окна 24 часа. tierDailyLimit — лимит канала. Цена и стоимость не возвращаются. Ничего не отправляется."
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/send": {
+      "post": {
+        "operationId": "CampaignsController_send",
+        "summary": "Отправить рассылку или запланировать её",
+        "description": "Копирует сегмент в снимок отправки. scheduledAt — момент в будущем в ISO-8601 с Z или числовым смещением. Чтобы начать сразу, не передавайте его или передайте null. Отправка шаблонов встаёт на паузу, когда лимит канала за скользящие 24 часа исчерпан. Отдельного поля с лимитом в день нет.",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id рассылки из ответа на создание или из списка."
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendCampaignDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/schedule": {
+      "patch": {
+        "operationId": "CampaignsController_schedule",
+        "summary": "Перенести время отправки",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id рассылки из ответа на создание или из списка."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCampaignScheduleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "scheduledAt — новый момент в будущем в ISO-8601 с Z или числовым смещением. Перенести можно только уже запланированную рассылку."
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/unschedule": {
+      "post": {
+        "operationId": "CampaignsController_unschedule",
+        "summary": "Вернуть запланированную рассылку в черновик",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id рассылки из ответа на создание или из списка."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Очищает scheduledAt и возвращает статус draft. Без тела."
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/pause": {
+      "post": {
+        "operationId": "CampaignsController_pause",
+        "summary": "Поставить отправку на паузу",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id рассылки из ответа на создание или из списка."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Перестаёт брать новых получателей из очереди. Без тела. После возобновления отправка продолжится по тому же снимку."
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/resume": {
+      "post": {
+        "operationId": "CampaignsController_resume",
+        "summary": "Возобновить рассылку после паузы",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id рассылки из ответа на создание или из списка."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Продолжает отправку по тому же снимку. Без тела. Дневной лимит — по-прежнему лимит канала."
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/complete": {
+      "post": {
+        "operationId": "CampaignsController_complete",
+        "summary": "Завершить рассылку",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id рассылки из ответа на создание или из списка."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Помечает рассылку в статусе отправки или паузы как завершённую. Получатели, которым не успели отправить, отбрасываются. Без тела."
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/test": {
+      "post": {
+        "operationId": "CampaignsController_test",
+        "summary": "Отправить тестовое сообщение",
+        "description": "Отправляет содержимое черновика одному получателю. Статус и аналитика рассылки не меняются. Передайте ровно одно из двух: phone (E.164) или bsuid (формат провайдера). Отказ провайдера — это ошибка, а не принятая отправка. conversationId — диалог в Inbox. messageId и providerMessageId — один и тот же id сообщения у провайдера или null, если провайдер принял отправку без id.",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id рассылки из ответа на создание или из списка."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CampaignTestSendDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignTestSendResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/campaigns/{campaignId}": {
+      "get": {
+        "operationId": "CampaignsController_get",
+        "summary": "Рассылка",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id рассылки из ответа на создание или из списка."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "campaignId — id из ответа на создание. dailyLimit — лимит канала за скользящие 24 часа, его не задают вручную. scheduledAt — время отправки в будущем или null."
+      },
+      "patch": {
+        "operationId": "CampaignsController_update",
+        "summary": "Изменить черновик рассылки",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id рассылки из ответа на создание или из списка."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCampaignDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Изменить можно только черновик. Передайте хотя бы одно из полей: name, channelId, segmentId или content. Для content действуют те же правила для шаблона и текста, что при создании."
+      }
+    }
+  },
+  "info": {
+    "title": "Campaigns API",
+    "description": "Campaigns API позволяет отправить одно сообщение многим получателям. В сегменте по умолчанию может быть до 500 человек. Чтобы поднять лимит до 10 000, напишите нам на [hello@1msg.io](mailto:hello@1msg.io). Методы Inbox в этом документе не описаны.\n\nИспользуйте группы методов в таком порядке: Segments → Campaigns → Analytics.\n\n## 1. Сегменты\n\nСоздайте сегмент и добавьте участников. У каждого участника нужен `name` и хотя бы одно из полей `phone` или `bsuid`.\n\n## 2. Рассылки\n\nСоздайте черновик с `channelId`, к которому у ключа API есть доступ, и `segmentId` из предыдущего шага.\n\nЗадайте `content.mode` — `text` или `template`:\n\n- Текст: передайте `content.text`.\n- Шаблон: передайте `content.templateName` и `content.language` (например, `en`).\n\nДля шаблонов:\n\n- `content.params` в том же формате, что в `sendTemplate`, и уходит в WABA без изменений: поддерживаются картинки в шапке, переменные в тексте, кнопки и карточки карусели.\n- `content.messageSendTtlSeconds` необязателен и задаёт в секундах, сколько WhatsApp пытается доставить сообщение. Он стоит рядом с `params`, а не внутри компонентов шаблона.\n\nПеред отправкой проверьте черновик через предпросмотр.\n\nЧтобы запланировать рассылку, задайте в `scheduledAt` момент в будущем в ISO 8601 с `Z` или числовым смещением, например `2026-11-01T09:00:00Z`. Чтобы начать отправку сразу, не передавайте его или передайте `null`.\n\nНастройки количества сообщений в день нет. Шаблоны отправляются в пределах лимита канала, он возвращается в `dailyLimit`. Обычные сообщения внутри открытого окна 24 часа в этот лимит не входят.\n\n## 3. Аналитика\n\nПосле отправки смотрите аналитику, чтобы следить за результатами рассылки:\n\n- Общая статистика: сколько сообщений отправлено, доставлено, прочитано и сколько на них ответили.\n- Статистика по получателям: когда каждое сообщение отправлено, доставлено и прочитано, когда получатель ответил и что именно — включая нажатия кнопок и ответы текстом.\n- Статистика по кнопкам: кто и когда нажал каждую кнопку.\n- Статистика ошибок: у каких получателей были ошибки и какая ошибка у каждого номера.\n\n## 4. Вебхуки рассылок\n\n1MSG отправляет события на указанный HTTPS-адрес, когда сегменты или рассылки создаются или меняются и когда меняется статус рассылки.\n\nВебхуки настраиваются в Settings → Developer → Webhooks.\n\n### События\n\n- `segment.created` — создан сегмент. `action` равен `segment_created`.\n- `segment.updated` — изменился сегмент или его участники. `action` может быть `segment_updated`, `segment_deleted`, `member_added`, `member_updated`, `member_deleted` или `members_replaced`. По событию нельзя понять, какой именно участник изменился.\n- `campaign.created` — создан черновик рассылки. В `scheduledAt` — запланированное время отправки или `null`.\n- `campaign.updated` — изменён черновик рассылки. В `scheduledAt` — запланированное время отправки или `null`.\n- `campaign.status_changed` — статус рассылки сменился на `draft`, `sending`, `pause`, `completed`, `failed` или `scheduled`. В `scheduledAt` — запланированное время отправки или `null`.\n\n## Авторизация\n\nУ ключа должен быть доступ Campaigns. Ключ выдаётся в Settings → Developer → API key.\n\n```\nAuthorization: Bearer 1msg_live_…\n```",
+    "version": "1.0"
+  },
+  "tags": [
+    {
+      "name": "Segments",
+      "description": "Создайте сегмент и добавьте людей. У каждого участника нужны имя и телефон в формате E.164 или BSUID."
+    },
+    {
+      "name": "Campaigns",
+      "description": "Создайте черновик, задайте шаблон или текст, проверьте через предпросмотр, затем отправьте или запланируйте. Дневной лимит шаблонов — это лимит канала, а не поле рассылки."
+    },
+    {
+      "name": "Analytics",
+      "description": "Данные по снимку отправки: до кого дошло, что ответили и почему отправка не прошла. conversationId — диалог в Inbox. providerConversationId — id чата у провайдера. messageId и providerMessageId — один и тот же id сообщения у провайдера."
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://api.1msg.io",
+      "description": "Production"
+    },
+    {
+      "url": "https://api.stage.1msg.io",
+      "description": "Staging"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "API key",
+        "type": "http",
+        "description": "Ключ выдаётся в Settings → Developer → API key. Методам Inbox нужен доступ Inbox, методам Campaigns — доступ Campaigns."
+      }
+    },
+    "schemas": {
+      "CreateCampaignSegmentDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Название сегмента, до 200 символов.",
+            "example": "April buyers"
+          },
+          "description": {
+            "type": "string",
+            "description": "Необязательная заметка, до 2000 символов."
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "CampaignSegmentCreatedDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "id сегмента.",
+            "example": "cm3segment01"
+          },
+          "name": {
+            "type": "string",
+            "description": "Название сегмента, до 200 символов.",
+            "example": "April buyers"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "Необязательная заметка, до 2000 символов, или null, если её нет.",
+            "example": "People who bought in April"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Когда создан сегмент.",
+            "example": "2026-11-01T09:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "createdAt"
+        ]
+      },
+      "CampaignSegmentPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "description": "Сегменты на этой странице, сначала новые.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignSegmentListItemDto"
+            }
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Курсор следующей страницы или null на последней странице.",
+            "example": null
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
+        ]
+      },
+      "CampaignSegmentMemberPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "description": "Участники на этой странице, сначала новые.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignSegmentMemberDto"
+            }
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Курсор следующей страницы или null на последней странице.",
+            "example": null
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
+        ]
+      },
+      "AddCampaignSegmentMembersDto": {
+        "type": "object",
+        "properties": {
+          "members": {
+            "description": "Непустой список. У каждого участника нужны name и телефон или BSUID. Повтор телефона или BSUID в сегменте отклоняется. В сегменте может быть не больше 500 участников.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignSegmentMemberInputDto"
+            }
+          }
+        },
+        "required": [
+          "members"
+        ]
+      },
+      "CampaignSegmentMemberBatchDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "description": "Участники, записанные этим запросом.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignSegmentMemberDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "ReplaceCampaignSegmentMembersDto": {
+        "type": "object",
+        "properties": {
+          "members": {
+            "description": "Заменяет всех текущих участников. Правила для name, phone и bsuid те же, что при добавлении. Пустой список очищает сегмент. В новом списке может быть не больше 500 участников.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignSegmentMemberInputDto"
+            }
+          }
+        },
+        "required": [
+          "members"
+        ]
+      },
+      "RemoveCampaignSegmentMembersDto": {
+        "type": "object",
+        "properties": {
+          "memberIds": {
+            "description": "id участников из списка участников. Остальные участники остаются.",
+            "example": [
+              "mem_1"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "memberIds"
+        ]
+      },
+      "CampaignSegmentMembersRemovedDto": {
+        "type": "object",
+        "properties": {
+          "removed": {
+            "type": "number",
+            "description": "Сколько участников удалено.",
+            "example": 2
+          }
+        },
+        "required": [
+          "removed"
+        ]
+      },
+      "PatchCampaignSegmentMemberDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Новое имя, до 200 символов."
+          },
+          "phone": {
+            "type": "string",
+            "description": "Телефон в формате E.164, например +15551234567. После изменения у участника по-прежнему должен быть телефон или BSUID."
+          },
+          "bsuid": {
+            "type": "string",
+            "description": "BSUID у провайдера, например ab.abc123xyz. Окончание @lid отбрасывается при сохранении."
+          }
+        }
+      },
+      "CampaignSegmentMemberDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "id участника.",
+            "example": "cm3member01"
+          },
+          "name": {
+            "type": "string",
+            "description": "Имя участника.",
+            "example": "Ana"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "description": "Телефон в формате E.164 или null, если участник сохранён по BSUID.",
+            "example": "+15551234567"
+          },
+          "bsuid": {
+            "type": "string",
+            "nullable": true,
+            "description": "BSUID у провайдера без окончания @lid или null, если участник сохранён по телефону.",
+            "example": "ab.abc123xyz"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "phone",
+          "bsuid"
+        ]
+      },
+      "CampaignSegmentDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "id сегмента.",
+            "example": "cm3segment01"
+          },
+          "name": {
+            "type": "string",
+            "description": "Название сегмента, до 200 символов.",
+            "example": "April buyers"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "Необязательная заметка, до 2000 символов, или null, если её нет."
+          },
+          "memberCount": {
+            "type": "number",
+            "description": "Сколько человек в сегменте.",
+            "example": 12
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Когда создан сегмент.",
+            "example": "2026-11-01T09:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Когда сегмент последний раз менялся.",
+            "example": "2026-11-01T09:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "memberCount",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UpdateCampaignSegmentDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Новое название, до 200 символов. Передавайте только поля, которые меняются."
+          },
+          "description": {
+            "type": "string",
+            "description": "Новая заметка, до 2000 символов."
+          }
+        }
+      },
+      "CampaignAnalyticsSummaryDto": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "id рассылки.",
+            "example": "cm3campaign01"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "sending",
+              "pause",
+              "completed",
+              "failed",
+              "scheduled"
+            ],
+            "description": "Статус рассылки."
+          },
+          "recipients": {
+            "type": "number",
+            "description": "Получатели в снимке отправки.",
+            "example": 12
+          },
+          "sent": {
+            "type": "number",
+            "description": "Получатели со статусом sent, delivered или read.",
+            "example": 10
+          },
+          "delivered": {
+            "type": "number",
+            "description": "Получатели со статусом delivered или read.",
+            "example": 8
+          },
+          "read": {
+            "type": "number",
+            "description": "Получатели со статусом read.",
+            "example": 4
+          },
+          "failed": {
+            "type": "number",
+            "description": "Получатели со статусом failed.",
+            "example": 1
+          },
+          "skipped": {
+            "type": "number",
+            "description": "Получатели со статусом skipped.",
+            "example": 1
+          },
+          "cancelled": {
+            "type": "number",
+            "description": "Получатели, убранные из очереди до отправки.",
+            "example": 0
+          },
+          "queued": {
+            "type": "number",
+            "description": "Получатели со статусом queued или leasing.",
+            "example": 0
+          },
+          "replied": {
+            "type": "number",
+            "description": "Получатели, которые ответили хотя бы раз.",
+            "example": 2
+          },
+          "textReplies": {
+            "type": "number",
+            "description": "Получатели, которые хотя бы раз ответили текстом.",
+            "example": 1
+          },
+          "clicks": {
+            "type": "number",
+            "description": "Ответы кнопками в снимке.",
+            "example": 3
+          },
+          "uniqueClicks": {
+            "type": "number",
+            "description": "Получатели, которые нажали хотя бы одну кнопку.",
+            "example": 2
+          },
+          "rates": {
+            "description": "Доли получателей, от 0 до 1, с округлением до 4 знаков. Если получателей нет, все доли равны 0.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CampaignAnalyticsRatesDto"
+              }
+            ]
+          },
+          "buttons": {
+            "description": "Нажатия кнопок по id кнопки.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignAnalyticsButtonDto"
+            }
+          },
+          "queuedRemaining": {
+            "type": "number",
+            "description": "Получатели, которым ещё не отправили.",
+            "example": 0
+          },
+          "sentThisPortion": {
+            "type": "number",
+            "description": "Отправки шаблонов, уже начатые в текущем окне лимита.",
+            "example": 0
+          },
+          "dailyLimit": {
+            "type": "number",
+            "nullable": true,
+            "description": "Сколько отправок шаблонов этот канал может начать за скользящие 24 часа, или null, если лимит неизвестен или его нет.",
+            "example": 1000
+          },
+          "nextPortionAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "Когда может начаться следующая порция шаблонов, или null, если следующая порция не ждёт.",
+            "example": null
+          }
+        },
+        "required": [
+          "campaignId",
+          "status",
+          "recipients",
+          "sent",
+          "delivered",
+          "read",
+          "failed",
+          "skipped",
+          "cancelled",
+          "queued",
+          "replied",
+          "textReplies",
+          "clicks",
+          "uniqueClicks",
+          "rates",
+          "buttons",
+          "queuedRemaining",
+          "sentThisPortion",
+          "dailyLimit",
+          "nextPortionAt"
+        ]
+      },
+      "CampaignAnalyticsRecipientPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "description": "Получатели на этой странице. Если задан параметр fields, в каждом элементе только перечисленные поля.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignAnalyticsRecipientDto"
+            }
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Курсор следующей страницы или null на последней странице.",
+            "example": null
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
+        ]
+      },
+      "CampaignAnalyticsRepliesDto": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "id рассылки.",
+            "example": "cm3campaign01"
+          },
+          "totalReplies": {
+            "type": "number",
+            "description": "Число ответов по всей рассылке, а не только на этой странице.",
+            "example": 4
+          },
+          "uniqueRepliers": {
+            "type": "number",
+            "description": "Сколько получателей ответили хотя бы раз за всю рассылку.",
+            "example": 3
+          },
+          "items": {
+            "description": "Ответы на этой странице, сначала старые.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignAnalyticsReplyItemDto"
+            }
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Курсор следующей страницы или null на последней странице.",
+            "example": null
+          }
+        },
+        "required": [
+          "campaignId",
+          "totalReplies",
+          "uniqueRepliers",
+          "items",
+          "nextCursor"
+        ]
+      },
+      "CampaignAnalyticsErrorsDto": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "id рассылки.",
+            "example": "cm3campaign01"
+          },
+          "items": {
+            "description": "Ошибки, сгруппированные по причине, коду, заголовку и типу.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignAnalyticsErrorGroupDto"
+            }
+          }
+        },
+        "required": [
+          "campaignId",
+          "items"
+        ]
+      },
+      "CreateCampaignDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Название рассылки в списке.",
+            "example": "Spring promo"
+          },
+          "channelId": {
+            "type": "string",
+            "description": "id канала, с которого идёт отправка. У ключа должен быть доступ к этому каналу."
+          },
+          "segmentId": {
+            "type": "string",
+            "description": "id сегмента из POST /campaigns/segments. Участники копируются в момент отправки."
+          },
+          "content": {
+            "description": "template или text. Для шаблона задайте templateName, language и params.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CampaignContentDto"
+              }
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft"
+            ],
+            "description": "Принимается только draft. Если не передать, сохранится draft."
+          }
+        },
+        "required": [
+          "name",
+          "channelId",
+          "segmentId",
+          "content"
+        ]
+      },
+      "CampaignResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "id рассылки.",
+            "example": "cm3campaign01"
+          },
+          "name": {
+            "type": "string",
+            "description": "Название рассылки.",
+            "example": "April restock"
+          },
+          "channelId": {
+            "type": "string",
+            "description": "Канал, с которого идёт рассылка.",
+            "example": "cm3channel01"
+          },
+          "segmentId": {
+            "type": "string",
+            "description": "Сегмент-аудитория.",
+            "example": "cm3segment01"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "sending",
+              "pause",
+              "completed",
+              "failed",
+              "scheduled"
+            ],
+            "description": "Статус рассылки."
+          },
+          "content": {
+            "description": "Шаблон или текст сессии, сохранённый в рассылке.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CampaignTextContentResponseDto"
+              },
+              {
+                "$ref": "#/components/schemas/CampaignTemplateParamsContentResponseDto"
+              },
+              {
+                "$ref": "#/components/schemas/CampaignTemplateVariablesContentResponseDto"
+              }
+            ]
+          },
+          "sentAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "Когда началась отправка, или null, если она ещё не началась.",
+            "example": "2026-11-01T09:00:00.000Z"
+          },
+          "scheduledAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "Момент отправки по расписанию в UTC или null.",
+            "example": "2026-11-01T09:00:00.000Z"
+          },
+          "queuedRemaining": {
+            "type": "number",
+            "description": "Получатели, которым ещё не отправили.",
+            "example": 0
+          },
+          "sentThisPortion": {
+            "type": "number",
+            "description": "Отправки шаблонов, уже начатые в текущем окне лимита.",
+            "example": 0
+          },
+          "dailyLimit": {
+            "type": "number",
+            "nullable": true,
+            "description": "Сколько отправок шаблонов этот канал может начать за скользящие 24 часа. Берётся из лимита канала (waba_info.current_limit), а не из настроек рассылки. null, если лимит неизвестен или его нет. Текст сессии не считается.",
+            "example": 1000
+          },
+          "nextPortionAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "Когда может начаться следующая порция шаблонов после того, как окно лимита заполнено. null, если порция не ждёт.",
+            "example": null
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Когда создана рассылка.",
+            "example": "2026-11-01T09:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Когда рассылка последний раз менялась.",
+            "example": "2026-11-01T09:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "channelId",
+          "segmentId",
+          "status",
+          "content",
+          "sentAt",
+          "scheduledAt",
+          "queuedRemaining",
+          "sentThisPortion",
+          "dailyLimit",
+          "nextPortionAt",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CampaignPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "description": "Рассылки на этой странице, сначала новые.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignResponseDto"
+            }
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Курсор следующей страницы или null на последней странице.",
+            "example": null
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
+        ]
+      },
+      "CampaignPreviewDto": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "id рассылки.",
+            "example": "cm3campaign01"
+          },
+          "segmentId": {
+            "type": "string",
+            "description": "id сегмента-аудитории.",
+            "example": "cm3segment01"
+          },
+          "contentMode": {
+            "type": "string",
+            "enum": [
+              "template",
+              "text"
+            ],
+            "description": "Что отправляет рассылка: шаблон или текст сессии."
+          },
+          "recipientCount": {
+            "type": "number",
+            "description": "Участники сегмента.",
+            "example": 12
+          },
+          "closedWindowCount": {
+            "type": "number",
+            "description": "Участники вне окна 24 часа.",
+            "example": 3
+          },
+          "tierDailyLimit": {
+            "type": "number",
+            "nullable": true,
+            "description": "Сколько отправок шаблонов этот канал может начать за скользящие 24 часа. Берётся из лимита канала, а не из поля, которое вы задаёте. null, если лимит неизвестен или его нет.",
+            "example": 1000
+          },
+          "exceedsTierDailyLimit": {
+            "type": "boolean",
+            "description": "true, если отправка шаблонов превысит лимит канала.",
+            "example": false
+          },
+          "warnings": {
+            "description": "Предупреждения предпросмотра. Ничего не отправляется.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignPreviewWarningDto"
+            }
+          }
+        },
+        "required": [
+          "campaignId",
+          "segmentId",
+          "contentMode",
+          "recipientCount",
+          "closedWindowCount",
+          "tierDailyLimit",
+          "exceedsTierDailyLimit",
+          "warnings"
+        ]
+      },
+      "SendCampaignDto": {
+        "type": "object",
+        "properties": {
+          "scheduledAt": {
+            "type": "string",
+            "nullable": true,
+            "description": "Момент в будущем в ISO-8601 с Z или числовым смещением, например 2026-11-01T09:00:00Z. Чтобы начать сразу, не передавайте или передайте null. Поля с лимитом в день нет. Шаблоны отправляются в пределах лимита канала."
+          }
+        }
+      },
+      "UpdateCampaignScheduleDto": {
+        "type": "object",
+        "properties": {
+          "scheduledAt": {
+            "type": "string",
+            "description": "Новый момент в будущем в ISO-8601 с Z или числовым смещением, например 2026-11-02T09:00:00Z. Обязательно. Перенести можно только уже запланированную рассылку."
+          }
+        },
+        "required": [
+          "scheduledAt"
+        ]
+      },
+      "CampaignTestSendDto": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "description": "Телефон в формате E.164, например +15551234567. Передайте ровно одно: phone или bsuid. Статус и аналитика рассылки не меняются."
+          },
+          "bsuid": {
+            "type": "string",
+            "description": "BSUID у провайдера, например ab.abc123xyz. Окончание @lid допускается. Передайте ровно одно: phone или bsuid."
+          }
+        }
+      },
+      "CampaignTestSendResponseDto": {
+        "type": "object",
+        "properties": {
+          "accepted": {
+            "type": "boolean",
+            "description": "Всегда true, если тест принят.",
+            "example": true
+          },
+          "campaignId": {
+            "type": "string",
+            "description": "id рассылки.",
+            "example": "cm3campaign01"
+          },
+          "campaignStatus": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "sending",
+              "pause",
+              "completed",
+              "failed",
+              "scheduled"
+            ],
+            "description": "Статус рассылки после теста. Тест его не меняет."
+          },
+          "excludedFromAnalytics": {
+            "type": "boolean",
+            "description": "Всегда true. Эта отправка не попадает в аналитику.",
+            "example": true
+          },
+          "conversationId": {
+            "type": "string",
+            "nullable": true,
+            "description": "id диалога в Inbox или null, если провайдер его не вернул.",
+            "example": "cm3dialog01"
+          },
+          "messageId": {
+            "type": "string",
+            "nullable": true,
+            "description": "id сообщения у провайдера или null, если провайдер принял отправку без id.",
+            "example": "wamid.HBgM"
+          },
+          "providerMessageId": {
+            "type": "string",
+            "nullable": true,
+            "description": "То же значение, что messageId.",
+            "example": "wamid.HBgM"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Телефон в формате E.164. Есть, если тест отправлен на телефон. Возвращается ровно одно: phone или bsuid.",
+            "example": "+15551234567"
+          },
+          "bsuid": {
+            "type": "string",
+            "description": "BSUID у провайдера. Есть, если тест отправлен на BSUID. Возвращается ровно одно: phone или bsuid.",
+            "example": "ab.abc123xyz"
+          }
+        },
+        "required": [
+          "accepted",
+          "campaignId",
+          "campaignStatus",
+          "excludedFromAnalytics",
+          "conversationId",
+          "messageId",
+          "providerMessageId"
+        ]
+      },
+      "UpdateCampaignDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Новое название. Передайте хотя бы одно из полей: name, channelId, segmentId или content. Изменить можно только черновик."
+          },
+          "channelId": {
+            "type": "string",
+            "description": "Другой канал этого аккаунта."
+          },
+          "segmentId": {
+            "type": "string",
+            "description": "id другого сегмента. Новые участники копируются в момент отправки."
+          },
+          "content": {
+            "description": "Заменяет весь объект content. Правила для шаблона и текста те же, что при создании.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CampaignContentDto"
+              }
+            ]
+          }
+        }
+      },
+      "CampaignSegmentListItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "id сегмента.",
+            "example": "cm3segment01"
+          },
+          "name": {
+            "type": "string",
+            "description": "Название сегмента, до 200 символов.",
+            "example": "April buyers"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "Необязательная заметка, до 2000 символов, или null, если её нет."
+          },
+          "memberCount": {
+            "type": "number",
+            "description": "Сколько человек в сегменте.",
+            "example": 12
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "memberCount"
+        ]
+      },
+      "CampaignSegmentMemberInputDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Имя человека, до 200 символов.",
+            "example": "Ana"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Телефон в формате E.164, например +15551234567. Обязателен, если bsuid не передан."
+          },
+          "bsuid": {
+            "type": "string",
+            "description": "BSUID у провайдера, например ab.abc123xyz. Окончание @lid допускается и отбрасывается при сохранении. Нужен телефон или BSUID."
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "CampaignAnalyticsRatesDto": {
+        "type": "object",
+        "properties": {
+          "sent": {
+            "type": "number",
+            "description": "Доля получателей со статусом sent, delivered или read.",
+            "example": 0.5
+          },
+          "delivery": {
+            "type": "number",
+            "description": "Доля получателей со статусом delivered или read.",
+            "example": 0.4
+          },
+          "read": {
+            "type": "number",
+            "description": "Доля получателей со статусом read.",
+            "example": 0.25
+          },
+          "reply": {
+            "type": "number",
+            "description": "Доля получателей, которые ответили.",
+            "example": 0.1
+          },
+          "click": {
+            "type": "number",
+            "description": "Доля получателей, которые нажали кнопку.",
+            "example": 0.05
+          },
+          "failed": {
+            "type": "number",
+            "description": "Доля получателей со статусом failed.",
+            "example": 0
+          }
+        },
+        "required": [
+          "sent",
+          "delivery",
+          "read",
+          "reply",
+          "click",
+          "failed"
+        ]
+      },
+      "CampaignAnalyticsButtonDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "id кнопки из ответа на шаблон.",
+            "example": "shop"
+          },
+          "title": {
+            "type": "string",
+            "description": "Название кнопки или её id, если название не сохранено.",
+            "example": "Shop"
+          },
+          "clicks": {
+            "type": "number",
+            "description": "Сколько раз нажали эту кнопку.",
+            "example": 4
+          },
+          "uniqueClicks": {
+            "type": "number",
+            "description": "Сколько получателей нажали эту кнопку.",
+            "example": 3
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "clicks",
+          "uniqueClicks"
+        ]
+      },
+      "CampaignAnalyticsRecipientDto": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "description": "Телефон в формате E.164 или null, если получатель сохранён по BSUID.",
+            "example": "+15551234567"
+          },
+          "bsuid": {
+            "type": "string",
+            "nullable": true,
+            "description": "BSUID у провайдера или null, если получатель сохранён по телефону.",
+            "example": "ab.abc123xyz"
+          },
+          "name": {
+            "type": "string",
+            "description": "Имя получателя.",
+            "example": "Ana"
+          },
+          "conversationId": {
+            "type": "string",
+            "nullable": true,
+            "description": "id диалога в Inbox или null, если диалог не привязан.",
+            "example": "cm3dialog01"
+          },
+          "providerConversationId": {
+            "type": "string",
+            "nullable": true,
+            "description": "id чата у провайдера: цифры телефона плюс @c.us, иначе BSUID плюс @lid, или null.",
+            "example": "15551234567@c.us"
+          },
+          "messageId": {
+            "type": "string",
+            "nullable": true,
+            "description": "id сообщения у провайдера или null, пока провайдер не принял отправку.",
+            "example": "wamid.HBgM"
+          },
+          "providerMessageId": {
+            "type": "string",
+            "nullable": true,
+            "description": "То же значение, что messageId.",
+            "example": "wamid.HBgM"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "queued",
+              "leasing",
+              "sent",
+              "delivered",
+              "read",
+              "failed",
+              "skipped",
+              "cancelled"
+            ],
+            "description": "Статус доставки в снимке."
+          },
+          "sentAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "Когда сообщение отправлено, или null.",
+            "example": "2026-11-01T09:00:00.000Z"
+          },
+          "deliveredAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "Когда сообщение доставлено, или null.",
+            "example": "2026-11-01T09:00:00.000Z"
+          },
+          "readAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "Когда сообщение прочитано, или null.",
+            "example": "2026-11-01T09:00:00.000Z"
+          },
+          "replies": {
+            "description": "Ответы этого получателя, сначала старые.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignAnalyticsRecipientReplyDto"
+            }
+          },
+          "error": {
+            "type": "object",
+            "nullable": true,
+            "description": "Подробности ошибки или null, если у получателя нет кода ошибки, заголовка и времени сбоя. Если объект есть, в нём всегда есть code, title и failedAt.",
+            "properties": {
+              "code": {
+                "type": "string",
+                "nullable": true,
+                "description": "Код ошибки провайдера или причины пропуска, или null, если он не сохранён."
+              },
+              "title": {
+                "type": "string",
+                "nullable": true,
+                "description": "Заголовок ошибки или null, если он не сохранён."
+              },
+              "failedAt": {
+                "type": "string",
+                "nullable": true,
+                "format": "date-time",
+                "description": "Когда отправка не прошла или была пропущена, или null, если время не сохранено.",
+                "example": "2026-11-01T09:00:00.000Z"
+              }
+            }
+          }
+        },
+        "required": [
+          "phone",
+          "bsuid",
+          "name",
+          "conversationId",
+          "providerConversationId",
+          "messageId",
+          "providerMessageId",
+          "status",
+          "sentAt",
+          "deliveredAt",
+          "readAt",
+          "replies",
+          "error"
+        ]
+      },
+      "CampaignAnalyticsReplyItemDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "button",
+              "text"
+            ],
+            "description": "button — быстрый ответ кнопкой шаблона, text — ответ текстом внутри окна 24 часа."
+          },
+          "buttonId": {
+            "type": "string",
+            "nullable": true,
+            "description": "id кнопки или null для ответа текстом.",
+            "example": "shop"
+          },
+          "text": {
+            "type": "string",
+            "nullable": true,
+            "description": "Текст ответа или название кнопки, или null, если ничего не сохранено."
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "description": "Телефон в формате E.164 или null, если получатель сохранён по BSUID.",
+            "example": "+15551234567"
+          },
+          "bsuid": {
+            "type": "string",
+            "nullable": true,
+            "description": "BSUID у провайдера или null, если получатель сохранён по телефону.",
+            "example": "ab.abc123xyz"
+          },
+          "name": {
+            "type": "string",
+            "description": "Имя получателя.",
+            "example": "Ana"
+          },
+          "conversationId": {
+            "type": "string",
+            "nullable": true,
+            "description": "id диалога в Inbox или null, если диалог не привязан.",
+            "example": "cm3dialog01"
+          },
+          "providerConversationId": {
+            "type": "string",
+            "nullable": true,
+            "description": "id чата у провайдера: цифры телефона плюс @c.us, иначе BSUID плюс @lid, или null.",
+            "example": "15551234567@c.us"
+          },
+          "receivedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Когда получен ответ.",
+            "example": "2026-11-01T09:00:00.000Z"
+          },
+          "messageId": {
+            "type": "string",
+            "description": "id ответа у провайдера.",
+            "example": "wamid.HBgM"
+          },
+          "providerMessageId": {
+            "type": "string",
+            "description": "То же значение, что messageId.",
+            "example": "wamid.HBgM"
+          }
+        },
+        "required": [
+          "type",
+          "buttonId",
+          "text",
+          "phone",
+          "bsuid",
+          "name",
+          "conversationId",
+          "providerConversationId",
+          "receivedAt",
+          "messageId",
+          "providerMessageId"
+        ]
+      },
+      "CampaignAnalyticsErrorGroupDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "description": "Сохранённая причина ошибки. Группы без причины не выводятся.",
+            "example": "closed_window"
+          },
+          "code": {
+            "type": "string",
+            "nullable": true,
+            "description": "Код ошибки провайдера или причины пропуска, или null, если он не сохранён."
+          },
+          "title": {
+            "type": "string",
+            "nullable": true,
+            "description": "Заголовок ошибки или null, если он не сохранён."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "failed",
+              "skipped"
+            ],
+            "description": "failed — сбой у провайдера. skipped — сообщение не отправлялось."
+          },
+          "count": {
+            "type": "number",
+            "description": "Получатели в этой группе.",
+            "example": 2
+          },
+          "share": {
+            "type": "number",
+            "description": "Доля всех получателей рассылки в этой группе, от 0 до 1, с округлением до 4 знаков.",
+            "example": 0.1667
+          },
+          "recipients": {
+            "description": "Получатели в этой группе, не больше recipientsLimit.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignAnalyticsErrorRecipientDto"
+            }
+          },
+          "hasMore": {
+            "type": "boolean",
+            "description": "true, если получателей с этой причиной больше, чем вернул recipientsLimit.",
+            "example": false
+          }
+        },
+        "required": [
+          "reason",
+          "code",
+          "title",
+          "type",
+          "count",
+          "share",
+          "recipients",
+          "hasMore"
+        ]
+      },
+      "CampaignContentDto": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "template",
+              "text"
+            ],
+            "description": "template отправляет шаблон WABA. text отправляет текст сессии, и он доходит только до тех, у кого открыто окно 24 часа."
+          },
+          "templateName": {
+            "type": "string",
+            "description": "Название шаблона WABA. Обязательно, если mode — template."
+          },
+          "language": {
+            "type": "string",
+            "description": "Код языка шаблона, например en или pt_BR. Обязателен, если mode — template."
+          },
+          "variables": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "example": {
+              "1": "Ana"
+            },
+            "description": "Только простые переменные текста, например { \"1\": \"Ana\" }. Числовой ключ заполняет текст сообщения. Шапка, кнопки и карусель здесь не заполняются — для них используйте params. Игнорируется, если задан params."
+          },
+          "params": {
+            "type": "array",
+            "description": "Основной способ заполнить шаблон. Тот же массив, что принимает sendTemplate. Каждый элемент — компонент с type (header, body, button, carousel или более новый тип WABA). Массив уходит без изменений, включая ссылку на картинку в шапке. Если он задан, variables игнорируется. Пустой массив допустим.",
+            "example": [
+              {
+                "type": "header",
+                "parameters": [
+                  {
+                    "type": "image",
+                    "image": {
+                      "link": "https://example.com/image.jpg"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "body",
+                "parameters": [
+                  {
+                    "type": "text",
+                    "text": "Ana"
+                  }
+                ]
+              }
+            ]
+          },
+          "messageSendTtlSeconds": {
+            "type": "number",
+            "example": 86400,
+            "description": "Сколько секунд WhatsApp пытается доставить этот шаблон. То же поле, что messageSendTtlSeconds в sendTemplate. Стоит рядом с params, а не внутри массива params. Если не передать, действует значение шаблона по умолчанию."
+          },
+          "text": {
+            "type": "string",
+            "description": "Текст сессии. Обязателен, если mode — text. В лимит канала не входит."
+          }
+        },
+        "required": [
+          "mode"
+        ]
+      },
+      "CampaignTextContentResponseDto": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "text"
+            ],
+            "example": "text",
+            "description": "Текст сессии, который отправляется только внутри окна 24 часа."
+          },
+          "text": {
+            "type": "string",
+            "description": "Текст сообщения. Пусто, если ничего не сохранено.",
+            "example": "Hello"
+          }
+        },
+        "required": [
+          "mode",
+          "text"
+        ]
+      },
+      "CampaignTemplateParamsContentResponseDto": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "template"
+            ],
+            "example": "template",
+            "description": "Одобренный шаблон WABA."
+          },
+          "templateName": {
+            "type": "string",
+            "description": "Название шаблона WABA. Пусто, если ничего не сохранено.",
+            "example": "order_update"
+          },
+          "language": {
+            "type": "string",
+            "description": "Код языка шаблона. Пусто, если ничего не сохранено.",
+            "example": "en"
+          },
+          "params": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              ]
+            },
+            "description": "Параметры шаблона, сохранённые для sendTemplate. Каждый элемент — строка или объект."
+          },
+          "messageSendTtlSeconds": {
+            "type": "number",
+            "example": 86400,
+            "description": "Сколько секунд WhatsApp пытается доставить этот шаблон. Не возвращается, если действует значение шаблона по умолчанию."
+          }
+        },
+        "required": [
+          "mode",
+          "templateName",
+          "language",
+          "params"
+        ]
+      },
+      "CampaignTemplateVariablesContentResponseDto": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "template"
+            ],
+            "example": "template",
+            "description": "Одобренный шаблон WABA."
+          },
+          "templateName": {
+            "type": "string",
+            "description": "Название шаблона WABA. Пусто, если ничего не сохранено.",
+            "example": "order_update"
+          },
+          "language": {
+            "type": "string",
+            "description": "Код языка шаблона. Пусто, если ничего не сохранено.",
+            "example": "en"
+          },
+          "variables": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "example": {
+              "1": "Ana"
+            },
+            "description": "Простые переменные шаблона. Есть, если params не сохранены."
+          },
+          "messageSendTtlSeconds": {
+            "type": "number",
+            "example": 86400,
+            "description": "Сколько секунд WhatsApp пытается доставить этот шаблон. Не возвращается, если действует значение шаблона по умолчанию."
+          }
+        },
+        "required": [
+          "mode",
+          "templateName",
+          "language",
+          "variables"
+        ]
+      },
+      "CampaignPreviewWarningDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "closed_window_skipped",
+              "session_consumes_free_window",
+              "exceeds_tier_daily_limit",
+              "recipient_cap_exceeded"
+            ],
+            "description": "Код предупреждения."
+          },
+          "message": {
+            "type": "string",
+            "description": "Текст предупреждения.",
+            "example": "Closed-window recipients will be skipped."
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ]
+      },
+      "CampaignAnalyticsRecipientReplyDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "button",
+              "text"
+            ],
+            "description": "button — быстрый ответ кнопкой шаблона, text — ответ текстом внутри окна 24 часа."
+          },
+          "buttonId": {
+            "type": "string",
+            "nullable": true,
+            "description": "id кнопки или null для ответа текстом.",
+            "example": "shop"
+          },
+          "text": {
+            "type": "string",
+            "nullable": true,
+            "description": "Текст ответа или название кнопки, или null, если ничего не сохранено."
+          },
+          "receivedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Когда получен ответ.",
+            "example": "2026-11-01T09:00:00.000Z"
+          },
+          "messageId": {
+            "type": "string",
+            "description": "id ответа у провайдера.",
+            "example": "wamid.HBgM"
+          },
+          "providerMessageId": {
+            "type": "string",
+            "description": "То же значение, что messageId.",
+            "example": "wamid.HBgM"
+          }
+        },
+        "required": [
+          "type",
+          "buttonId",
+          "text",
+          "receivedAt",
+          "messageId",
+          "providerMessageId"
+        ]
+      },
+      "CampaignAnalyticsErrorRecipientDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "id получателя.",
+            "example": "cm3recipient01"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "description": "Телефон в формате E.164 или null, если получатель сохранён по BSUID.",
+            "example": "+15551234567"
+          },
+          "bsuid": {
+            "type": "string",
+            "nullable": true,
+            "description": "BSUID у провайдера или null, если получатель сохранён по телефону.",
+            "example": "ab.abc123xyz"
+          },
+          "name": {
+            "type": "string",
+            "description": "Имя получателя.",
+            "example": "Ana"
+          },
+          "conversationId": {
+            "type": "string",
+            "nullable": true,
+            "description": "id диалога в Inbox или null, если диалог не привязан.",
+            "example": "cm3dialog01"
+          },
+          "messageId": {
+            "type": "string",
+            "nullable": true,
+            "description": "id сообщения у провайдера или null, если у отправки его нет.",
+            "example": "wamid.HBgM"
+          },
+          "providerConversationId": {
+            "type": "string",
+            "nullable": true,
+            "description": "id чата у провайдера: цифры телефона плюс @c.us, иначе BSUID плюс @lid, или null.",
+            "example": "15551234567@c.us"
+          },
+          "providerMessageId": {
+            "type": "string",
+            "nullable": true,
+            "description": "То же значение, что messageId.",
+            "example": "wamid.HBgM"
+          }
+        },
+        "required": [
+          "id",
+          "phone",
+          "bsuid",
+          "name",
+          "conversationId",
+          "messageId",
+          "providerConversationId",
+          "providerMessageId"
+        ]
+      }
+    }
+  }
+}

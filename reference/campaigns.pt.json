@@ -1,0 +1,2916 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/v1/campaigns/segments": {
+      "post": {
+        "operationId": "CampaignSegmentsController_create",
+        "summary": "Criar um segmento",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCampaignSegmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentCreatedDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "name é obrigatório, até 200 caracteres. description é opcional, até 2000 caracteres. Retorna o id do segmento, usado ao criar uma campanha."
+      },
+      "get": {
+        "operationId": "CampaignSegmentsController_list",
+        "summary": "Listar segmentos",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Tamanho da página. Padrão 50, máximo 100.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "nextCursor da página anterior. Deixe vazio para a primeira página.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentPageDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Os mais recentes primeiro. limit é o tamanho da página, padrão 50, máximo 100. cursor é o nextCursor da página anterior. Deixe cursor vazio para a primeira página."
+      }
+    },
+    "/api/v1/campaigns/segments/{segmentId}/members": {
+      "get": {
+        "operationId": "CampaignSegmentsController_listMembers",
+        "summary": "Listar membros do segmento",
+        "parameters": [
+          {
+            "name": "segmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id do segmento retornado na criação ou na lista."
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Tamanho da página. Padrão 50, máximo 100.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "nextCursor da página anterior. Deixe vazio para a primeira página.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentMemberPageDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "limit é o tamanho da página, padrão 50, máximo 100. cursor é o nextCursor da página anterior."
+      },
+      "post": {
+        "operationId": "CampaignSegmentsController_addMembers",
+        "summary": "Adicionar membros ao segmento",
+        "description": "members é uma lista não vazia. Cada item precisa de name. phone vai em E.164 ou fica de fora. bsuid é o id no provedor, por exemplo ab.abc123xyz, ou fica de fora. phone ou bsuid é obrigatório. Telefone ou BSUID repetido no segmento é recusado. O segmento pode ter no máximo 500 membros.",
+        "parameters": [
+          {
+            "name": "segmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id do segmento retornado na criação ou na lista."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCampaignSegmentMembersDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentMemberBatchDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "put": {
+        "operationId": "CampaignSegmentsController_replaceMembers",
+        "summary": "Substituir os membros do segmento",
+        "description": "Apaga todos os membros atuais e insere esta lista. Valem as mesmas regras de name, phone e bsuid da adição de membros. A nova lista pode ter no máximo 500 membros.",
+        "parameters": [
+          {
+            "name": "segmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id do segmento retornado na criação ou na lista."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplaceCampaignSegmentMembersDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentMemberBatchDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "CampaignSegmentsController_removeMembers",
+        "summary": "Remover membros do segmento",
+        "parameters": [
+          {
+            "name": "segmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id do segmento retornado na criação ou na lista."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveCampaignSegmentMembersDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentMembersRemovedDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "memberIds é uma lista não vazia de ids de membros da lista de membros. Os outros membros continuam."
+      }
+    },
+    "/api/v1/campaigns/segments/{segmentId}/members/{memberId}": {
+      "patch": {
+        "operationId": "CampaignSegmentsController_patchMember",
+        "summary": "Atualizar um membro do segmento",
+        "parameters": [
+          {
+            "name": "segmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id do segmento retornado na criação ou na lista."
+          },
+          {
+            "name": "memberId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id do membro retornado na lista de membros."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchCampaignSegmentMemberDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentMemberDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Envie só os campos que mudam. phone precisa continuar em E.164 e bsuid no formato do provedor. Depois da atualização, o membro ainda precisa ter telefone ou BSUID."
+      }
+    },
+    "/api/v1/campaigns/segments/{segmentId}": {
+      "get": {
+        "operationId": "CampaignSegmentsController_get",
+        "summary": "Ver um segmento",
+        "parameters": [
+          {
+            "name": "segmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id do segmento retornado na criação ou na lista."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "segmentId é o id retornado quando o segmento foi criado."
+      },
+      "patch": {
+        "operationId": "CampaignSegmentsController_update",
+        "summary": "Atualizar um segmento",
+        "parameters": [
+          {
+            "name": "segmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id do segmento retornado na criação ou na lista."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCampaignSegmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Envie só os campos que mudam. name até 200 caracteres. description até 2000 caracteres. segmentId é o id da criação."
+      },
+      "delete": {
+        "operationId": "CampaignSegmentsController_remove",
+        "summary": "Apagar um segmento",
+        "parameters": [
+          {
+            "name": "segmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id do segmento retornado na criação ou na lista."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Segments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Apaga o segmento e os membros dele. Falha enquanto uma campanha em rascunho, em envio, pausada ou agendada ainda usa o segmento."
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/analytics": {
+      "get": {
+        "operationId": "CampaignAnalyticsController_summary",
+        "summary": "Resumo da análise",
+        "description": "Contagens do snapshot feito no envio. dailyLimit é o limite do canal, não uma configuração da campanha. As taxas são frações de 0 a 1.",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id da campanha retornado na criação ou na lista."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignAnalyticsSummaryDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Analytics"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/analytics/recipients": {
+      "get": {
+        "operationId": "CampaignAnalyticsController_recipients",
+        "summary": "Análise por destinatário",
+        "description": "Uma linha por destinatário. filter é uma lista separada por vírgulas de sent, delivered, read, replied, failed, skipped ou cancelled. filter=clicked é recusado; use filter=replied com replyType=button. fields limita as colunas. conversationId é a conversa no Inbox. providerConversationId é o id do chat no provedor. messageId e providerMessageId são o id da mensagem no provedor. limit máximo 100. cursor é o nextCursor.",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id da campanha retornado na criação ou na lista."
+          },
+          {
+            "name": "filter",
+            "required": false,
+            "in": "query",
+            "description": "Separados por vírgula: sent, delivered, read, replied, failed, skipped, cancelled. filter=clicked é recusado — use replied com replyType=button.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "replied",
+            "required": false,
+            "in": "query",
+            "description": "true mantém só quem respondeu. false mantém quem não respondeu.",
+            "schema": {
+              "enum": [
+                "true",
+                "false"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "replyType",
+            "required": false,
+            "in": "query",
+            "description": "button mantém os toques em botões. text mantém as respostas em texto livre.",
+            "schema": {
+              "enum": [
+                "button",
+                "text"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "buttonId",
+            "required": false,
+            "in": "query",
+            "description": "id de um botão do template. Use com replyType=button.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reason",
+            "required": false,
+            "in": "query",
+            "description": "Motivo exato de pulo ou de falha, da lista de erros.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "required": false,
+            "in": "query",
+            "description": "Colunas a retornar, separadas por vírgula. Inclua providerConversationId e providerMessageId quando precisar dos ids do provedor. conversationId é o id da conversa no Inbox. messageId é o id da mensagem no provedor.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Tamanho da página, de 1 a 100. Padrão 50.",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "nextCursor da página anterior. Deixe vazio para a primeira página.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignAnalyticsRecipientPageDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Analytics"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/analytics/replies": {
+      "get": {
+        "operationId": "CampaignAnalyticsController_replies",
+        "summary": "Respostas",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id da campanha retornado na criação ou na lista."
+          },
+          {
+            "name": "replyType",
+            "required": false,
+            "in": "query",
+            "description": "button mantém os toques em botões. text mantém as respostas em texto livre. Sem o parâmetro, vêm os dois.",
+            "schema": {
+              "enum": [
+                "button",
+                "text"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "buttonId",
+            "required": false,
+            "in": "query",
+            "description": "id de um botão do template.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "phone",
+            "required": false,
+            "in": "query",
+            "description": "Telefone E.164 de um destinatário.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bsuid",
+            "required": false,
+            "in": "query",
+            "description": "BSUID de um destinatário no provedor, por exemplo ab.abc123xyz.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateFrom",
+            "required": false,
+            "in": "query",
+            "description": "Início em ISO-8601, inclusivo, por exemplo 2026-11-01T00:00:00Z.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateTo",
+            "required": false,
+            "in": "query",
+            "description": "Fim em ISO-8601, inclusivo, por exemplo 2026-11-02T00:00:00Z.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Tamanho da página, de 1 a 100. Padrão 50.",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "nextCursor da página anterior. Deixe vazio para a primeira página.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignAnalyticsRepliesDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Analytics"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "replyType é button ou text. buttonId filtra um botão. phone e bsuid filtram um destinatário. dateFrom e dateTo são ISO-8601. providerConversationId é o id do chat no provedor. messageId e providerMessageId são o id da mensagem no provedor."
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/analytics/errors": {
+      "get": {
+        "operationId": "CampaignAnalyticsController_errors",
+        "summary": "Erros por motivo",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id da campanha retornado na criação ou na lista."
+          },
+          {
+            "name": "recipientsLimit",
+            "required": false,
+            "in": "query",
+            "description": "Destinatários mostrados por motivo. Padrão 20, máximo 100.",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "description": "failed mantém os erros de envio. skipped mantém os destinatários que não receberam o envio. Sem o parâmetro, vêm os dois.",
+            "schema": {
+              "enum": [
+                "failed",
+                "skipped"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignAnalyticsErrorsDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Analytics"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Agrupa por motivo os destinatários com falha e os pulados. type é failed ou skipped. recipientsLimit é quantos destinatários incluir por motivo, padrão 20, máximo 100. Cada destinatário inclui providerConversationId e providerMessageId."
+      }
+    },
+    "/api/v1/campaigns": {
+      "post": {
+        "operationId": "CampaignsController_create",
+        "summary": "Criar um rascunho de campanha",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCampaignDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "name é o título da campanha. channelId é o canal que vai enviar. segmentId é o público. content.mode é template ou text. Para template, defina content.templateName, content.language e content.params (o array do sendTemplate). content.messageSendTtlSeconds é opcional, em segundos, e fica ao lado de params. Para texto, defina content.text. Se status for enviado, precisa ser draft."
+      },
+      "get": {
+        "operationId": "CampaignsController_list",
+        "summary": "Listar campanhas",
+        "description": "As mais recentes primeiro, de toda a conta. channelId limita a lista a esses canais. Repita o parâmetro ou envie uma lista separada por vírgulas. Sem channelId, vêm todos os canais. limit padrão 50, máximo 100. cursor é o nextCursor da página anterior.",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Tamanho da página. Padrão 50, máximo 100.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "nextCursor da página anterior. Deixe vazio para a primeira página.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "channelId",
+            "required": false,
+            "in": "query",
+            "description": "id do canal. Repita o parâmetro ou envie uma lista separada por vírgulas. Sem ele, vêm todos os canais.",
+            "schema": {
+              "type": "array",
+              "items": {}
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignPageDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/preview": {
+      "get": {
+        "operationId": "CampaignsController_previewCampaign",
+        "summary": "Pré-visualizar uma campanha",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id da campanha retornado na criação ou na lista."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignPreviewDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Conta os destinatários e quantos estão fora da janela de 24 horas. tierDailyLimit é o limite do canal. Não retorna preço nem custo. Nada é enviado."
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/send": {
+      "post": {
+        "operationId": "CampaignsController_send",
+        "summary": "Enviar ou agendar uma campanha",
+        "description": "Copia o segmento para o snapshot de envio. scheduledAt é um instante futuro em ISO-8601 com Z ou deslocamento numérico. Para começar agora, não envie o campo ou envie null. Os envios de template pausam quando o limite do canal nas últimas 24 horas se esgota. Não existe um campo separado por dia.",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id da campanha retornado na criação ou na lista."
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendCampaignDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/schedule": {
+      "patch": {
+        "operationId": "CampaignsController_schedule",
+        "summary": "Mudar o horário agendado",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id da campanha retornado na criação ou na lista."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCampaignScheduleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "scheduledAt é um novo instante futuro em ISO-8601 com Z ou deslocamento numérico. Só uma campanha já agendada pode ser remarcada."
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/unschedule": {
+      "post": {
+        "operationId": "CampaignsController_unschedule",
+        "summary": "Voltar uma campanha agendada para rascunho",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id da campanha retornado na criação ou na lista."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Limpa scheduledAt e volta o status para draft. Sem corpo."
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/pause": {
+      "post": {
+        "operationId": "CampaignsController_pause",
+        "summary": "Pausar uma campanha em envio",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id da campanha retornado na criação ou na lista."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Para de pegar novos destinatários da fila. Sem corpo. Ao retomar, o envio continua com o mesmo snapshot."
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/resume": {
+      "post": {
+        "operationId": "CampaignsController_resume",
+        "summary": "Retomar uma campanha pausada",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id da campanha retornado na criação ou na lista."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Continua com o mesmo snapshot. Sem corpo. O limite diário continua sendo o limite do canal."
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/complete": {
+      "post": {
+        "operationId": "CampaignsController_complete",
+        "summary": "Concluir uma campanha",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id da campanha retornado na criação ou na lista."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Marca como concluída uma campanha em envio ou pausada e descarta os destinatários que não receberam o envio. Sem corpo."
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/test": {
+      "post": {
+        "operationId": "CampaignsController_test",
+        "summary": "Enviar um teste",
+        "description": "Envia o conteúdo do rascunho para um destinatário e não muda o status nem a análise da campanha. Informe exatamente um: phone (E.164) ou bsuid (formato do provedor). Uma recusa do provedor é um erro, não um envio aceito. conversationId é a conversa no Inbox. messageId e providerMessageId são o mesmo id da mensagem no provedor, ou null quando o provedor aceitou o envio sem id.",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id da campanha retornado na criação ou na lista."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CampaignTestSendDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignTestSendResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/campaigns/{campaignId}": {
+      "get": {
+        "operationId": "CampaignsController_get",
+        "summary": "Ver uma campanha",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id da campanha retornado na criação ou na lista."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "campaignId é o id da criação. dailyLimit é o limite do canal nas últimas 24 horas, não é um valor que você define. scheduledAt é o horário futuro do envio, ou null."
+      },
+      "patch": {
+        "operationId": "CampaignsController_update",
+        "summary": "Atualizar um rascunho de campanha",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "id da campanha retornado na criação ou na lista."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCampaignDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Só um rascunho pode ser alterado. Envie pelo menos um de name, channelId, segmentId ou content. content segue as mesmas regras de template e texto da criação."
+      }
+    }
+  },
+  "info": {
+    "title": "Campaigns API",
+    "description": "A Campaigns API permite enviar uma mensagem para vários destinatários. Por padrão, um segmento pode ter até 500 pessoas. Para aumentar o limite para 10.000, fale com a gente em [hello@1msg.io](mailto:hello@1msg.io). Os métodos do Inbox não estão neste documento.\n\nUse os grupos da API nesta ordem: Segments → Campaigns → Analytics.\n\n## 1. Segmentos\n\nCrie um segmento e adicione membros. Cada membro precisa de `name` e de pelo menos um entre `phone` e `bsuid`.\n\n## 2. Campanhas\n\nCrie um rascunho com um `channelId` que a chave de API pode acessar e o `segmentId` do passo anterior.\n\nDefina `content.mode` como `text` ou `template`:\n\n- Texto: informe `content.text`.\n- Template: informe `content.templateName` e `content.language` (por exemplo, `en`).\n\nPara templates:\n\n- `content.params` usa o mesmo formato de `sendTemplate` e é repassado à WABA sem mudanças, com suporte a imagens no cabeçalho, variáveis no corpo, botões e cards de carrossel.\n- `content.messageSendTtlSeconds` é opcional e define, em segundos, por quanto tempo o WhatsApp tenta entregar a mensagem. Ele fica ao lado de `params`, não dentro dos componentes do template.\n\nPré-visualize o rascunho antes de enviar.\n\nPara agendar uma campanha, defina `scheduledAt` com um instante futuro em ISO 8601 com `Z` ou deslocamento numérico, por exemplo `2026-11-01T09:00:00Z`. Para começar o envio na hora, não envie o campo ou defina `null`.\n\nNão existe configuração de quantidade de mensagens por dia. Os envios de template usam o limite do canal, retornado em `dailyLimit`. Mensagens de texto da sessão enviadas dentro de uma janela de 24 horas aberta não contam para esse limite.\n\n## 3. Análise\n\nDepois do envio, consulte a análise para acompanhar o resultado da campanha:\n\n- Estatísticas gerais: total de mensagens enviadas, entregues, lidas e respondidas.\n- Estatísticas por destinatário: quando cada mensagem foi enviada, entregue e lida, quando o destinatário respondeu e o que respondeu, incluindo toques em botões e mensagens de texto livre.\n- Estatísticas de botões: quem tocou em cada botão e quando.\n- Estatísticas de erros: quais destinatários tiveram erros e o erro de cada número.\n\n## 4. Webhooks de campanhas\n\nA 1MSG envia eventos de webhook para a URL HTTPS configurada quando segmentos ou campanhas são criados ou atualizados e quando o status de uma campanha muda.\n\nConfigure os webhooks em Settings → Developer → Webhooks.\n\n### Eventos\n\n- `segment.created` — um segmento foi criado. `action` é `segment_created`.\n- `segment.updated` — um segmento ou os membros dele mudaram. `action` pode ser `segment_updated`, `segment_deleted`, `member_added`, `member_updated`, `member_deleted` ou `members_replaced`. O payload não identifica qual membro mudou.\n- `campaign.created` — um rascunho de campanha foi criado. `scheduledAt` traz o horário agendado do envio ou `null`.\n- `campaign.updated` — um rascunho de campanha foi atualizado. `scheduledAt` traz o horário agendado do envio ou `null`.\n- `campaign.status_changed` — o status da campanha mudou para `draft`, `sending`, `pause`, `completed`, `failed` ou `scheduled`. `scheduledAt` traz o horário agendado do envio ou `null`.\n\n## Autorização\n\nA chave precisa ter o escopo Campaigns. Gere a chave em Settings → Developer → API key.\n\n```\nAuthorization: Bearer 1msg_live_…\n```",
+    "version": "1.0"
+  },
+  "tags": [
+    {
+      "name": "Segments",
+      "description": "Crie um segmento e depois adicione pessoas. Cada membro precisa de um nome e de um telefone em E.164 ou de um BSUID."
+    },
+    {
+      "name": "Campaigns",
+      "description": "Crie um rascunho, defina o template ou o texto, pré-visualize e depois envie ou agende. O limite diário de templates é o limite do canal, não um campo da campanha."
+    },
+    {
+      "name": "Analytics",
+      "description": "Leia o snapshot do envio: quem foi alcançado, o que respondeu e por que um envio falhou. conversationId é a conversa no Inbox. providerConversationId é o id do chat no provedor. messageId e providerMessageId são o mesmo id da mensagem no provedor."
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://api.1msg.io",
+      "description": "Production"
+    },
+    {
+      "url": "https://api.stage.1msg.io",
+      "description": "Staging"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "API key",
+        "type": "http",
+        "description": "Chave gerada em Settings → Developer → API key. Os métodos do Inbox precisam do escopo Inbox. Os métodos de Campaigns precisam do escopo Campaigns."
+      }
+    },
+    "schemas": {
+      "CreateCampaignSegmentDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nome do segmento, até 200 caracteres.",
+            "example": "April buyers"
+          },
+          "description": {
+            "type": "string",
+            "description": "Observação opcional, até 2000 caracteres."
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "CampaignSegmentCreatedDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "id do segmento.",
+            "example": "cm3segment01"
+          },
+          "name": {
+            "type": "string",
+            "description": "Nome do segmento, até 200 caracteres.",
+            "example": "April buyers"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "Observação opcional, até 2000 caracteres, ou null quando não há nenhuma.",
+            "example": "People who bought in April"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Quando o segmento foi criado.",
+            "example": "2026-11-01T09:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "createdAt"
+        ]
+      },
+      "CampaignSegmentPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "description": "Segmentos desta página, os mais recentes primeiro.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignSegmentListItemDto"
+            }
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Cursor da próxima página, ou null na última página.",
+            "example": null
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
+        ]
+      },
+      "CampaignSegmentMemberPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "description": "Membros desta página, os mais recentes primeiro.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignSegmentMemberDto"
+            }
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Cursor da próxima página, ou null na última página.",
+            "example": null
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
+        ]
+      },
+      "AddCampaignSegmentMembersDto": {
+        "type": "object",
+        "properties": {
+          "members": {
+            "description": "Lista não vazia. Cada item precisa de name e de um telefone ou um BSUID. Telefone ou BSUID repetido no segmento é recusado. O segmento pode ter no máximo 500 membros.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignSegmentMemberInputDto"
+            }
+          }
+        },
+        "required": [
+          "members"
+        ]
+      },
+      "CampaignSegmentMemberBatchDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "description": "Membros gravados por esta requisição.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignSegmentMemberDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "ReplaceCampaignSegmentMembersDto": {
+        "type": "object",
+        "properties": {
+          "members": {
+            "description": "Substitui todos os membros atuais. Mesmas regras de name, phone e bsuid da adição de membros. Uma lista vazia limpa o segmento. A nova lista pode ter no máximo 500 membros.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignSegmentMemberInputDto"
+            }
+          }
+        },
+        "required": [
+          "members"
+        ]
+      },
+      "RemoveCampaignSegmentMembersDto": {
+        "type": "object",
+        "properties": {
+          "memberIds": {
+            "description": "ids de membros da lista de membros. Os outros membros continuam.",
+            "example": [
+              "mem_1"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "memberIds"
+        ]
+      },
+      "CampaignSegmentMembersRemovedDto": {
+        "type": "object",
+        "properties": {
+          "removed": {
+            "type": "number",
+            "description": "Quantos membros foram apagados.",
+            "example": 2
+          }
+        },
+        "required": [
+          "removed"
+        ]
+      },
+      "PatchCampaignSegmentMemberDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Novo nome, até 200 caracteres."
+          },
+          "phone": {
+            "type": "string",
+            "description": "Telefone E.164, por exemplo +15551234567. Depois da atualização, o membro ainda precisa ter telefone ou BSUID."
+          },
+          "bsuid": {
+            "type": "string",
+            "description": "BSUID do provedor, por exemplo ab.abc123xyz. Um @lid no final é salvo sem ele."
+          }
+        }
+      },
+      "CampaignSegmentMemberDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "id do membro.",
+            "example": "cm3member01"
+          },
+          "name": {
+            "type": "string",
+            "description": "Nome do membro.",
+            "example": "Ana"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "description": "Telefone em E.164, ou null quando o membro está salvo pelo BSUID.",
+            "example": "+15551234567"
+          },
+          "bsuid": {
+            "type": "string",
+            "nullable": true,
+            "description": "BSUID do provedor sem @lid no final, ou null quando o membro está salvo pelo telefone.",
+            "example": "ab.abc123xyz"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "phone",
+          "bsuid"
+        ]
+      },
+      "CampaignSegmentDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "id do segmento.",
+            "example": "cm3segment01"
+          },
+          "name": {
+            "type": "string",
+            "description": "Nome do segmento, até 200 caracteres.",
+            "example": "April buyers"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "Observação opcional, até 2000 caracteres, ou null quando não há nenhuma."
+          },
+          "memberCount": {
+            "type": "number",
+            "description": "Quantas pessoas há no segmento.",
+            "example": 12
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Quando o segmento foi criado.",
+            "example": "2026-11-01T09:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Quando o segmento foi atualizado pela última vez.",
+            "example": "2026-11-01T09:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "memberCount",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UpdateCampaignSegmentDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Novo nome, até 200 caracteres. Envie só os campos que mudam."
+          },
+          "description": {
+            "type": "string",
+            "description": "Nova observação, até 2000 caracteres."
+          }
+        }
+      },
+      "CampaignAnalyticsSummaryDto": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "id da campanha.",
+            "example": "cm3campaign01"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "sending",
+              "pause",
+              "completed",
+              "failed",
+              "scheduled"
+            ],
+            "description": "Status da campanha."
+          },
+          "recipients": {
+            "type": "number",
+            "description": "Destinatários no snapshot de envio.",
+            "example": 12
+          },
+          "sent": {
+            "type": "number",
+            "description": "Destinatários com status sent, delivered ou read.",
+            "example": 10
+          },
+          "delivered": {
+            "type": "number",
+            "description": "Destinatários com status delivered ou read.",
+            "example": 8
+          },
+          "read": {
+            "type": "number",
+            "description": "Destinatários com status read.",
+            "example": 4
+          },
+          "failed": {
+            "type": "number",
+            "description": "Destinatários com status failed.",
+            "example": 1
+          },
+          "skipped": {
+            "type": "number",
+            "description": "Destinatários com status skipped.",
+            "example": 1
+          },
+          "cancelled": {
+            "type": "number",
+            "description": "Destinatários tirados da fila antes do envio.",
+            "example": 0
+          },
+          "queued": {
+            "type": "number",
+            "description": "Destinatários com status queued ou leasing.",
+            "example": 0
+          },
+          "replied": {
+            "type": "number",
+            "description": "Destinatários que responderam pelo menos uma vez.",
+            "example": 2
+          },
+          "textReplies": {
+            "type": "number",
+            "description": "Destinatários que responderam pelo menos uma vez em texto.",
+            "example": 1
+          },
+          "clicks": {
+            "type": "number",
+            "description": "Respostas por botão no snapshot.",
+            "example": 3
+          },
+          "uniqueClicks": {
+            "type": "number",
+            "description": "Destinatários que tocaram em pelo menos um botão.",
+            "example": 2
+          },
+          "rates": {
+            "description": "Frações de destinatários, de 0 a 1, arredondadas para 4 casas decimais. Cada taxa é 0 quando não há destinatários.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CampaignAnalyticsRatesDto"
+              }
+            ]
+          },
+          "buttons": {
+            "description": "Toques em botões agrupados pelo id do botão.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignAnalyticsButtonDto"
+            }
+          },
+          "queuedRemaining": {
+            "type": "number",
+            "description": "Destinatários que ainda aguardam o envio.",
+            "example": 0
+          },
+          "sentThisPortion": {
+            "type": "number",
+            "description": "Envios de template já iniciados na janela atual do limite.",
+            "example": 0
+          },
+          "dailyLimit": {
+            "type": "number",
+            "nullable": true,
+            "description": "Quantos envios de template este canal pode iniciar em 24 horas corridas, ou null quando o limite é desconhecido ou ilimitado.",
+            "example": 1000
+          },
+          "nextPortionAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "Quando a próxima leva de templates pode começar, ou null quando nenhuma leva está esperando.",
+            "example": null
+          }
+        },
+        "required": [
+          "campaignId",
+          "status",
+          "recipients",
+          "sent",
+          "delivered",
+          "read",
+          "failed",
+          "skipped",
+          "cancelled",
+          "queued",
+          "replied",
+          "textReplies",
+          "clicks",
+          "uniqueClicks",
+          "rates",
+          "buttons",
+          "queuedRemaining",
+          "sentThisPortion",
+          "dailyLimit",
+          "nextPortionAt"
+        ]
+      },
+      "CampaignAnalyticsRecipientPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "description": "Destinatários desta página. Quando o parâmetro fields está definido, cada item traz só as chaves indicadas.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignAnalyticsRecipientDto"
+            }
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Cursor da próxima página, ou null na última página.",
+            "example": null
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
+        ]
+      },
+      "CampaignAnalyticsRepliesDto": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "id da campanha.",
+            "example": "cm3campaign01"
+          },
+          "totalReplies": {
+            "type": "number",
+            "description": "Total de respostas da campanha inteira, não só desta página.",
+            "example": 4
+          },
+          "uniqueRepliers": {
+            "type": "number",
+            "description": "Quantos destinatários responderam pelo menos uma vez na campanha inteira.",
+            "example": 3
+          },
+          "items": {
+            "description": "Respostas desta página, as mais antigas primeiro.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignAnalyticsReplyItemDto"
+            }
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Cursor da próxima página, ou null na última página.",
+            "example": null
+          }
+        },
+        "required": [
+          "campaignId",
+          "totalReplies",
+          "uniqueRepliers",
+          "items",
+          "nextCursor"
+        ]
+      },
+      "CampaignAnalyticsErrorsDto": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "id da campanha.",
+            "example": "cm3campaign01"
+          },
+          "items": {
+            "description": "Erros agrupados por motivo, código, título e tipo.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignAnalyticsErrorGroupDto"
+            }
+          }
+        },
+        "required": [
+          "campaignId",
+          "items"
+        ]
+      },
+      "CreateCampaignDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Título da campanha mostrado na lista.",
+            "example": "Spring promo"
+          },
+          "channelId": {
+            "type": "string",
+            "description": "id do canal que envia. A chave precisa ter permissão para usar esse canal."
+          },
+          "segmentId": {
+            "type": "string",
+            "description": "id do segmento de POST /campaigns/segments. Os membros são copiados no envio."
+          },
+          "content": {
+            "description": "template ou text. Para template, defina templateName, language e params.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CampaignContentDto"
+              }
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft"
+            ],
+            "description": "Só draft é aceito. Sem o campo, fica salvo como draft."
+          }
+        },
+        "required": [
+          "name",
+          "channelId",
+          "segmentId",
+          "content"
+        ]
+      },
+      "CampaignResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "id da campanha.",
+            "example": "cm3campaign01"
+          },
+          "name": {
+            "type": "string",
+            "description": "Título da campanha.",
+            "example": "April restock"
+          },
+          "channelId": {
+            "type": "string",
+            "description": "Canal que envia a campanha.",
+            "example": "cm3channel01"
+          },
+          "segmentId": {
+            "type": "string",
+            "description": "Segmento usado como público.",
+            "example": "cm3segment01"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "sending",
+              "pause",
+              "completed",
+              "failed",
+              "scheduled"
+            ],
+            "description": "Status da campanha."
+          },
+          "content": {
+            "description": "Template ou texto da sessão salvo na campanha.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CampaignTextContentResponseDto"
+              },
+              {
+                "$ref": "#/components/schemas/CampaignTemplateParamsContentResponseDto"
+              },
+              {
+                "$ref": "#/components/schemas/CampaignTemplateVariablesContentResponseDto"
+              }
+            ]
+          },
+          "sentAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "Quando o envio começou, ou null se ainda não começou.",
+            "example": "2026-11-01T09:00:00.000Z"
+          },
+          "scheduledAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "Instante UTC de um envio agendado, ou null.",
+            "example": "2026-11-01T09:00:00.000Z"
+          },
+          "queuedRemaining": {
+            "type": "number",
+            "description": "Destinatários que ainda aguardam o envio.",
+            "example": 0
+          },
+          "sentThisPortion": {
+            "type": "number",
+            "description": "Envios de template já iniciados na janela atual do limite.",
+            "example": 0
+          },
+          "dailyLimit": {
+            "type": "number",
+            "nullable": true,
+            "description": "Quantos envios de template este canal pode iniciar em 24 horas corridas. Vem do limite do canal (waba_info.current_limit), não de uma configuração da campanha. null quando o limite é desconhecido ou ilimitado. Texto da sessão não conta.",
+            "example": 1000
+          },
+          "nextPortionAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "Quando a próxima leva de templates pode começar depois que a janela do limite encheu. null quando nenhuma leva está esperando.",
+            "example": null
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Quando a campanha foi criada.",
+            "example": "2026-11-01T09:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Quando a campanha foi atualizada pela última vez.",
+            "example": "2026-11-01T09:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "channelId",
+          "segmentId",
+          "status",
+          "content",
+          "sentAt",
+          "scheduledAt",
+          "queuedRemaining",
+          "sentThisPortion",
+          "dailyLimit",
+          "nextPortionAt",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CampaignPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "description": "Campanhas desta página, as mais recentes primeiro.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignResponseDto"
+            }
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Cursor da próxima página, ou null na última página.",
+            "example": null
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
+        ]
+      },
+      "CampaignPreviewDto": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "id da campanha.",
+            "example": "cm3campaign01"
+          },
+          "segmentId": {
+            "type": "string",
+            "description": "id do segmento usado como público.",
+            "example": "cm3segment01"
+          },
+          "contentMode": {
+            "type": "string",
+            "enum": [
+              "template",
+              "text"
+            ],
+            "description": "Se a campanha envia um template ou texto da sessão."
+          },
+          "recipientCount": {
+            "type": "number",
+            "description": "Membros do segmento.",
+            "example": 12
+          },
+          "closedWindowCount": {
+            "type": "number",
+            "description": "Membros fora da janela de 24 horas.",
+            "example": 3
+          },
+          "tierDailyLimit": {
+            "type": "number",
+            "nullable": true,
+            "description": "Quantos envios de template este canal pode iniciar em 24 horas corridas. Vem do limite do canal, não de um campo que você define. null quando o limite é desconhecido ou ilimitado.",
+            "example": 1000
+          },
+          "exceedsTierDailyLimit": {
+            "type": "boolean",
+            "description": "true quando um envio de template passaria do limite do canal.",
+            "example": false
+          },
+          "warnings": {
+            "description": "Avisos desta pré-visualização. Nada é enviado.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignPreviewWarningDto"
+            }
+          }
+        },
+        "required": [
+          "campaignId",
+          "segmentId",
+          "contentMode",
+          "recipientCount",
+          "closedWindowCount",
+          "tierDailyLimit",
+          "exceedsTierDailyLimit",
+          "warnings"
+        ]
+      },
+      "SendCampaignDto": {
+        "type": "object",
+        "properties": {
+          "scheduledAt": {
+            "type": "string",
+            "nullable": true,
+            "description": "Instante futuro em ISO-8601 com Z ou deslocamento numérico, por exemplo 2026-11-01T09:00:00Z. Sem o campo ou com null, o envio começa agora. Não existe campo por dia. Os envios de template usam o limite do canal."
+          }
+        }
+      },
+      "UpdateCampaignScheduleDto": {
+        "type": "object",
+        "properties": {
+          "scheduledAt": {
+            "type": "string",
+            "description": "Novo instante futuro em ISO-8601 com Z ou deslocamento numérico, por exemplo 2026-11-02T09:00:00Z. Obrigatório. Só uma campanha já agendada pode ser remarcada."
+          }
+        },
+        "required": [
+          "scheduledAt"
+        ]
+      },
+      "CampaignTestSendDto": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "description": "Telefone E.164, por exemplo +15551234567. Envie exatamente um: phone ou bsuid. Não muda o status nem a análise da campanha."
+          },
+          "bsuid": {
+            "type": "string",
+            "description": "BSUID do provedor, por exemplo ab.abc123xyz. Um @lid no final é aceito. Envie exatamente um: phone ou bsuid."
+          }
+        }
+      },
+      "CampaignTestSendResponseDto": {
+        "type": "object",
+        "properties": {
+          "accepted": {
+            "type": "boolean",
+            "description": "Sempre true quando o teste foi aceito.",
+            "example": true
+          },
+          "campaignId": {
+            "type": "string",
+            "description": "id da campanha.",
+            "example": "cm3campaign01"
+          },
+          "campaignStatus": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "sending",
+              "pause",
+              "completed",
+              "failed",
+              "scheduled"
+            ],
+            "description": "Status da campanha depois do teste. O teste não muda o status."
+          },
+          "excludedFromAnalytics": {
+            "type": "boolean",
+            "description": "Sempre true. Este envio fica fora da análise.",
+            "example": true
+          },
+          "conversationId": {
+            "type": "string",
+            "nullable": true,
+            "description": "id da conversa no Inbox, ou null quando o provedor não retornou um.",
+            "example": "cm3dialog01"
+          },
+          "messageId": {
+            "type": "string",
+            "nullable": true,
+            "description": "id da mensagem no provedor, ou null quando o provedor aceitou o envio sem id.",
+            "example": "wamid.HBgM"
+          },
+          "providerMessageId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Mesmo valor de messageId.",
+            "example": "wamid.HBgM"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Telefone E.164. Presente quando o teste foi enviado para um telefone. Vem exatamente um: phone ou bsuid.",
+            "example": "+15551234567"
+          },
+          "bsuid": {
+            "type": "string",
+            "description": "BSUID do provedor. Presente quando o teste foi enviado para um BSUID. Vem exatamente um: phone ou bsuid.",
+            "example": "ab.abc123xyz"
+          }
+        },
+        "required": [
+          "accepted",
+          "campaignId",
+          "campaignStatus",
+          "excludedFromAnalytics",
+          "conversationId",
+          "messageId",
+          "providerMessageId"
+        ]
+      },
+      "UpdateCampaignDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Novo título. Envie pelo menos um de name, channelId, segmentId ou content. Só um rascunho pode ser alterado."
+          },
+          "channelId": {
+            "type": "string",
+            "description": "Outro canal desta conta."
+          },
+          "segmentId": {
+            "type": "string",
+            "description": "id de outro segmento. Os novos membros são copiados no envio."
+          },
+          "content": {
+            "description": "Substitui o objeto content inteiro. Mesmas regras de template e texto da criação.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CampaignContentDto"
+              }
+            ]
+          }
+        }
+      },
+      "CampaignSegmentListItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "id do segmento.",
+            "example": "cm3segment01"
+          },
+          "name": {
+            "type": "string",
+            "description": "Nome do segmento, até 200 caracteres.",
+            "example": "April buyers"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "Observação opcional, até 2000 caracteres, ou null quando não há nenhuma."
+          },
+          "memberCount": {
+            "type": "number",
+            "description": "Quantas pessoas há no segmento.",
+            "example": 12
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "memberCount"
+        ]
+      },
+      "CampaignSegmentMemberInputDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nome da pessoa, até 200 caracteres.",
+            "example": "Ana"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Telefone E.164, por exemplo +15551234567. Obrigatório quando bsuid não é enviado."
+          },
+          "bsuid": {
+            "type": "string",
+            "description": "BSUID do provedor, por exemplo ab.abc123xyz. Um @lid no final é aceito e salvo sem ele. Telefone ou BSUID é obrigatório."
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "CampaignAnalyticsRatesDto": {
+        "type": "object",
+        "properties": {
+          "sent": {
+            "type": "number",
+            "description": "Fração de destinatários contados como sent, delivered ou read.",
+            "example": 0.5
+          },
+          "delivery": {
+            "type": "number",
+            "description": "Fração de destinatários contados como delivered ou read.",
+            "example": 0.4
+          },
+          "read": {
+            "type": "number",
+            "description": "Fração de destinatários contados como read.",
+            "example": 0.25
+          },
+          "reply": {
+            "type": "number",
+            "description": "Fração de destinatários que responderam.",
+            "example": 0.1
+          },
+          "click": {
+            "type": "number",
+            "description": "Fração de destinatários que tocaram em um botão.",
+            "example": 0.05
+          },
+          "failed": {
+            "type": "number",
+            "description": "Fração de destinatários contados como failed.",
+            "example": 0
+          }
+        },
+        "required": [
+          "sent",
+          "delivery",
+          "read",
+          "reply",
+          "click",
+          "failed"
+        ]
+      },
+      "CampaignAnalyticsButtonDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "id do botão na resposta ao template.",
+            "example": "shop"
+          },
+          "title": {
+            "type": "string",
+            "description": "Título do botão, ou o id do botão quando não há título salvo.",
+            "example": "Shop"
+          },
+          "clicks": {
+            "type": "number",
+            "description": "Quantas vezes este botão foi tocado.",
+            "example": 4
+          },
+          "uniqueClicks": {
+            "type": "number",
+            "description": "Quantos destinatários tocaram neste botão.",
+            "example": 3
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "clicks",
+          "uniqueClicks"
+        ]
+      },
+      "CampaignAnalyticsRecipientDto": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "description": "Telefone em E.164, ou null quando o destinatário está salvo pelo BSUID.",
+            "example": "+15551234567"
+          },
+          "bsuid": {
+            "type": "string",
+            "nullable": true,
+            "description": "BSUID do provedor, ou null quando o destinatário está salvo pelo telefone.",
+            "example": "ab.abc123xyz"
+          },
+          "name": {
+            "type": "string",
+            "description": "Nome do destinatário.",
+            "example": "Ana"
+          },
+          "conversationId": {
+            "type": "string",
+            "nullable": true,
+            "description": "id da conversa no Inbox, ou null quando não há conversa vinculada.",
+            "example": "cm3dialog01"
+          },
+          "providerConversationId": {
+            "type": "string",
+            "nullable": true,
+            "description": "id do chat no provedor: dígitos do telefone mais @c.us, senão o BSUID mais @lid, ou null.",
+            "example": "15551234567@c.us"
+          },
+          "messageId": {
+            "type": "string",
+            "nullable": true,
+            "description": "id da mensagem no provedor, ou null antes de o provedor aceitar o envio.",
+            "example": "wamid.HBgM"
+          },
+          "providerMessageId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Mesmo valor de messageId.",
+            "example": "wamid.HBgM"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "queued",
+              "leasing",
+              "sent",
+              "delivered",
+              "read",
+              "failed",
+              "skipped",
+              "cancelled"
+            ],
+            "description": "Status de entrega no snapshot."
+          },
+          "sentAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "Quando a mensagem foi enviada, ou null.",
+            "example": "2026-11-01T09:00:00.000Z"
+          },
+          "deliveredAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "Quando a mensagem foi entregue, ou null.",
+            "example": "2026-11-01T09:00:00.000Z"
+          },
+          "readAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "Quando a mensagem foi lida, ou null.",
+            "example": "2026-11-01T09:00:00.000Z"
+          },
+          "replies": {
+            "description": "Respostas deste destinatário, as mais antigas primeiro.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignAnalyticsRecipientReplyDto"
+            }
+          },
+          "error": {
+            "type": "object",
+            "nullable": true,
+            "description": "Detalhes do erro, ou null quando o destinatário não tem código, título nem horário de falha. Quando presente, code, title e failedAt sempre vêm.",
+            "properties": {
+              "code": {
+                "type": "string",
+                "nullable": true,
+                "description": "Código de erro do provedor ou do pulo, ou null quando não há nenhum salvo."
+              },
+              "title": {
+                "type": "string",
+                "nullable": true,
+                "description": "Título do erro, ou null quando não há nenhum salvo."
+              },
+              "failedAt": {
+                "type": "string",
+                "nullable": true,
+                "format": "date-time",
+                "description": "Quando o envio falhou ou foi pulado, ou null quando não há horário salvo.",
+                "example": "2026-11-01T09:00:00.000Z"
+              }
+            }
+          }
+        },
+        "required": [
+          "phone",
+          "bsuid",
+          "name",
+          "conversationId",
+          "providerConversationId",
+          "messageId",
+          "providerMessageId",
+          "status",
+          "sentAt",
+          "deliveredAt",
+          "readAt",
+          "replies",
+          "error"
+        ]
+      },
+      "CampaignAnalyticsReplyItemDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "button",
+              "text"
+            ],
+            "description": "button para uma resposta rápida de template, ou text dentro da janela de 24 horas."
+          },
+          "buttonId": {
+            "type": "string",
+            "nullable": true,
+            "description": "id do botão, ou null para uma resposta em texto.",
+            "example": "shop"
+          },
+          "text": {
+            "type": "string",
+            "nullable": true,
+            "description": "Texto da resposta ou título do botão, ou null quando não há nada salvo."
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "description": "Telefone em E.164, ou null quando o destinatário está salvo pelo BSUID.",
+            "example": "+15551234567"
+          },
+          "bsuid": {
+            "type": "string",
+            "nullable": true,
+            "description": "BSUID do provedor, ou null quando o destinatário está salvo pelo telefone.",
+            "example": "ab.abc123xyz"
+          },
+          "name": {
+            "type": "string",
+            "description": "Nome do destinatário.",
+            "example": "Ana"
+          },
+          "conversationId": {
+            "type": "string",
+            "nullable": true,
+            "description": "id da conversa no Inbox, ou null quando não há conversa vinculada.",
+            "example": "cm3dialog01"
+          },
+          "providerConversationId": {
+            "type": "string",
+            "nullable": true,
+            "description": "id do chat no provedor: dígitos do telefone mais @c.us, senão o BSUID mais @lid, ou null.",
+            "example": "15551234567@c.us"
+          },
+          "receivedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Quando a resposta foi recebida.",
+            "example": "2026-11-01T09:00:00.000Z"
+          },
+          "messageId": {
+            "type": "string",
+            "description": "id da resposta no provedor.",
+            "example": "wamid.HBgM"
+          },
+          "providerMessageId": {
+            "type": "string",
+            "description": "Mesmo valor de messageId.",
+            "example": "wamid.HBgM"
+          }
+        },
+        "required": [
+          "type",
+          "buttonId",
+          "text",
+          "phone",
+          "bsuid",
+          "name",
+          "conversationId",
+          "providerConversationId",
+          "receivedAt",
+          "messageId",
+          "providerMessageId"
+        ]
+      },
+      "CampaignAnalyticsErrorGroupDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "description": "Motivo do erro salvo. Grupos sem motivo ficam de fora.",
+            "example": "closed_window"
+          },
+          "code": {
+            "type": "string",
+            "nullable": true,
+            "description": "Código de erro do provedor ou do pulo, ou null quando não há nenhum salvo."
+          },
+          "title": {
+            "type": "string",
+            "nullable": true,
+            "description": "Título do erro, ou null quando não há nenhum salvo."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "failed",
+              "skipped"
+            ],
+            "description": "failed é uma falha no provedor. skipped não foi enviado."
+          },
+          "count": {
+            "type": "number",
+            "description": "Destinatários neste grupo.",
+            "example": 2
+          },
+          "share": {
+            "type": "number",
+            "description": "Fração de todos os destinatários da campanha neste grupo, de 0 a 1, arredondada para 4 casas decimais.",
+            "example": 0.1667
+          },
+          "recipients": {
+            "description": "Destinatários neste grupo, até recipientsLimit.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignAnalyticsErrorRecipientDto"
+            }
+          },
+          "hasMore": {
+            "type": "boolean",
+            "description": "true quando há mais destinatários com este motivo do que recipientsLimit retornou.",
+            "example": false
+          }
+        },
+        "required": [
+          "reason",
+          "code",
+          "title",
+          "type",
+          "count",
+          "share",
+          "recipients",
+          "hasMore"
+        ]
+      },
+      "CampaignContentDto": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "template",
+              "text"
+            ],
+            "description": "template envia um template da WABA. text envia texto da sessão e só chega a quem está dentro da janela de 24 horas."
+          },
+          "templateName": {
+            "type": "string",
+            "description": "Nome do template da WABA. Obrigatório quando mode é template."
+          },
+          "language": {
+            "type": "string",
+            "description": "Código do idioma do template, por exemplo en ou pt_BR. Obrigatório quando mode é template."
+          },
+          "variables": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "example": {
+              "1": "Ana"
+            },
+            "description": "Só variáveis simples do corpo, por exemplo { \"1\": \"Ana\" }. Uma chave numérica preenche o corpo. Cabeçalho, botões e carrossel não são preenchidos aqui — use params. Ignorado quando params está definido."
+          },
+          "params": {
+            "type": "array",
+            "description": "Forma preferida de preencher o template. O mesmo array que o sendTemplate aceita. Cada item é um componente com type (header, body, button, carousel ou um tipo mais novo da WABA). O array é repassado sem mudanças, incluindo o link de uma imagem de cabeçalho. Quando está definido, variables é ignorado. Um array vazio é válido.",
+            "example": [
+              {
+                "type": "header",
+                "parameters": [
+                  {
+                    "type": "image",
+                    "image": {
+                      "link": "https://example.com/image.jpg"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "body",
+                "parameters": [
+                  {
+                    "type": "text",
+                    "text": "Ana"
+                  }
+                ]
+              }
+            ]
+          },
+          "messageSendTtlSeconds": {
+            "type": "number",
+            "example": 86400,
+            "description": "Por quantos segundos o WhatsApp tenta entregar este template. O mesmo campo messageSendTtlSeconds do sendTemplate. Fica ao lado de params, não dentro do array params. Sem o campo, vale o padrão do template."
+          },
+          "text": {
+            "type": "string",
+            "description": "Texto da sessão. Obrigatório quando mode é text. Não conta para o limite do canal."
+          }
+        },
+        "required": [
+          "mode"
+        ]
+      },
+      "CampaignTextContentResponseDto": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "text"
+            ],
+            "example": "text",
+            "description": "Texto da sessão, enviado só dentro da janela de 24 horas."
+          },
+          "text": {
+            "type": "string",
+            "description": "Corpo do texto da sessão. Vazio quando não há nada salvo.",
+            "example": "Hello"
+          }
+        },
+        "required": [
+          "mode",
+          "text"
+        ]
+      },
+      "CampaignTemplateParamsContentResponseDto": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "template"
+            ],
+            "example": "template",
+            "description": "Template aprovado da WABA."
+          },
+          "templateName": {
+            "type": "string",
+            "description": "Nome do template da WABA. Vazio quando não há nada salvo.",
+            "example": "order_update"
+          },
+          "language": {
+            "type": "string",
+            "description": "Código do idioma do template. Vazio quando não há nada salvo.",
+            "example": "en"
+          },
+          "params": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              ]
+            },
+            "description": "Params do template salvos para o sendTemplate. Cada item é uma string ou um objeto."
+          },
+          "messageSendTtlSeconds": {
+            "type": "number",
+            "example": 86400,
+            "description": "Segundos em que o WhatsApp tenta entregar este template. Não vem quando o padrão do template é usado."
+          }
+        },
+        "required": [
+          "mode",
+          "templateName",
+          "language",
+          "params"
+        ]
+      },
+      "CampaignTemplateVariablesContentResponseDto": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "template"
+            ],
+            "example": "template",
+            "description": "Template aprovado da WABA."
+          },
+          "templateName": {
+            "type": "string",
+            "description": "Nome do template da WABA. Vazio quando não há nada salvo.",
+            "example": "order_update"
+          },
+          "language": {
+            "type": "string",
+            "description": "Código do idioma do template. Vazio quando não há nada salvo.",
+            "example": "en"
+          },
+          "variables": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "example": {
+              "1": "Ana"
+            },
+            "description": "Variáveis simples do template. Presente quando params não foram salvos."
+          },
+          "messageSendTtlSeconds": {
+            "type": "number",
+            "example": 86400,
+            "description": "Segundos em que o WhatsApp tenta entregar este template. Não vem quando o padrão do template é usado."
+          }
+        },
+        "required": [
+          "mode",
+          "templateName",
+          "language",
+          "variables"
+        ]
+      },
+      "CampaignPreviewWarningDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "closed_window_skipped",
+              "session_consumes_free_window",
+              "exceeds_tier_daily_limit",
+              "recipient_cap_exceeded"
+            ],
+            "description": "Código do aviso."
+          },
+          "message": {
+            "type": "string",
+            "description": "Aviso em texto legível.",
+            "example": "Closed-window recipients will be skipped."
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ]
+      },
+      "CampaignAnalyticsRecipientReplyDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "button",
+              "text"
+            ],
+            "description": "button para uma resposta rápida de template, ou text dentro da janela de 24 horas."
+          },
+          "buttonId": {
+            "type": "string",
+            "nullable": true,
+            "description": "id do botão, ou null para uma resposta em texto.",
+            "example": "shop"
+          },
+          "text": {
+            "type": "string",
+            "nullable": true,
+            "description": "Texto da resposta ou título do botão, ou null quando não há nada salvo."
+          },
+          "receivedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Quando a resposta foi recebida.",
+            "example": "2026-11-01T09:00:00.000Z"
+          },
+          "messageId": {
+            "type": "string",
+            "description": "id da resposta no provedor.",
+            "example": "wamid.HBgM"
+          },
+          "providerMessageId": {
+            "type": "string",
+            "description": "Mesmo valor de messageId.",
+            "example": "wamid.HBgM"
+          }
+        },
+        "required": [
+          "type",
+          "buttonId",
+          "text",
+          "receivedAt",
+          "messageId",
+          "providerMessageId"
+        ]
+      },
+      "CampaignAnalyticsErrorRecipientDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "id do destinatário.",
+            "example": "cm3recipient01"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "description": "Telefone em E.164, ou null quando o destinatário está salvo pelo BSUID.",
+            "example": "+15551234567"
+          },
+          "bsuid": {
+            "type": "string",
+            "nullable": true,
+            "description": "BSUID do provedor, ou null quando o destinatário está salvo pelo telefone.",
+            "example": "ab.abc123xyz"
+          },
+          "name": {
+            "type": "string",
+            "description": "Nome do destinatário.",
+            "example": "Ana"
+          },
+          "conversationId": {
+            "type": "string",
+            "nullable": true,
+            "description": "id da conversa no Inbox, ou null quando não há conversa vinculada.",
+            "example": "cm3dialog01"
+          },
+          "messageId": {
+            "type": "string",
+            "nullable": true,
+            "description": "id da mensagem no provedor, ou null quando o envio não recebeu um.",
+            "example": "wamid.HBgM"
+          },
+          "providerConversationId": {
+            "type": "string",
+            "nullable": true,
+            "description": "id do chat no provedor: dígitos do telefone mais @c.us, senão o BSUID mais @lid, ou null.",
+            "example": "15551234567@c.us"
+          },
+          "providerMessageId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Mesmo valor de messageId.",
+            "example": "wamid.HBgM"
+          }
+        },
+        "required": [
+          "id",
+          "phone",
+          "bsuid",
+          "name",
+          "conversationId",
+          "messageId",
+          "providerConversationId",
+          "providerMessageId"
+        ]
+      }
+    }
+  }
+}
