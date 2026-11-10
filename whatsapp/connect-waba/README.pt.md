@@ -7,7 +7,7 @@ Há duas formas de conectar uma WABA:
 
 ## WABA da 1MSG
 
-O custo das mensagens é cobrado pela 1MSG, pelas [tarifas do WhatsApp + acréscimo de 5%](../../platform/billing/messaging-costs.md#pricing)
+O custo das mensagens é cobrado pela 1MSG, pelas [tarifas do WhatsApp + acréscimo de 5%](../../platform/billing/messaging-costs.pt.md#preços)
 
 * Canal de teste gratuito
 * Histórico de mensagens
