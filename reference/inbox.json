@@ -881,7 +881,7 @@
             }
           },
           "nextCursor": {
-            "type": "string",
+            "type": "object",
             "nullable": true
           }
         },
@@ -1382,19 +1382,19 @@
         "type": "object",
         "properties": {
           "name": {
-            "type": "string",
+            "type": "object",
             "nullable": true
           },
           "phone": {
-            "type": "string",
+            "type": "object",
             "nullable": true
           },
           "bsuid": {
-            "type": "string",
+            "type": "object",
             "nullable": true
           },
           "username": {
-            "type": "string",
+            "type": "object",
             "nullable": true
           }
         },
