@@ -3,20 +3,19 @@
   "paths": {
     "/api/v1/inbox/contacts": {
       "get": {
-        "operationId": "InboxController_listContacts",
-        "summary": "List inbox contacts for copy into a campaign segment",
         "description": "Read-only. Returns name, phone, bsuid, and username. Does not send messages.",
+        "operationId": "InboxController_listContacts",
         "parameters": [
           {
             "name": "status",
             "required": false,
             "in": "query",
             "schema": {
+              "type": "string",
               "enum": [
                 "OPEN",
                 "CLOSED"
-              ],
-              "type": "string"
+              ]
             }
           },
           {
@@ -87,21 +86,21 @@
             }
           }
         },
-        "tags": [
-          "Inbox"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "List inbox contacts for copy into a campaign segment",
+        "tags": [
+          "Inbox"
         ]
       }
     },
     "/api/v1/inbox/channels": {
       "get": {
-        "operationId": "InboxController_listChannels",
-        "summary": "List channels visible to this key",
         "description": "An account key sees every channel. A user key sees only channels that user can open.",
+        "operationId": "InboxController_listChannels",
         "parameters": [],
         "responses": {
           "200": {
@@ -118,21 +117,21 @@
             }
           }
         },
-        "tags": [
-          "Inbox"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "List channels visible to this key",
+        "tags": [
+          "Inbox"
         ]
       }
     },
     "/api/v1/inbox/channels/{channelId}/assignees": {
       "get": {
-        "operationId": "InboxController_listChannelAssignees",
-        "summary": "People who can be assigned on this channel",
         "description": "The account owner, plus operators who already have this channel. Use the returned id as userId when assigning a conversation.",
+        "operationId": "InboxController_listChannelAssignees",
         "parameters": [
           {
             "name": "channelId",
@@ -163,21 +162,21 @@
             "description": "Channel not found or the key cannot see it"
           }
         },
-        "tags": [
-          "Inbox"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "People who can be assigned on this channel",
+        "tags": [
+          "Inbox"
         ]
       }
     },
     "/api/v1/inbox/conversations": {
       "get": {
-        "operationId": "InboxController_getDialogs",
-        "summary": "List conversations",
         "description": "Newest lastMessageAt first. Pass pagination.nextCursor as cursor for the next page.",
+        "operationId": "InboxController_getDialogs",
         "parameters": [
           {
             "name": "limit",
@@ -265,21 +264,21 @@
             }
           }
         },
-        "tags": [
-          "Inbox"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "List conversations",
+        "tags": [
+          "Inbox"
         ]
       }
     },
     "/api/v1/inbox/conversations/search": {
       "get": {
-        "operationId": "InboxController_searchDialogs",
-        "summary": "Search conversations",
         "description": "Matches contact name, phone, and message text in one channel. channelId is required. query must be at least 3 characters; a shorter query returns two empty lists.",
+        "operationId": "InboxController_searchDialogs",
         "parameters": [
           {
             "name": "query",
@@ -314,21 +313,21 @@
             }
           }
         },
-        "tags": [
-          "Inbox"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "Search conversations",
+        "tags": [
+          "Inbox"
         ]
       }
     },
     "/api/v1/inbox/conversations/counts": {
       "get": {
-        "operationId": "InboxController_getDialogCounts",
-        "summary": "Conversation counts",
         "description": "mine_open and unassigned count only OPEN conversations. all counts every visible conversation.",
+        "operationId": "InboxController_getDialogCounts",
         "parameters": [
           {
             "name": "channelId",
@@ -352,21 +351,21 @@
             }
           }
         },
-        "tags": [
-          "Inbox"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "Conversation counts",
+        "tags": [
+          "Inbox"
         ]
       }
     },
     "/api/v1/inbox/conversations/{conversationId}": {
       "get": {
-        "operationId": "InboxController_getDialog",
-        "summary": "One conversation",
         "description": "Includes the contact, assignee, and customer phone.",
+        "operationId": "InboxController_getDialog",
         "parameters": [
           {
             "name": "conversationId",
@@ -393,21 +392,21 @@
             "description": "Conversation not found, or the key cannot see its channel"
           }
         },
-        "tags": [
-          "Inbox"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "One conversation",
+        "tags": [
+          "Inbox"
         ]
       }
     },
     "/api/v1/inbox/conversations/{conversationId}/messages": {
       "get": {
-        "operationId": "InboxController_getMessages",
-        "summary": "Messages in a conversation",
         "description": "Newest first. Omit kind, or pass kind=all, to include SYSTEM events (status, assignee, block, title) together with messages. kind=messages hides SYSTEM events. kind=system returns only SYSTEM events. Notes stay with messages. Pass nextCursor as cursor to load older rows of the same kind.",
+        "operationId": "InboxController_getMessages",
         "parameters": [
           {
             "name": "conversationId",
@@ -467,21 +466,21 @@
             "description": "Conversation not found, or the key cannot see its channel"
           }
         },
-        "tags": [
-          "Inbox"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "Messages in a conversation",
+        "tags": [
+          "Inbox"
         ]
       }
     },
     "/api/v1/inbox/conversations/{conversationId}/assignee": {
       "patch": {
-        "operationId": "InboxController_updateDialogAssignee",
-        "summary": "Assign, reassign, or clear the conversation assignee",
         "description": "userId is the id from GET /api/v1/inbox/channels/{channelId}/assignees. That person must already be able to open this channel. null clears the assignee. Setting the same assignee does nothing and writes no system message. A real change writes one SYSTEM message.",
+        "operationId": "InboxController_updateDialogAssignee",
         "parameters": [
           {
             "name": "conversationId",
@@ -518,21 +517,21 @@
             "description": "Conversation not found, the key cannot see the channel, or the user cannot be assigned on it"
           }
         },
-        "tags": [
-          "Inbox"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "Assign, reassign, or clear the conversation assignee",
+        "tags": [
+          "Inbox"
         ]
       }
     },
     "/api/v1/inbox/conversations/{conversationId}/status": {
       "patch": {
-        "operationId": "InboxController_updateDialogStatus",
-        "summary": "Open or close a conversation",
         "description": "Send status OPEN or CLOSED in the JSON body. The conversation id alone does not change anything. A change writes a SYSTEM message. The same status again returns 409.",
+        "operationId": "InboxController_updateDialogStatus",
         "parameters": [
           {
             "name": "conversationId",
@@ -572,21 +571,21 @@
             "description": "Conversation is already open, or already closed"
           }
         },
-        "tags": [
-          "Inbox"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "Open or close a conversation",
+        "tags": [
+          "Inbox"
         ]
       }
     },
     "/api/v1/inbox/conversations/{conversationId}/block": {
       "post": {
-        "operationId": "InboxController_blockContact",
-        "summary": "Block the contact",
         "description": "No body. Incoming messages from this contact are rejected. Writes a SYSTEM message. Blocking an already blocked contact returns 409.",
+        "operationId": "InboxController_blockContact",
         "parameters": [
           {
             "name": "conversationId",
@@ -616,21 +615,21 @@
             "description": "Contact is already blocked"
           }
         },
-        "tags": [
-          "Inbox"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "Block the contact",
+        "tags": [
+          "Inbox"
         ]
       }
     },
     "/api/v1/inbox/conversations/{conversationId}/unblock": {
       "post": {
-        "operationId": "InboxController_unblockContact",
-        "summary": "Unblock the contact",
         "description": "No body. Messages can be sent and received again. Writes a SYSTEM message. Unblocking a contact that is not blocked returns 409.",
+        "operationId": "InboxController_unblockContact",
         "parameters": [
           {
             "name": "conversationId",
@@ -660,21 +659,21 @@
             "description": "Contact is already unblocked"
           }
         },
-        "tags": [
-          "Inbox"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "Unblock the contact",
+        "tags": [
+          "Inbox"
         ]
       }
     },
     "/api/v1/inbox/conversations/{conversationId}/title": {
       "patch": {
-        "operationId": "InboxController_updateDialogTitle",
-        "summary": "Rename a conversation",
         "description": "Body title replaces the conversation title and writes a SYSTEM message.",
+        "operationId": "InboxController_updateDialogTitle",
         "parameters": [
           {
             "name": "conversationId",
@@ -711,21 +710,21 @@
             "description": "Conversation not found, or the key cannot see its channel"
           }
         },
-        "tags": [
-          "Inbox"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "Rename a conversation",
+        "tags": [
+          "Inbox"
         ]
       }
     },
     "/api/v1/inbox/webhook": {
       "get": {
-        "operationId": "InboxWebhookController_get",
-        "summary": "Read the account inbox webhook",
         "description": "One HTTPS URL per account. The owner sets it here or in Settings → Developer → API Settings. A user key cannot. When inbox state changes, 1MSG POSTs `InboxWebhookEnvelope` to that URL.\n\nThis is not the channel webhook. Incoming messages and delivery statuses stay on the channel URL.\n\n### Delivery\n\n- `Content-Type`: `application/json`\n- `X-1msg-Event`: the type\n- `X-1msg-Delivery`: the id\n- `X-1msg-Signature`: `sha256=<hex HMAC of the raw body>`\n\nCompare the signature with HMAC-SHA256 over the exact request body with the signing secret. Reject a mismatch.\n\nDelivery does not change the API response. A failed POST is stored as `lastDeliveryStatus` and `lastDeliveryError`.\n\n### Events\n\n| Event | When | data fields |\n| --- | --- | --- |\n| `inbox.conversation.status_changed` | Conversation opened or closed. status is OPEN or CLOSED. | `conversationId`, `channelId`, `status`, `previousStatus`, `actorUserId` |\n| `inbox.conversation.assigned` | An assignee was set. assigneeUserId is the new assignee. | `conversationId`, `channelId`, `assigneeUserId`, `previousAssigneeUserId`, `actorUserId` |\n| `inbox.conversation.unassigned` | The assignee was cleared. assigneeUserId is null. | `conversationId`, `channelId`, `assigneeUserId`, `previousAssigneeUserId`, `actorUserId` |\n| `inbox.conversation.blocked` | The contact was blocked. Incoming messages are rejected. | `conversationId`, `channelId`, `actorUserId` |\n| `inbox.conversation.unblocked` | The contact was unblocked. | `conversationId`, `channelId`, `actorUserId` |\n| `inbox.conversation.title_changed` | The conversation title was renamed. | `conversationId`, `channelId`, `title`, `previousTitle`, `actorUserId` |\n| `inbox.user.invited` | The owner invited a user. They are not a member until they accept. | `inviteId`, `email`, `channelIds`, `actorUserId` |\n| `inbox.user.added` | The invited person accepted and is now an operator. | `memberId`, `userId`, `email`, `channelIds` |\n| `inbox.user.removed` | An operator was removed from the account. | `memberId`, `userId`, `actorUserId` |\n| `inbox.user.channels_changed` | The channels an operator can open were replaced. | `memberId`, `userId`, `channelIds`, `actorUserId` |\n| `inbox.user.invite_revoked` | A pending invite was cancelled before it was accepted. | `inviteId`, `email`, `actorUserId` |",
+        "operationId": "InboxWebhookController_get",
         "parameters": [],
         "responses": {
           "200": {
@@ -739,19 +738,19 @@
             }
           }
         },
-        "tags": [
-          "Inbox"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "Read the account inbox webhook",
+        "tags": [
+          "Inbox"
         ]
       },
       "put": {
-        "operationId": "InboxWebhookController_save",
-        "summary": "Set the account inbox webhook URL",
         "description": "Creates the webhook and returns the signing secret once, or updates the URL and keeps the existing secret.",
+        "operationId": "InboxWebhookController_save",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -775,19 +774,19 @@
             }
           }
         },
-        "tags": [
-          "Inbox"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "Set the account inbox webhook URL",
+        "tags": [
+          "Inbox"
         ]
       },
       "delete": {
-        "operationId": "InboxWebhookController_remove",
-        "summary": "Remove the account inbox webhook",
         "description": "Later inbox changes are not delivered until a URL is saved again.",
+        "operationId": "InboxWebhookController_remove",
         "parameters": [],
         "responses": {
           "200": {
@@ -801,21 +800,21 @@
             }
           }
         },
-        "tags": [
-          "Inbox"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "Remove the account inbox webhook",
+        "tags": [
+          "Inbox"
         ]
       }
     },
     "/api/v1/inbox/webhook/secret": {
       "post": {
-        "operationId": "InboxWebhookController_rotate",
-        "summary": "Rotate the inbox webhook signing secret",
         "description": "Returns the new secret once. The previous secret stops verifying deliveries immediately. 404 when no URL is saved.",
+        "operationId": "InboxWebhookController_rotate",
         "parameters": [],
         "responses": {
           "200": {
@@ -829,13 +828,14 @@
             }
           }
         },
-        "tags": [
-          "Inbox"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "Rotate the inbox webhook signing secret",
+        "tags": [
+          "Inbox"
         ]
       }
     }
@@ -881,7 +881,7 @@
             }
           },
           "nextCursor": {
-            "type": "string",
+            "type": "object",
             "nullable": true
           }
         },
@@ -1048,6 +1048,7 @@
           },
           "assignedUser": {
             "nullable": true,
+            "type": "object",
             "allOf": [
               {
                 "$ref": "#/components/schemas/InboxUserDto"
@@ -1117,6 +1118,7 @@
           "contact": {
             "nullable": true,
             "description": "Present on GET conversation, list, and search. Absent on block, title, and status writes.",
+            "type": "object",
             "allOf": [
               {
                 "$ref": "#/components/schemas/InboxContactDto"
@@ -1382,19 +1384,19 @@
         "type": "object",
         "properties": {
           "name": {
-            "type": "string",
+            "type": "object",
             "nullable": true
           },
           "phone": {
-            "type": "string",
+            "type": "object",
             "nullable": true
           },
           "bsuid": {
-            "type": "string",
+            "type": "object",
             "nullable": true
           },
           "username": {
-            "type": "string",
+            "type": "object",
             "nullable": true
           }
         },
@@ -1594,6 +1596,7 @@
           "author": {
             "nullable": true,
             "description": "User who sent an outbound message.",
+            "type": "object",
             "allOf": [
               {
                 "$ref": "#/components/schemas/InboxUserDto"
@@ -1695,6 +1698,7 @@
           },
           "actor": {
             "nullable": true,
+            "type": "object",
             "allOf": [
               {
                 "$ref": "#/components/schemas/InboxUserDto"
@@ -1704,6 +1708,7 @@
           "target": {
             "nullable": true,
             "description": "Present when kind is assign.",
+            "type": "object",
             "allOf": [
               {
                 "$ref": "#/components/schemas/InboxUserDto"
