@@ -3,6 +3,7 @@
   "paths": {
     "/api/v1/campaigns/segments": {
       "post": {
+        "description": "Creates a `manual` or `automatic` pure-audience segment and returns its `id` for campaign creation.\n\n- `name` (required): Segment title, up to 200 characters.\n- `description` (optional): Note, up to 2,000 characters.\n- `kind` (optional): `manual` (default, durable member list) or `automatic` (evaluates Inbox dialog `rules` live).\n- `rules`: Required when `kind` is `automatic`; evaluates pure Inbox audience predicates.\n- `exclude`: Deprecated no-op kept for backward compatibility. Configure `excludeStoplist` and `excludeBlocked` on the campaign instead.",
         "operationId": "CampaignSegmentsController_create",
         "parameters": [],
         "requestBody": {
@@ -25,6 +26,15 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid segment payload or invalid automatic filter rules (`invalid_filter`)."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
           }
         },
         "security": [
@@ -35,8 +45,7 @@
         "summary": "Create a segment",
         "tags": [
           "Segments"
-        ],
-        "description": "name is required, up to 200 characters. description is optional, up to 2000 characters. Returns the segment id used when creating a campaign."
+        ]
       },
       "get": {
         "operationId": "CampaignSegmentsController_list",
@@ -58,6 +67,19 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "description": "Sort order by segment creation time. Defaults to created_desc.",
+            "schema": {
+              "enum": [
+                "created_desc",
+                "created_asc"
+              ],
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -70,6 +92,15 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid `sort`, `limit`, or `cursor` query parameter."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
           }
         },
         "security": [
@@ -81,7 +112,194 @@
         "tags": [
           "Segments"
         ],
-        "description": "Newest first. limit is the page size, default 50, maximum 100. cursor is the nextCursor from the previous page. Leave cursor empty for the first page."
+        "description": "Returns a cursor-paginated list of segments in the account.\n\n- `sort`: `created_desc` (newest first, default) or `created_asc` (oldest first).\n- `limit`: Page size, default `50`, maximum `100`.\n- `cursor`: Pass `nextCursor` from the previous response, or omit for the first page."
+      }
+    },
+    "/api/v1/campaigns/segments/preview": {
+      "post": {
+        "description": "Evaluates automatic Inbox dialog `rules` live without writing segment members.\n\n- Returns matching `total` and up to 20 `samples` (`name`, `phone`, `bsuid`).\n- When `segmentId` is provided, also returns `added`, `removed`, and `unchanged` counts compared against the segment's current members.\n- Evaluates pure Inbox audience predicates only; stoplist (`excludeStoplist`) and blocked-dialog (`excludeBlocked`) exclusions are configured per campaign.\n- Invalid filter payloads return `400` with `{ \"code\": \"invalid_filter\" }`.",
+        "operationId": "CampaignSegmentsController_preview",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreviewCampaignSegmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentPreviewDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid automatic filter rules (`invalid_filter`)."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Referenced `segmentId` was not found in the account."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Preview automatic segment rules",
+        "tags": [
+          "Segments"
+        ]
+      }
+    },
+    "/api/v1/campaigns/segments/{segmentId}/materialize": {
+      "post": {
+        "description": "Evaluates an `automatic` segment's Inbox rules live, replaces its stored preview member list, and updates `lastMaterializedAt`.\n\n- Evaluates pure Inbox audience predicates only; per-campaign `excludeStoplist` and `excludeBlocked` settings apply on the campaign.\n- Enforces the 500-member segment cap (`recipient_cap_exceeded`).\n- Optional helper for inspecting or exporting members; campaign send always re-evaluates automatic rules live and ignores stale materialized rows.\n- Calling this endpoint on a `manual` segment returns `400` (`invalid_filter`).",
+        "operationId": "CampaignSegmentsController_materialize",
+        "parameters": [
+          {
+            "name": "segmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Segment id returned by create or list."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentMaterializeDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Segment is manual (`invalid_filter`) or matched contacts exceed 500 (`recipient_cap_exceeded`)."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Segment not found in the account."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Materialize automatic segment members",
+        "tags": [
+          "Segments"
+        ]
+      }
+    },
+    "/api/v1/campaigns/segments/{segmentId}/import-from-rules": {
+      "post": {
+        "description": "Evaluates Inbox dialog `rules` and copies the matched contacts into this `manual` segment.\n\n- `mode`: `append` (adds new contacts without duplicating existing phones/BSUIDs) or `replace` (clears existing members first).\n- `rules`: Automatic Inbox dialog filter rules to evaluate.\n- Enforces the 500-member segment cap (`recipient_cap_exceeded`).\n- Automatic target segments are rejected with `400` (`automatic_segment_readonly`).",
+        "operationId": "CampaignSegmentsController_importFromRules",
+        "parameters": [
+          {
+            "name": "segmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Segment id returned by create or list."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImportCampaignSegmentFromRulesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentImportDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Target segment is automatic (`automatic_segment_readonly`), rules are invalid (`invalid_filter`), or total members exceed 500 (`recipient_cap_exceeded`)."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Segment not found in the account."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Import evaluated contacts into a manual segment",
+        "tags": [
+          "Segments"
+        ]
+      }
+    },
+    "/api/v1/campaigns/segments/members/template": {
+      "get": {
+        "description": "Downloads a starter UTF-8 CSV file with a header row and two example contacts.\n\n- Columns: `name`, `phone`, `attr_city`, and `attr_plan`.\n- Use this template to prepare files for `POST /api/v1/campaigns/segments/:segmentId/members/import`.",
+        "operationId": "CampaignSegmentsController_memberImportTemplate",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "CSV file with header and example rows."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Download segment members CSV import template",
+        "tags": [
+          "Segments"
+        ]
       }
     },
     "/api/v1/campaigns/segments/{segmentId}/members": {
@@ -114,6 +332,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "description": "Case-insensitive substring match on name, phone, or bsuid. Trimmed. Omit for no filter.",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -126,6 +353,18 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid pagination query parameter."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Segment not found in the account."
           }
         },
         "security": [
@@ -137,10 +376,10 @@
         "tags": [
           "Segments"
         ],
-        "description": "limit is the page size, default 50, maximum 100. cursor is the nextCursor from the previous page."
+        "description": "Returns a cursor-paginated list of members in the segment.\n\n- `limit`: Page size, default `50`, maximum `100`.\n- `cursor`: `nextCursor` from the previous page, or empty for the first page.\n- `q`: Optional case-insensitive substring search across `name`, `phone`, and `bsuid`.\n- For `automatic` segments, returns the most recently materialized preview list (if any)."
       },
       "post": {
-        "description": "members is a non-empty list. Each item needs name. phone is E.164 or omitted. bsuid is the provider id, for example ab.abc123xyz, or omitted. One of phone or bsuid is required. A duplicate phone or BSUID in the segment is rejected. The segment cannot exceed 500 members.",
+        "description": "Appends one or more members to a `manual` segment.\n\n- `members`: Non-empty array. Each item requires `name` and at least one of `phone` (E.164) or `bsuid` (provider format, e.g. `ab.abc123xyz`).\n- `attributes` (optional): Flat JSON object of string key-value pairs for template variable bindings (up to 50 keys, key `[a-zA-Z_][a-zA-Z0-9_]*` max 64 chars, value max 1,024 chars, total JSON max 10 KB).\n- Rejects duplicate `phone` or `bsuid` entries and enforces the 500-member segment cap.\n- Automatic segments return `400` (`automatic_segment_readonly`).",
         "operationId": "CampaignSegmentsController_addMembers",
         "parameters": [
           {
@@ -173,6 +412,18 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid member fields, duplicate identity, cap exceeded, or automatic segment (`automatic_segment_readonly`)."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Segment not found in the account."
           }
         },
         "security": [
@@ -186,7 +437,7 @@
         ]
       },
       "put": {
-        "description": "Deletes every current member and inserts this list. The same name, phone, and bsuid rules apply as when adding members. The new list cannot exceed 500 members.",
+        "description": "Replaces the entire member list of a `manual` segment in a single transaction.\n\n- Deletes all existing members and inserts the provided `members` list (up to 500 members).\n- Applies the same `name`, `phone` (E.164), `bsuid`, and `attributes` validation rules as `POST …/members`.\n- Automatic segments return `400` (`automatic_segment_readonly`).",
         "operationId": "CampaignSegmentsController_replaceMembers",
         "parameters": [
           {
@@ -219,6 +470,18 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid member payload, duplicate identity, cap exceeded, or automatic segment (`automatic_segment_readonly`)."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Segment not found in the account."
           }
         },
         "security": [
@@ -264,6 +527,18 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Empty `memberIds` list or automatic segment (`automatic_segment_readonly`)."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Segment not found in the account."
           }
         },
         "security": [
@@ -275,7 +550,126 @@
         "tags": [
           "Segments"
         ],
-        "description": "memberIds is a non-empty list of member ids from the member list. Other members stay."
+        "description": "Removes specific members from a `manual` segment while keeping all other members intact.\n\n- `memberIds`: Non-empty array of member IDs from `GET …/members`.\n- Automatic segments return `400` (`automatic_segment_readonly`)."
+      }
+    },
+    "/api/v1/campaigns/segments/{segmentId}/members/export": {
+      "get": {
+        "description": "Downloads up to 500 segment members as a UTF-8 CSV file compatible with CSV re-import.\n\n- Columns include `name`, `phone`, `bsuid`, and all `attr_*` custom attribute keys present on the segment.\n- Supported for both `manual` segments and materialized `automatic` segments.",
+        "operationId": "CampaignSegmentsController_exportMembers",
+        "parameters": [
+          {
+            "name": "segmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Segment id returned by create or list."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CSV file with segment members."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Segment not found in the account."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Export segment members as CSV",
+        "tags": [
+          "Segments"
+        ]
+      }
+    },
+    "/api/v1/campaigns/segments/{segmentId}/members/import": {
+      "post": {
+        "description": "Replaces a `manual` segment's members from a multipart UTF-8 CSV upload (field `file`, optional BOM).\n\n- **Columns:** Header must include `name` plus `phone` and/or `bsuid`; any additional columns are stored in `attributes` (an optional `attr_` prefix is stripped).\n- **Row rules:** Each non-empty data row requires `name` and exactly one of `phone` or `bsuid` (max 500 rows). Empty data rows clear the segment; blank lines are reported as soft `empty_row` notices without blocking import.\n- **Validation & dry run:** Pass `?dryRun=true` to validate without writing. Hard row errors fail the entire import (`imported: 0`, no DB write) and return `{ imported, dryRun, errors: [{ row, code, message, column? }] }`.\n- Automatic segments return `400` (`automatic_segment_readonly`).",
+        "operationId": "CampaignSegmentsController_importMembers",
+        "parameters": [
+          {
+            "name": "segmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Segment id returned by create or list."
+          },
+          {
+            "name": "dryRun",
+            "required": false,
+            "in": "query",
+            "description": "When true, validate only; do not write members.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "CSV file in multipart field file.",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "file"
+                ],
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSegmentMembersImportResultDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing/invalid CSV file or automatic segment (`automatic_segment_readonly`)."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Segment not found in the account."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Import segment members from CSV",
+        "tags": [
+          "Segments"
+        ]
       }
     },
     "/api/v1/campaigns/segments/{segmentId}/members/{memberId}": {
@@ -321,6 +715,18 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid member update payload, duplicate identity, or automatic segment (`automatic_segment_readonly`)."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Segment or member not found."
           }
         },
         "security": [
@@ -332,7 +738,7 @@
         "tags": [
           "Segments"
         ],
-        "description": "Send only the fields that change. phone must stay E.164. bsuid must stay in the provider format. The member still needs a phone or a BSUID after the update."
+        "description": "Updates selected fields on a single member of a `manual` segment.\n\n- Send only the fields that change (`name`, `phone`, `bsuid`, or `attributes`).\n- `phone` must remain valid E.164 and `bsuid` must match provider format; at least one identifier must remain set after the update.\n- Automatic segments return `400` (`automatic_segment_readonly`)."
       }
     },
     "/api/v1/campaigns/segments/{segmentId}": {
@@ -359,6 +765,15 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Segment not found in the account."
           }
         },
         "security": [
@@ -370,9 +785,10 @@
         "tags": [
           "Segments"
         ],
-        "description": "segmentId is the id returned when the segment was created."
+        "description": "Returns full metadata for a single segment.\n\n- Includes `id`, `name`, `description`, `kind` (`manual` or `automatic`), `rules`, `rulesVersion`, `memberCount`, and `lastMaterializedAt`.\n- `segmentId` is the identifier returned when the segment was created."
       },
       "patch": {
+        "description": "Updates mutable fields on an existing segment. Send only the fields that change.\n\n- `name`: Up to 200 characters.\n- `description`: Up to 2,000 characters.\n- `kind` / `rules`: Update automatic Inbox audience rules.\n- `exclude`: Deprecated no-op kept for backward compatibility.\n\nSegments define pure audience only; configure `excludeStoplist` and `excludeBlocked` per campaign.",
         "operationId": "CampaignSegmentsController_update",
         "parameters": [
           {
@@ -405,6 +821,18 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "No updatable fields provided, or `rules` / `exclude` failed validation (`invalid_filter`)."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Segment not found in the account."
           }
         },
         "security": [
@@ -415,8 +843,7 @@
         "summary": "Update a segment",
         "tags": [
           "Segments"
-        ],
-        "description": "Send only the fields that change. name up to 200 characters. description up to 2000 characters. segmentId is the id from create."
+        ]
       },
       "delete": {
         "operationId": "CampaignSegmentsController_remove",
@@ -434,6 +861,18 @@
         "responses": {
           "204": {
             "description": ""
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Segment not found in the account."
+          },
+          "409": {
+            "description": "Segment is still referenced by an active or historical campaign."
           }
         },
         "security": [
@@ -445,12 +884,12 @@
         "tags": [
           "Segments"
         ],
-        "description": "Deletes the segment and its members. Fails while a draft, sending, paused, or scheduled campaign still uses it."
+        "description": "Deletes a segment and all of its stored members.\n\n- Returns `204 No Content` when deleted.\n- Returns `409 Conflict` while a `draft`, `sending`, `pause`, or `scheduled` campaign references the segment."
       }
     },
     "/api/v1/campaigns/{campaignId}/analytics": {
       "get": {
-        "description": "Counts for the snapshot taken at send. dailyLimit is the channel tier, not a campaign setting. Rates are fractions from 0 to 1.",
+        "description": "Returns aggregate delivery, reply, suppression, and opt-out metrics for a campaign's send snapshot.\n\n- Includes counts for `sent`, `delivered`, `read`, `replied`, `suppressed` (stoplist), `failed`, `skipped`, and `cancelled`, plus `unsubscribedCount` and `unsubscribedShare` (attributed opt-outs as a fraction of sent).\n- `dailyLimit` reflects the channel tier snapshot recorded at send time (`dailyLimitOverride` is stored on the campaign object). Rates are decimals between `0` and `1`.",
         "operationId": "CampaignAnalyticsController_summary",
         "parameters": [
           {
@@ -473,6 +912,15 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Campaign not found."
           }
         },
         "security": [
@@ -488,7 +936,7 @@
     },
     "/api/v1/campaigns/{campaignId}/analytics/recipients": {
       "get": {
-        "description": "One row per recipient. filter is a comma-separated list of sent, delivered, read, replied, failed, skipped, or cancelled. filter=clicked is rejected; use filter=replied with replyType=button. fields limits the columns. conversationId is the Inbox dialog. providerConversationId is the provider chat id. messageId and providerMessageId are the provider message id. limit max 100. cursor is nextCursor.",
+        "description": "Returns cursor-paginated per-recipient delivery, reply, and opt-out details for a campaign.\n\n- `filter`: Optional comma-separated statuses (`sent`, `delivered`, `read`, `replied`, `failed`, `skipped`, `cancelled`, `suppressed`). `filter=clicked` is rejected — use `filter=replied` with `replyType=button`.\n- `unsubscribed`: Pass `true` to keep only recipients attributed as unsubscribed after this campaign send (or `false` for the remainder), e.g. `GET /api/v1/campaigns/{campaignId}/analytics/recipients?unsubscribed=true&limit=50`.\n- `fields`, `limit` (max `100`), and `cursor` (`nextCursor`) control projection and pagination.\n- Each row includes `unsubscribedAt`, Inbox `conversationId`, `providerConversationId`, and `messageId` / `providerMessageId`.",
         "operationId": "CampaignAnalyticsController_recipients",
         "parameters": [
           {
@@ -504,7 +952,7 @@
             "name": "filter",
             "required": false,
             "in": "query",
-            "description": "Comma-separated: sent, delivered, read, replied, failed, skipped, cancelled. filter=clicked is rejected — use replied with replyType=button.",
+            "description": "Comma-separated: sent, delivered, read, replied, failed, skipped, cancelled, suppressed. filter=clicked is rejected — use replied with replyType=button. suppressed is separate from errors.",
             "schema": {
               "type": "string"
             }
@@ -515,6 +963,20 @@
             "in": "query",
             "description": "true keeps only people who replied. false keeps people who did not.",
             "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ]
+            }
+          },
+          {
+            "name": "unsubscribed",
+            "required": false,
+            "in": "query",
+            "description": "true keeps only recipients attributed as unsubscribed after this campaign send (stoplist audit added within the window until the next campaign send on the same channel identity or 24h). false keeps recipients without that attribution. Omit for no unsubscribe filter. Example: GET /api/v1/campaigns/{campaignId}/analytics/recipients?unsubscribed=true&limit=50",
+            "schema": {
+              "example": "true",
               "type": "string",
               "enum": [
                 "true",
@@ -591,6 +1053,18 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid `filter`, `fields`, `limit`, or `cursor` query parameter."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Campaign not found."
           }
         },
         "security": [
@@ -704,6 +1178,18 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid reply filter or timestamp parameter."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Campaign not found."
           }
         },
         "security": [
@@ -715,7 +1201,7 @@
         "tags": [
           "Analytics"
         ],
-        "description": "replyType is button or text. buttonId filters one button. phone and bsuid filter one recipient. dateFrom and dateTo are ISO-8601. providerConversationId is the provider chat id. messageId and providerMessageId are the provider message id."
+        "description": "Returns inbound recipient replies attributed to the campaign.\n\n- Filter by `replyType` (`button` or `text`), `buttonId`, recipient `phone` or `bsuid`, and ISO-8601 `dateFrom` / `dateTo`.\n- Includes `providerConversationId` and `messageId` / `providerMessageId` for each reply."
       }
     },
     "/api/v1/campaigns/{campaignId}/analytics/errors": {
@@ -764,6 +1250,18 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid `type` or `recipientsLimit` query parameter."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Campaign not found."
           }
         },
         "security": [
@@ -775,7 +1273,702 @@
         "tags": [
           "Analytics"
         ],
-        "description": "Groups failed and skipped recipients by reason. type is failed or skipped. recipientsLimit is how many recipients to include per reason, default 20, maximum 100. Each recipient includes providerConversationId and providerMessageId."
+        "description": "Groups `failed` and `skipped` campaign recipients by error reason.\n\n- `type`: Optional filter (`failed` or `skipped`). Stoplist `suppressed` recipients are excluded from error reports.\n- `recipientsLimit`: Maximum sample recipients returned per reason (default `20`, maximum `100`), each with `providerConversationId` and `providerMessageId`."
+      }
+    },
+    "/api/v1/campaigns/stoplist": {
+      "get": {
+        "description": "Lists active stoplist opt-out entries across the account.\n\n- `channelId`: Optional WABA channel filter.\n- Supports cursor pagination via `limit` (default `50`, maximum `100`) and `cursor`.",
+        "operationId": "ChannelStoplistController_list",
+        "parameters": [
+          {
+            "name": "channelId",
+            "required": false,
+            "in": "query",
+            "description": "Limit to one channel id.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Page size, 1–100. Default 50.",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "nextCursor from the previous page.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoplistEntryPageDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query parameter."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List stoplist entries",
+        "tags": [
+          "Stoplist"
+        ]
+      },
+      "post": {
+        "description": "Adds a manual opt-out entry to a channel's stoplist.\n\n- Body requires `channelId` and at least one of `phone` (E.164) or `bsuid`.\n- Emits a `stoplist.updated` webhook event with `action: \"added\"` and `source: \"api\"`.",
+        "operationId": "ChannelStoplistController_add",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddStoplistEntryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoplistEntryResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing `channelId` or invalid `phone` / `bsuid`."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Channel not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Add a stoplist entry",
+        "tags": [
+          "Stoplist"
+        ]
+      },
+      "delete": {
+        "description": "Removes an active opt-out entry from a channel's stoplist.\n\n- Provide either `entryId`, or `channelId` together with `phone` and/or `bsuid`.\n- Emits a `stoplist.updated` webhook event with `action: \"removed\"` and `source: \"api\"`.",
+        "operationId": "ChannelStoplistController_remove",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveStoplistEntryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "removed": {
+                      "type": "boolean"
+                    },
+                    "id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing identifier (`entryId` or `channelId` + `phone`/`bsuid`)."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Stoplist entry or channel not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Remove a stoplist entry",
+        "tags": [
+          "Stoplist"
+        ]
+      }
+    },
+    "/api/v1/campaigns/stoplist/keywords": {
+      "get": {
+        "description": "Lists protected default stop/opt-in keywords and custom stop keywords for a channel.\n\n- `channelId` query parameter is required; protected defaults are seeded lazily on first read.\n- Returns `customStopRemaining` (up to 5 custom stop keywords per channel).",
+        "operationId": "ChannelStoplistController_listKeywords",
+        "parameters": [
+          {
+            "name": "channelId",
+            "required": false,
+            "in": "query",
+            "description": "Channel id.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoplistKeywordsListDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing `channelId` query parameter."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Channel not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List stoplist keywords",
+        "tags": [
+          "Stoplist"
+        ]
+      },
+      "post": {
+        "description": "Adds a custom inbound stop keyword for a WABA channel.\n\n- Body requires `channelId` and `value` (1–64 characters after trim).\n- Rejects normalized duplicates and requests when 5 custom stop keywords already exist on the channel. Opt-in keywords are fixed defaults and cannot be customized.",
+        "operationId": "ChannelStoplistController_addKeyword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddStoplistKeywordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoplistKeywordResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid keyword length, duplicate normalized keyword, or 5-keyword limit reached."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Channel not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Add a custom stop keyword",
+        "tags": [
+          "Stoplist"
+        ]
+      }
+    },
+    "/api/v1/campaigns/stoplist/keywords/{keywordId}": {
+      "delete": {
+        "description": "Deletes a custom stop keyword by `keywordId`.\n\n- Protected default stop and opt-in keywords cannot be deleted and return `400`.\n- Frees one slot toward the channel's 5-keyword custom limit.",
+        "operationId": "ChannelStoplistController_deleteKeyword",
+        "parameters": [
+          {
+            "name": "keywordId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Stoplist keyword id from the keywords list."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "removed": {
+                      "type": "boolean"
+                    },
+                    "id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Keyword is a protected default keyword and cannot be deleted."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Keyword not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete a custom stop keyword",
+        "tags": [
+          "Stoplist"
+        ]
+      }
+    },
+    "/api/v1/campaigns/stoplist/settings": {
+      "get": {
+        "description": "Returns per-channel stoplist suppression settings.\n\n- `channelId` query parameter is required.\n- Returns `blockUtilityAuth` (`false` by default; `MARKETING` templates are always suppressed for stoplisted contacts).",
+        "operationId": "ChannelStoplistController_getSettings",
+        "parameters": [
+          {
+            "name": "channelId",
+            "required": false,
+            "in": "query",
+            "description": "Channel id.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoplistSettingsResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing `channelId` query parameter."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Channel not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get stoplist settings",
+        "tags": [
+          "Stoplist"
+        ]
+      },
+      "patch": {
+        "description": "Updates per-channel stoplist suppression settings.\n\n- Body requires `channelId` and boolean `blockUtilityAuth`.\n- When `blockUtilityAuth` is `true`, `UTILITY` and `AUTHENTICATION` template sends also suppress stoplisted contacts alongside `MARKETING` templates.",
+        "operationId": "ChannelStoplistController_patchSettings",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchStoplistSettingsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoplistSettingsResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid `channelId` or non-boolean `blockUtilityAuth`."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Channel not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update stoplist settings",
+        "tags": [
+          "Stoplist"
+        ]
+      }
+    },
+    "/api/v1/campaigns/cost/expenses.csv": {
+      "get": {
+        "description": "Exports the full filtered campaign cost expense report as a UTF-8 CSV attachment without pagination.\n\n- Accepts the same `channelId`, `from`, `to`, and `campaignIds` filters as `GET /api/v1/campaigns/cost/expenses`.\n- Columns: `campaign_id,channel_id,completed_at,country_code,category,total_usd,total_brl,total_rub`.\n\nThese amounts are estimates. Volume tiers, free entry points, customer-service windows, and Meta from-to price bands are not modeled, so the figures can differ from Meta's invoice.",
+        "operationId": "CampaignCostController_expensesCsv",
+        "parameters": [
+          {
+            "name": "channelId",
+            "required": false,
+            "in": "query",
+            "description": "Limit to one channel. Combined with the other filters using AND.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "Include snapshots whose completedAt is at or after this instant. Filters campaign_cost_snapshots.completedAt.",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "Include snapshots whose completedAt is at or before this instant. Filters campaign_cost_snapshots.completedAt.",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "campaignIds",
+            "required": false,
+            "in": "query",
+            "description": "Campaign ids. Repeat the parameter or pass a comma-separated list. Combined with the other filters using AND.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "format",
+            "required": false,
+            "in": "query",
+            "description": "Accepted for compatibility. GET .../cost/expenses returns JSON. GET .../cost/expenses.csv always returns CSV.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "json",
+                "csv"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CSV file with snake_case columns: campaign_id, channel_id, completed_at, country_code, category, total_usd, total_brl, and total_rub."
+          },
+          "400": {
+            "description": "Invalid `from` / `to` ISO-8601 timestamp or query filter."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Download campaign cost expenses as CSV",
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/api/v1/campaigns/cost/expenses": {
+      "get": {
+        "description": "Returns per-country expense rows from immutable completion snapshots of completed template campaigns.\n\n- Each row reports `campaignId`, `campaignName`, `channelId`, `completedAt`, `countryCode`, `category`, and final estimated `total` in `USD`, `BRL`, and `RUB`.\n- Optional query filters `channelId`, `from`, `to` (snapshot `completedAt` range), and `campaignIds` combine with `AND`.\n\nThese amounts are estimates. Volume tiers, free entry points, customer-service windows, and Meta from-to price bands are not modeled, so the figures can differ from Meta's invoice.",
+        "operationId": "CampaignCostController_expenses",
+        "parameters": [
+          {
+            "name": "channelId",
+            "required": false,
+            "in": "query",
+            "description": "Limit to one channel. Combined with the other filters using AND.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "Include snapshots whose completedAt is at or after this instant. Filters campaign_cost_snapshots.completedAt.",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "Include snapshots whose completedAt is at or before this instant. Filters campaign_cost_snapshots.completedAt.",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "campaignIds",
+            "required": false,
+            "in": "query",
+            "description": "Campaign ids. Repeat the parameter or pass a comma-separated list. Combined with the other filters using AND.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "format",
+            "required": false,
+            "in": "query",
+            "description": "Accepted for compatibility. GET .../cost/expenses returns JSON. GET .../cost/expenses.csv always returns CSV.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "json",
+                "csv"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignCostExpensesReportResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid `from` / `to` ISO-8601 timestamp or query filter."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List campaign cost expenses",
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/cost/forecast": {
+      "get": {
+        "description": "Estimates campaign cost by pricing every audience recipient as delivered against the active WhatsApp list-rate card and approved template category.\n\n- Returns `billingRoute` (`DIRECT_META` for own WABA / BYOW, or `PLATFORM_1MSG` for a 1msg platform channel), overall `total`, and per-country `breakdown[].lineTotal` in `USD`, `BRL`, and `RUB`.\n- Requires an assigned `segmentId` when forecasting a `draft` campaign before recipient materialization.\n- Returns `422` with `errorCode`: `CAMPAIGN_COST_RATE_CARD_MISSING`, `CAMPAIGN_COST_RATE_ROW_MISSING`, `CAMPAIGN_COST_TEMPLATE_CATEGORY_INVALID` (for non-list-rate categories such as `MARKETING_LITE` or `SERVICE`), `CAMPAIGN_COST_TEMPLATE_MISSING`, or `CAMPAIGN_COST_BILLING_ROUTE_UNKNOWN`.\n\nThese amounts are estimates. Volume tiers, free entry points, customer-service windows, and Meta from-to price bands are not modeled, so the figures can differ from Meta's invoice.",
+        "operationId": "CampaignCostController_forecast",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Campaign id returned by create or list."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignCostForecastResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Campaign not found."
+          },
+          "422": {
+            "description": "422 CAMPAIGN_COST_RATE_CARD_MISSING when no list-rate version is active. 422 CAMPAIGN_COST_RATE_ROW_MISSING when a country and category have no rate row. 422 CAMPAIGN_COST_TEMPLATE_CATEGORY_INVALID when the template is MARKETING_LITE, SERVICE, or otherwise not MARKETING, UTILITY, or AUTHENTICATION. 422 CAMPAIGN_COST_TEMPLATE_MISSING when the campaign has no approved template. 422 CAMPAIGN_COST_BILLING_ROUTE_UNKNOWN when the channel billing route is not DIRECT_META or PLATFORM_1MSG."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Forecast campaign cost",
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/cost/actual": {
+      "get": {
+        "description": "Returns the frozen completion cost snapshot pricing recipients whose `deliveryStatus` is `delivered` (`read` is reported separately and not double-counted).\n\n- Returns `snapshotId`, `completedAt`, `billingRoute` (`DIRECT_META` or `PLATFORM_1MSG`), final estimated `total`, and per-country `breakdown[].lineTotal` in `USD`, `BRL`, and `RUB`.\n- Returns `404` (`CAMPAIGN_COST_SNAPSHOT_MISSING`) when the campaign is not `completed` or has no cost snapshot (never a synthetic zero-money body).\n\nThese amounts are estimates. Volume tiers, free entry points, customer-service windows, and Meta from-to price bands are not modeled, so the figures can differ from Meta's invoice.",
+        "operationId": "CampaignCostController_actual",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Campaign id returned by create or list."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignCostActualResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "CAMPAIGN_COST_SNAPSHOT_MISSING when the campaign is not completed or has no snapshot."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Actual campaign cost",
+        "tags": [
+          "Analytics"
+        ]
       }
     },
     "/api/v1/campaigns": {
@@ -802,6 +1995,18 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid draft payload, `params` combined with `bindings`, or `dailyLimit` exceeds channel tier (`daily_limit_exceeds_tier`)."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Channel or segment not found."
           }
         },
         "security": [
@@ -813,10 +2018,10 @@
         "tags": [
           "Campaigns"
         ],
-        "description": "name is the campaign title. channelId is the channel that will send. segmentId is the audience. content.mode is template or text. For a template set content.templateName, content.language, and content.params (the sendTemplate array). content.messageSendTtlSeconds is optional, in seconds, and sits beside params. For text set content.text. status, if sent, must be draft."
+        "description": "Creates a new campaign in `draft` status on the specified WABA `channelId`.\n\n- `name`: Campaign title.\n- `channelId`: Sender WABA channel ID accessible to the API key.\n- `segmentId` (optional): Audience segment ID. May be omitted or `null` while `status` is `draft`; required before `schedule`, `send`, `preview`, `validate-variables`, or `cost/forecast`.\n- `content`: Choose `mode: \"text\"` (with `content.text`) or `mode: \"template\"` (with `content.templateName`, `content.language`, optional `content.messageSendTtlSeconds`, and either `content.variables` + `content.bindings` or raw WABA `content.params`). Combining `params` and `bindings` returns `400`. `content.onMissing` defaults to `skip_recipient`.\n- `excludeStoplist` (optional, boolean, default `true`): Suppresses recipients on the channel stoplist at send time; always enforced as `true` for `MARKETING` templates.\n- `excludeBlocked` (optional, boolean, default `true`): Excludes contacts with blocked Inbox dialogs on `channelId`.\n- `dailyLimit` (optional): Client daily pacing cap (integer `>= 1` stored as `dailyLimitOverride`, or `null` to clear). Values above a numeric channel tier return `400` (`daily_limit_exceeds_tier`).\n\nCanonical template slot keys (`content.variables` and `content.bindings`):\n\n- `header_media_url` — public HTTPS media URL when the template has an `IMAGE`, `VIDEO`, or `DOCUMENT` header.\n- `header_1..N` — text header placeholders `{{1}}..{{N}}`.\n- `'1'..N` (or `'body_1'..N`) — body placeholders `{{1}}..{{N}}`.\n- `button_url_0..N` — dynamic URL button suffix values by button index `0..N` (URL-encoded on send)."
       },
       "get": {
-        "description": "Newest first, for the whole account. channelId limits the list to those channels. Repeat the parameter or pass a comma-separated list. Omit channelId to return every channel. limit defaults to 50, maximum 100. cursor is nextCursor from the previous page.",
+        "description": "Returns a cursor-paginated list of campaigns across the account (newest first by default).\n\n- `channelId`: Optional filter; repeat the query parameter or pass a comma-separated list of channel IDs, or omit to include all accessible channels.\n- `status`: Optional filter (`draft`, `sending`, `pause`, `completed`, `failed`, or `scheduled`).\n- `sort`: `newest` (default), `oldest`, `nameAsc`, `nameDesc`, `launchDesc`, or `launchAsc`.\n- `limit`: Page size, default `50`, maximum `100`.\n- `cursor`: `nextCursor` from the previous response.",
         "operationId": "CampaignsController_list",
         "parameters": [
           {
@@ -832,7 +2037,25 @@
             "name": "cursor",
             "required": false,
             "in": "query",
-            "description": "nextCursor from the previous page. Leave empty for the first page.",
+            "description": "nextCursor from the previous page. Leave empty for the first page. A cursor belongs to the same sort.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "One campaign status: draft, sending, pause, completed, failed, or scheduled. Omit for every status.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "description": "newest (default), oldest, nameAsc, nameDesc, launchDesc, or launchAsc. Launch date uses sentAt and keeps empty dates last.",
             "schema": {
               "type": "string"
             }
@@ -858,6 +2081,15 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid filter, sort, or cursor query parameter."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
           }
         },
         "security": [
@@ -895,6 +2127,21 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Automatic segment `rules.channelId` does not match `campaign.channelId` (`segment_channel_mismatch`)."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Campaign not found."
+          },
+          "409": {
+            "description": "Preview is unavailable while the campaign is `scheduled`."
           }
         },
         "security": [
@@ -906,12 +2153,12 @@
         "tags": [
           "Campaigns"
         ],
-        "description": "Counts recipients and how many are outside the 24-hour window. tierDailyLimit is the channel tier. No price and no cost are returned. Nothing is sent."
+        "description": "Computes audience size, 24-hour window counts, and pacing warnings without sending messages.\n\n- Returns `recipientCount`, `closedWindowCount`, `tierDailyLimit` (effective daily cap combining channel tier and `dailyLimitOverride`), `exceedsTierDailyLimit`, and `warnings`.\n- Does not calculate monetary cost; call `GET /api/v1/campaigns/:campaignId/cost/forecast` for price estimates."
       }
     },
     "/api/v1/campaigns/{campaignId}/send": {
       "post": {
-        "description": "Copies the segment into the send snapshot. scheduledAt is a future ISO-8601 instant with Z or a numeric offset. Omit it or send null to start now. Template sends pause when the channel tier for the rolling 24 hours is used up. There is no separate per-day field.",
+        "description": "Snapshots the segment's recipients and either starts sending immediately or schedules a future launch.\n\n- **Audience snapshot:** Requires a non-empty `segmentId` (max 500 recipients). Automatic segments re-evaluate Inbox rules live at send time (`rules.channelId` must match `campaign.channelId`).\n- **Scheduling:** Set `scheduledAt` to a future ISO-8601 timestamp with `Z` or numeric offset to transition to `scheduled`, or omit/`null` to start `sending` immediately.\n- **Daily pacing:** Optional `dailyLimit` (integer `>= 1` or `null`) updates `dailyLimitOverride`. Exceeding a numeric channel tier returns `400` (`daily_limit_exceeds_tier`). The response `dailyLimit` stores the tier snapshot captured at send.",
         "operationId": "CampaignsController_send",
         "parameters": [
           {
@@ -944,6 +2191,21 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Missing/empty segment (`empty_segment`), over 500 recipients (`recipient_cap_exceeded`), missing template variables (`missing_template_variables`), invalid `scheduledAt` (`scheduled_at_invalid`), or `daily_limit_exceeds_tier`."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Campaign, segment, or approved template not found."
+          },
+          "409": {
+            "description": "Campaign status is not `draft`."
           }
         },
         "security": [
@@ -991,6 +2253,21 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "`scheduledAt` is missing or not a future ISO-8601 instant (`scheduled_at_invalid`)."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Campaign not found."
+          },
+          "409": {
+            "description": "Campaign is not in `scheduled` status."
           }
         },
         "security": [
@@ -1002,7 +2279,7 @@
         "tags": [
           "Campaigns"
         ],
-        "description": "scheduledAt is a new future ISO-8601 instant with Z or a numeric offset. Only a campaign that is already scheduled can be moved."
+        "description": "Moves the launch timestamp of a campaign that is currently in `scheduled` status.\n\n- `scheduledAt`: Required future ISO-8601 timestamp with `Z` or a numeric offset.\n- Returns `409 Conflict` if the campaign has already started sending or is not in `scheduled` status."
       }
     },
     "/api/v1/campaigns/{campaignId}/unschedule": {
@@ -1029,6 +2306,18 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Campaign not found."
+          },
+          "409": {
+            "description": "Campaign is not `scheduled` or a recipient was already handed off."
           }
         },
         "security": [
@@ -1040,7 +2329,7 @@
         "tags": [
           "Campaigns"
         ],
-        "description": "Clears scheduledAt and sets status back to draft. No body."
+        "description": "Cancels a pending schedule, clears `scheduledAt` and queued snapshot rows, and returns the campaign to `draft` status.\n\n- Takes no request body.\n- Allowed only while `status` is `scheduled` and no recipient has been handed off to the provider."
       }
     },
     "/api/v1/campaigns/{campaignId}/pause": {
@@ -1067,6 +2356,18 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Campaign not found."
+          },
+          "409": {
+            "description": "Campaign is not currently `sending`."
           }
         },
         "security": [
@@ -1078,7 +2379,7 @@
         "tags": [
           "Campaigns"
         ],
-        "description": "Stops taking new recipients from the queue. No body. Resume continues the same snapshot."
+        "description": "Pauses an active `sending` campaign so no additional recipients are claimed from the queue.\n\n- Takes no request body and sets `status` to `pause`.\n- Call `POST /api/v1/campaigns/:campaignId/resume` to continue dispatching the remaining snapshot."
       }
     },
     "/api/v1/campaigns/{campaignId}/resume": {
@@ -1105,6 +2406,18 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Campaign not found."
+          },
+          "409": {
+            "description": "Campaign is not currently in `pause` status."
           }
         },
         "security": [
@@ -1116,7 +2429,7 @@
         "tags": [
           "Campaigns"
         ],
-        "description": "Continues the same snapshot. No body. The daily cap is still the channel tier."
+        "description": "Resumes sending a `pause` campaign using the existing recipient snapshot.\n\n- Takes no request body and transitions `status` back to `sending`.\n- Applies the saved `dailyLimitOverride` and current channel tier limit for rolling 24-hour pacing."
       }
     },
     "/api/v1/campaigns/{campaignId}/complete": {
@@ -1143,6 +2456,18 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Campaign not found."
+          },
+          "409": {
+            "description": "Campaign is neither `sending` nor `pause`."
           }
         },
         "security": [
@@ -1154,12 +2479,62 @@
         "tags": [
           "Campaigns"
         ],
-        "description": "Marks a sending or paused campaign completed and drops recipients that were not sent. No body."
+        "description": "Finishes a `sending` or `pause` campaign immediately and freezes its completion cost snapshot.\n\n- Takes no request body and marks any remaining unsent recipients as `cancelled`.\n- Writes the immutable completion cost snapshot used by `GET …/cost/actual` and `GET …/cost/expenses`."
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/retry-failed": {
+      "post": {
+        "description": "Creates a new `manual` segment from recipients with `deliveryStatus === \"failed\"` and a new `draft` campaign cloned from this campaign.\n\n- Allowed only when the source campaign status is `completed` or `failed` (no request body).\n- Copies recipient `name`, `phone`, `bsuid`, and `attributes` into `\"{source.name} — retry failed\"`, and copies channel, content, bindings, `messageSendTtlSeconds`, `dailyLimitOverride`, `excludeStoplist`, and `excludeBlocked` into `\"{source.name} (retry)\"`.\n- Leaves the source campaign unchanged and returns the new `draft` campaign.\n- Error codes (`400`): `invalid_status`, `no_failed_recipients`, `too_many_failed` (over 500 failed recipients).",
+        "operationId": "CampaignsController_retryFailed",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Campaign id returned by create or list."
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Source status is not completed/failed (`invalid_status`), zero failed recipients (`no_failed_recipients`), or over 500 failed recipients (`too_many_failed`)."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Source campaign not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Retry failed recipients as a new draft",
+        "tags": [
+          "Campaigns"
+        ]
       }
     },
     "/api/v1/campaigns/{campaignId}/test": {
       "post": {
-        "description": "Sends the draft content to one recipient and does not change campaign status or analytics. Provide exactly one of phone (E.164) or bsuid (provider format). A provider rejection is an error, not an accepted send. conversationId is the Inbox dialog. messageId and providerMessageId are the same provider message id, or null when the provider accepted the send without an id.",
+        "description": "Dispatches the draft campaign message to a single test recipient without changing campaign `status` or campaign analytics.\n\n- Provide exactly one of `phone` (E.164) or `bsuid` (provider format).\n- Optional `name` and `attributes` populate `segment.name` and `segment.attributes.*` template bindings for the test send.\n- Returns `conversationId` (Inbox dialog ID) plus `messageId` and `providerMessageId` (matching provider message ID, or `null` if accepted without an external ID). Provider rejections return `400`.",
         "operationId": "CampaignsController_test",
         "parameters": [
           {
@@ -1192,6 +2567,21 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid recipient identifier, closed 24h window for text mode, missing template variables, or provider send rejection."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Campaign or approved template not found."
+          },
+          "409": {
+            "description": "Test send is only allowed while campaign status is `draft`."
           }
         },
         "security": [
@@ -1200,6 +2590,56 @@
           }
         ],
         "summary": "Send one test",
+        "tags": [
+          "Campaigns"
+        ]
+      }
+    },
+    "/api/v1/campaigns/{campaignId}/validate-variables": {
+      "post": {
+        "description": "Verifies that every required template slot resolves to a non-empty value for all members of the campaign's segment.\n\n- Takes no request body. Requires `segmentId` to be set on the campaign before validation when the template has required slots.\n- Returns `valid` (boolean), `total` member count, `invalidCount`, and `invalidRecipients` (`memberId`, `name`, `missingSlots`).\n\nCanonical template slot keys (`content.variables` and `content.bindings`):\n\n- `header_media_url` — public HTTPS media URL when the template has an `IMAGE`, `VIDEO`, or `DOCUMENT` header.\n- `header_1..N` — text header placeholders `{{1}}..{{N}}`.\n- `'1'..N` (or `'body_1'..N`) — body placeholders `{{1}}..{{N}}`.\n- `button_url_0..N` — dynamic URL button suffix values by button index `0..N` (URL-encoded on send).",
+        "operationId": "CampaignsController_validateVariables",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Campaign id returned by create or list."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidateVariablesResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Automatic segment rules are invalid or channel-mismatched."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Campaign, segment, or approved template not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Validate template variable bindings for all segment members",
         "tags": [
           "Campaigns"
         ]
@@ -1229,6 +2669,15 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Campaign not found in the account."
           }
         },
         "security": [
@@ -1240,7 +2689,7 @@
         "tags": [
           "Campaigns"
         ],
-        "description": "campaignId is the id from create. dailyLimit is the channel tier for a rolling 24 hours. It is not a value you set. scheduledAt is the future send time, or null."
+        "description": "Returns full configuration and runtime pacing state for one campaign.\n\n- `dailyLimitOverride` holds the optional client cap (`null` when unset).\n- `dailyLimit` holds the channel tier snapshot recorded at send time (`null` while in `draft` or when the tier is unlimited/unknown).\n- `scheduledAt` holds the scheduled ISO-8601 send instant or `null`."
       },
       "patch": {
         "operationId": "CampaignsController_update",
@@ -1275,6 +2724,21 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid update payload, `params` combined with `bindings`, or `dailyLimit` exceeds channel tier (`daily_limit_exceeds_tier`)."
+          },
+          "401": {
+            "description": "Missing, malformed, or revoked API key."
+          },
+          "403": {
+            "description": "API key lacks the campaigns scope or access to the requested channel."
+          },
+          "404": {
+            "description": "Campaign or segment not found."
+          },
+          "409": {
+            "description": "Campaign is no longer in `draft` status."
           }
         },
         "security": [
@@ -1286,27 +2750,31 @@
         "tags": [
           "Campaigns"
         ],
-        "description": "Only a draft can be changed. Send at least one of name, channelId, segmentId, or content. content follows the same template and text rules as create."
+        "description": "Updates a campaign while its `status` is `draft`. Send at least one of `name`, `channelId`, `segmentId`, `content`, `dailyLimit`, `excludeStoplist`, or `excludeBlocked`.\n\n- `segmentId`: Set a segment ID or `null` to clear the audience while `status` is `draft`; a segment is required before `schedule`, `send`, `preview`, `validate-variables`, or `cost/forecast`.\n- `content`: Follows the same `text` and `template` rules as `POST /api/v1/campaigns`. `content.bindings` and `content.onMissing` can be set or cleared; combining `params` and `bindings` returns `400`.\n- `excludeStoplist` (optional, boolean): Suppresses recipients on the channel stoplist at send time; always enforced as `true` for `MARKETING` templates.\n- `excludeBlocked` (optional, boolean): Excludes contacts with blocked Inbox dialogs on `channelId`.\n- `dailyLimit`: Optional integer `>= 1` stored as `dailyLimitOverride`, or `null` to clear. Omit to keep the saved cap. Exceeding a numeric channel tier returns `400` (`daily_limit_exceeds_tier`).\n\nCanonical template slot keys (`content.variables` and `content.bindings`):\n\n- `header_media_url` — public HTTPS media URL when the template has an `IMAGE`, `VIDEO`, or `DOCUMENT` header.\n- `header_1..N` — text header placeholders `{{1}}..{{N}}`.\n- `'1'..N` (or `'body_1'..N`) — body placeholders `{{1}}..{{N}}`.\n- `button_url_0..N` — dynamic URL button suffix values by button index `0..N` (URL-encoded on send)."
       }
     }
   },
   "info": {
     "title": "Campaigns API",
-    "description": "Campaigns API lets you send one message to multiple recipients. A segment can contain up to 500 people by default. To increase the limit to 10,000, contact us at [hello@1msg.io](mailto:hello@1msg.io). Inbox methods are not covered in this document.\n\nUse the API groups in this order: Segments → Campaigns → Analytics.\n\n## 1. Segments\n\nCreate a segment and add members. Each member requires a `name` and at least one of `phone` or `bsuid`.\n\n## 2. Campaigns\n\nCreate a draft with a `channelId` the API key can access and a `segmentId` from the previous step.\n\nSet `content.mode` to `text` or `template`:\n\n- Text: provide `content.text`.\n- Template: provide `content.templateName` and `content.language` (e.g. `en`).\n\nFor templates:\n\n- `content.params` uses the same format as `sendTemplate` and is forwarded to WABA as-is, supporting header images, body variables, buttons, and carousel cards.\n- `content.messageSendTtlSeconds` is optional and sets the delivery window in seconds. It belongs alongside `params`, not inside the template components.\n\nPreview the draft before sending.\n\nTo schedule a campaign, set `scheduledAt` to a future ISO 8601 timestamp with `Z` or a numeric offset, e.g. `2026-11-01T09:00:00Z`. Omit it or set it to `null` to start sending immediately.\n\nThere is no daily message-count setting. Template sends use the channel's tier limit, returned as `dailyLimit`. Session text messages sent within an open 24-hour window do not count toward this limit.\n\n## 3. Analytics\n\nRead analytics after sending to track campaign performance:\n\n- Overall statistics: total messages sent, delivered, read, and replied to.\n- Recipient-level statistics: when each message was sent, delivered and read, when the recipient replied, and their replies — including button clicks and free-text messages.\n- Button statistics: see who clicked each button and when.\n- Error statistics: see which recipients encountered errors and the corresponding error for each phone number.\n\n## 4. Campaigns webhooks\n\n1MSG sends webhook events to your configured HTTPS URL when segments or campaigns are created or updated, and when a campaign's status changes.\n\nConfigure webhooks in Settings → Developer → Webhooks.\n\n### Events\n\n- `segment.created` — A segment was created. `action` is `segment_created`.\n- `segment.updated` — A segment or its members changed. `action` can be `segment_updated`, `segment_deleted`, `member_added`, `member_updated`, `member_deleted`, or `members_replaced`. The payload does not identify the affected member.\n- `campaign.created` — A campaign draft was created. `scheduledAt` contains the scheduled send time or `null`.\n- `campaign.updated` — A campaign draft was updated. `scheduledAt` contains the scheduled send time or `null`.\n- `campaign.status_changed` — The campaign status changed to `draft`, `sending`, `pause`, `completed`, `failed`, or `scheduled`. `scheduledAt` contains the scheduled send time or `null`.\n\n## Authorization\n\nThe key must include the Campaigns scope. Issue it in Settings → Developer → API key.\n\n```\nAuthorization: Bearer 1msg_live_…\n```",
+    "description": "Campaigns API lets you send WhatsApp broadcasts to audience segments on a selected WABA channel.\n\nA segment can contain up to 500 recipients by default. To increase the limit to 10,000, contact us at [hello@1msg.io](mailto:hello@1msg.io). Inbox methods are documented separately under the Inbox API.\n\nUse the API groups in this order: **Segments → Campaigns → Stoplist → Analytics**.\n\n## 1. Segments\n\nCreate an audience segment before launching a campaign. Each member requires a `name` and at least one of `phone` (E.164) or `bsuid`.\n\n- **Manual segments (`manual`, default):** Store durable members added via JSON batches or CSV upload, with optional per-member string `attributes` for template variable bindings.\n- **Automatic segments (`automatic`):** Store pure Inbox dialog filter `rules` (Inbox-only). `POST /api/v1/campaigns/segments/preview` evaluates rules live, `…/materialize` refreshes the preview member list, and `…/import-from-rules` copies evaluated contacts into a manual segment. Campaign send always re-evaluates automatic rules live into the recipient snapshot.\n- **Pure-audience boundary:** Segments define pure audience only. Per-campaign exclusions (`excludeStoplist` and `excludeBlocked`, both defaulting to `true`) are configured on the campaign itself; legacy `exclude` fields on segments are deprecated no-ops kept for backward compatibility.\n\n## 2. Campaigns\n\nCreate a draft with a `channelId` your API key can access. `segmentId` is optional while `status` is `draft` and is required before `send`, `schedule`, `preview`, `validate-variables`, or `cost/forecast`.\n\nPer-campaign exclusions:\n\n- `excludeStoplist` (boolean, default `true`): Suppresses recipients on the channel stoplist at send time. Always enforced as `true` for `MARKETING` templates regardless of the campaign flag.\n- `excludeBlocked` (boolean, default `true`): Excludes contacts whose Inbox dialog on `channelId` is blocked (`isBlocked = true`) during preview, cost forecast, variable validation, and send.\n\nSet `content.mode` to `text` or `template`:\n\n- **Session text (`text`):** Provide `content.text`. Delivered only to recipients with an open 24-hour customer-care window.\n- **Template (`template`):** Provide `content.templateName` and `content.language` (for example `en`), plus either `content.variables` / `content.bindings` or raw WABA `content.params`. Optional `content.messageSendTtlSeconds` sets the delivery TTL in seconds alongside `variables` or `params`.\n\nCanonical template slot keys for `content.variables` and `content.bindings`:\n\n- `header_media_url` — public HTTPS media URL when the template has an `IMAGE`, `VIDEO`, or `DOCUMENT` header.\n- `header_1..N` — text header placeholders `{{1}}..{{N}}`.\n- `'1'..N` (or `'body_1'..N`) — body placeholders `{{1}}..{{N}}`.\n- `button_url_0..N` — dynamic URL button suffix values by button index `0..N` (URL-encoded on send).\n\nScheduling and daily pacing:\n\n- Set `scheduledAt` on `POST …/send` to a future ISO-8601 timestamp with `Z` or a numeric offset (for example `2026-11-01T09:00:00Z`), or omit/`null` to launch immediately.\n- `dailyLimit` on create, draft update, and send is an optional client cap (integer `>= 1`, or `null` to clear) stored as `dailyLimitOverride`.\n- When the channel tier is numeric, pacing uses the lower of `dailyLimitOverride` and the channel tier; values above the tier return `400` (`daily_limit_exceeds_tier`). The response field `dailyLimit` records the channel tier snapshot captured at send time. Session text inside an open 24-hour window does not count against daily template caps.\n\n## 3. Stoplist\n\nManage per-channel (WABA) opt-out contacts, custom stop keywords, and suppression settings for campaign sends.\n\n- **Category & campaign rules:** `MARKETING` templates always suppress stoplisted contacts (Meta compliance). For `UTILITY`, `AUTHENTICATION`, and session `text` campaigns, stoplist suppression follows the campaign's `excludeStoplist` setting (default `true`).\n- **Suppressed outcome:** Suppressed recipients receive delivery status `suppressed` — not sent, not billed, and counted separately from delivery errors.\n- **Keywords:** Protected default stop words (including multi-word phrases such as `darme de baja`) and opt-in words (`start`, `старт`) are seeded automatically. Each channel supports up to 5 custom stop keywords (1–64 characters), matched against normalized whole-message text or button title/payload.\n\n## 4. Analytics\n\nInspect delivery performance, recipient replies, attributed opt-outs, errors, and campaign cost estimates:\n\n- **Delivery & engagement:** Summary and recipient-level snapshots track `sent`, `delivered`, `read`, `replied`, `suppressed`, `failed`, `skipped`, and `cancelled`, plus attributed opt-outs (`unsubscribedCount`, `unsubscribedShare`, and `unsubscribed=true` recipient filtering).\n- **Replies & errors:** Dedicated endpoints return button/text reply feeds and grouped `failed` / `skipped` error reasons (`suppressed` rows are excluded from errors).\n- **Cost estimates:** `cost/forecast`, `cost/actual`, `cost/expenses`, and `cost/expenses.csv` report final estimated `total` and per-country `lineTotal` amounts in `USD`, `BRL`, and `RUB`, with `billingRoute` set to `DIRECT_META` (own WABA / BYOW) or `PLATFORM_1MSG` (1msg platform channel). CSV export columns are `campaign_id,channel_id,completed_at,country_code,category,total_usd,total_brl,total_rub`.\n\n## 5. Campaigns webhooks\n\n1MSG sends signed HTTPS webhook events when segments, campaigns, or channel stoplist entries change. Configure your endpoint in **Settings → Developer → Webhooks**.\n\n### Events\n\n- `segment.created` — A segment was created (`action`: `segment_created`).\n- `segment.updated` — A segment or its members changed (`action`: `segment_updated`, `segment_deleted`, `member_added`, `member_updated`, `member_deleted`, or `members_replaced`).\n- `campaign.created` — A campaign draft was created (`scheduledAt` holds the scheduled instant or `null`).\n- `campaign.updated` — A campaign draft was updated (`scheduledAt` holds the scheduled instant or `null`).\n- `campaign.status_changed` — Campaign status changed to `draft`, `sending`, `pause`, `completed`, `failed`, or `scheduled`.\n- `stoplist.updated` — A channel stoplist entry was added or removed (`action`: `added` or `removed`, `source`: `keyword`, `api`, or `opt_in_clear`, plus `channelId`, `phone` / `bsuid`, and optional `keyword`).\n\n## Authorization\n\nYour API key must include the **Campaigns** scope. Issue a key in **Settings → Developer → API key** and pass it in the `Authorization` header:\n\n```\nAuthorization: Bearer 1msg_live_…\n```",
     "version": "1.0"
   },
   "tags": [
     {
       "name": "Segments",
-      "description": "Create a segment, then add people. Each member needs a name and a phone in E.164 or a BSUID."
+      "description": "Build and inspect pure audience lists before creating a campaign. Manual segments accept phone, BSUID, or CSV member lists; automatic segments evaluate Inbox dialog predicates. Exclusions (excludeStoplist and excludeBlocked) are configured per campaign, not inside segments."
     },
     {
       "name": "Campaigns",
-      "description": "Create a draft, set the template or text, preview, then send or schedule. The daily template cap is the channel tier, not a field on the campaign."
+      "description": "Create, update, validate, preview, test-send, schedule, launch, pause, resume, complete, or retry a campaign on a selected WABA channel and segment, including per-campaign excludeStoplist and excludeBlocked settings."
+    },
+    {
+      "name": "Stoplist",
+      "description": "Manage per-channel (WABA) opt-out contacts, custom stop keywords, and channel suppression settings (blockUtilityAuth). Marketing templates always suppress stoplisted contacts; non-marketing campaigns follow excludeStoplist on the campaign (default true)."
     },
     {
       "name": "Analytics",
-      "description": "Read the send snapshot: who was reached, what they replied, and why a send failed. conversationId is the Inbox dialog. providerConversationId is the provider chat id. messageId and providerMessageId are the same provider message id."
+      "description": "Read campaign send snapshots (delivery, replies, unsubscribes, and errors) and campaign cost estimates (forecast, actual completion snapshot, and expense reports in USD, BRL, and RUB)."
     }
   ],
   "servers": [
@@ -1340,6 +2808,32 @@
           "description": {
             "type": "string",
             "description": "Optional note, up to 2000 characters."
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "manual",
+              "automatic"
+            ],
+            "description": "manual (default) stores durable members. automatic stores Inbox dialog rules and evaluates at send. Inbox-only.",
+            "example": "manual"
+          },
+          "rules": {
+            "description": "Required when kind=automatic. Ignored for manual (must be omitted or null).",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CampaignSegmentRulesDto"
+              }
+            ]
+          },
+          "exclude": {
+            "deprecated": true,
+            "description": "Deprecated no-op kept for backward compatibility. Configure excludeStoplist and excludeBlocked on the campaign instead.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SegmentRulesExcludeDto"
+              }
+            ]
           }
         },
         "required": [
@@ -1365,6 +2859,20 @@
             "description": "Optional note, up to 2000 characters, or null when none was stored.",
             "example": "People who bought in April"
           },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "manual",
+              "automatic"
+            ],
+            "description": "Segment kind.",
+            "example": "manual"
+          },
+          "rules": {
+            "type": "object",
+            "nullable": true,
+            "description": "Automatic rules document, or null for manual."
+          },
           "createdAt": {
             "type": "string",
             "format": "date-time",
@@ -1376,6 +2884,8 @@
           "id",
           "name",
           "description",
+          "kind",
+          "rules",
           "createdAt"
         ]
       },
@@ -1399,6 +2909,121 @@
         "required": [
           "items",
           "nextCursor"
+        ]
+      },
+      "PreviewCampaignSegmentDto": {
+        "type": "object",
+        "properties": {
+          "rules": {
+            "description": "Rules to evaluate live against Inbox dialogs.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CampaignSegmentRulesDto"
+              }
+            ]
+          },
+          "segmentId": {
+            "type": "string",
+            "description": "Existing segment id. When set, response includes added/removed/unchanged vs current members (materialized list).",
+            "example": "cm3segment01"
+          }
+        },
+        "required": [
+          "rules"
+        ]
+      },
+      "CampaignSegmentPreviewDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "How many contacts match the rules right now.",
+            "example": 42
+          },
+          "samples": {
+            "description": "Up to 20 sample contacts from the live evaluate.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignSegmentPreviewSampleDto"
+            }
+          },
+          "added": {
+            "type": "number",
+            "description": "Contacts that would be added vs current members (when segmentId was provided).",
+            "example": 3
+          },
+          "removed": {
+            "type": "number",
+            "description": "Contacts that would leave vs current members (when segmentId was provided).",
+            "example": 1
+          },
+          "unchanged": {
+            "type": "number",
+            "description": "Contacts unchanged vs current members (when segmentId was provided).",
+            "example": 38
+          }
+        },
+        "required": [
+          "total",
+          "samples"
+        ]
+      },
+      "CampaignSegmentMaterializeDto": {
+        "type": "object",
+        "properties": {
+          "memberCount": {
+            "type": "number",
+            "description": "How many members were written.",
+            "example": 42
+          },
+          "lastMaterializedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When materialization completed."
+          }
+        },
+        "required": [
+          "memberCount",
+          "lastMaterializedAt"
+        ]
+      },
+      "ImportCampaignSegmentFromRulesDto": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "append",
+              "replace"
+            ],
+            "description": "append keeps existing members; replace clears then inserts evaluated contacts."
+          },
+          "rules": {
+            "$ref": "#/components/schemas/CampaignSegmentRulesDto"
+          }
+        },
+        "required": [
+          "mode",
+          "rules"
+        ]
+      },
+      "CampaignSegmentImportDto": {
+        "type": "object",
+        "properties": {
+          "memberCount": {
+            "type": "number",
+            "description": "How many members the segment has after import.",
+            "example": 40
+          },
+          "imported": {
+            "type": "number",
+            "description": "How many evaluated contacts were considered.",
+            "example": 12
+          }
+        },
+        "required": [
+          "memberCount",
+          "imported"
         ]
       },
       "CampaignSegmentMemberPageDto": {
@@ -1499,6 +3124,33 @@
           "removed"
         ]
       },
+      "CampaignSegmentMembersImportResultDto": {
+        "type": "object",
+        "properties": {
+          "imported": {
+            "type": "number",
+            "description": "How many members were written (or would be written on dryRun). 0 when hard errors blocked the import.",
+            "example": 3
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "True when dryRun=true was requested; no write occurred.",
+            "example": false
+          },
+          "errors": {
+            "description": "Row/file errors. Soft codes (empty_row) do not block. Any hard error → imported=0 and no write.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignSegmentMembersImportErrorDto"
+            }
+          }
+        },
+        "required": [
+          "imported",
+          "dryRun",
+          "errors"
+        ]
+      },
       "PatchCampaignSegmentMemberDto": {
         "type": "object",
         "properties": {
@@ -1513,6 +3165,14 @@
           "bsuid": {
             "type": "string",
             "description": "Provider BSUID, for example ab.abc123xyz. A trailing @lid is stored without it."
+          },
+          "attributes": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "nullable": true,
+            "description": "Flat JSON object of string key-value pairs. Set to null to clear. Same validation rules as when adding members."
           }
         }
       },
@@ -1540,13 +3200,25 @@
             "nullable": true,
             "description": "Provider BSUID without a trailing @lid, or null when the member is stored by phone.",
             "example": "ab.abc123xyz"
+          },
+          "attributes": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "nullable": true,
+            "description": "Arbitrary key-value data for template variable bindings, or null.",
+            "example": {
+              "order_id": "ORD-1001"
+            }
           }
         },
         "required": [
           "id",
           "name",
           "phone",
-          "bsuid"
+          "bsuid",
+          "attributes"
         ]
       },
       "CampaignSegmentDto": {
@@ -1567,9 +3239,34 @@
             "nullable": true,
             "description": "Optional note, up to 2000 characters, or null when none was stored."
           },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "manual",
+              "automatic"
+            ],
+            "description": "Segment kind.",
+            "example": "automatic"
+          },
+          "rules": {
+            "type": "object",
+            "nullable": true,
+            "description": "Automatic rules document, or null for manual. Inbox dialogs only."
+          },
+          "rulesVersion": {
+            "type": "number",
+            "description": "Rules document version column.",
+            "example": 1
+          },
+          "lastMaterializedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "When members were last materialized for UI, or null."
+          },
           "memberCount": {
             "type": "number",
-            "description": "How many people are in the segment.",
+            "description": "How many people are in the segment. For automatic this is the last materialized member count (may be 0).",
             "example": 12
           },
           "createdAt": {
@@ -1589,6 +3286,10 @@
           "id",
           "name",
           "description",
+          "kind",
+          "rules",
+          "rulesVersion",
+          "lastMaterializedAt",
           "memberCount",
           "createdAt",
           "updatedAt"
@@ -1604,6 +3305,33 @@
           "description": {
             "type": "string",
             "description": "New note, up to 2000 characters."
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "manual",
+              "automatic"
+            ],
+            "description": "Change segment kind. Switching to automatic requires rules. Switching to manual clears rules."
+          },
+          "rules": {
+            "description": "Automatic segment rules. Required when kind becomes automatic.",
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CampaignSegmentRulesDto"
+              }
+            ]
+          },
+          "exclude": {
+            "deprecated": true,
+            "description": "Deprecated no-op kept for backward compatibility. Configure excludeStoplist and excludeBlocked on the campaign instead.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SegmentRulesExcludeDto"
+              }
+            ]
           }
         }
       },
@@ -1662,6 +3390,11 @@
             "description": "Recipients removed from the queue before send.",
             "example": 0
           },
+          "suppressed": {
+            "type": "number",
+            "description": "Recipients suppressed by the channel campaign stoplist (not sent, not billed, not an error).",
+            "example": 0
+          },
           "queued": {
             "type": "number",
             "description": "Recipients whose status is queued or leasing.",
@@ -1686,6 +3419,16 @@
             "type": "number",
             "description": "Recipients who clicked at least one button.",
             "example": 2
+          },
+          "unsubscribedCount": {
+            "type": "number",
+            "description": "Recipients attributed as unsubscribed after this campaign send (stoplist audit added within the attribution window).",
+            "example": 1
+          },
+          "unsubscribedShare": {
+            "type": "number",
+            "description": "Share of sent recipients (deliveryStatus sent, delivered, or read) who unsubscribed, from 0 to 1, rounded to 4 decimal places. 0 when sent is 0.",
+            "example": 0.1
           },
           "rates": {
             "description": "Shares of recipients, from 0 to 1, rounded to 4 decimal places. Each rate is 0 when there are no recipients.",
@@ -1724,6 +3467,13 @@
             "format": "date-time",
             "description": "When the next template portion can start, or null when a portion is not waiting.",
             "example": null
+          },
+          "estimatedEndsAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "Estimated completion from queuedRemaining and the effective 24h cap. Null when the queue is empty or the cap is unlimited/unknown.",
+            "example": null
           }
         },
         "required": [
@@ -1736,17 +3486,21 @@
           "failed",
           "skipped",
           "cancelled",
+          "suppressed",
           "queued",
           "replied",
           "textReplies",
           "clicks",
           "uniqueClicks",
+          "unsubscribedCount",
+          "unsubscribedShare",
           "rates",
           "buttons",
           "queuedRemaining",
           "sentThisPortion",
           "dailyLimit",
-          "nextPortionAt"
+          "nextPortionAt",
+          "estimatedEndsAt"
         ]
       },
       "CampaignAnalyticsRecipientPageDto": {
@@ -1832,6 +3586,359 @@
           "items"
         ]
       },
+      "StoplistEntryPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StoplistEntryResponseDto"
+            }
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
+        ]
+      },
+      "AddStoplistEntryDto": {
+        "type": "object",
+        "properties": {
+          "channelId": {
+            "type": "string",
+            "description": "Channel that owns the stoplist."
+          },
+          "phone": {
+            "type": "string",
+            "description": "E.164 phone. Required when bsuid is omitted."
+          },
+          "bsuid": {
+            "type": "string",
+            "description": "Provider BSUID. Required when phone is omitted."
+          }
+        },
+        "required": [
+          "channelId"
+        ]
+      },
+      "StoplistEntryResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "channelId": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "bsuid": {
+            "type": "string",
+            "nullable": true
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "keyword",
+              "api",
+              "opt_in_clear"
+            ]
+          },
+          "matchedKeyword": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "channelId",
+          "phone",
+          "bsuid",
+          "source",
+          "matchedKeyword",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "RemoveStoplistEntryDto": {
+        "type": "object",
+        "properties": {
+          "entryId": {
+            "type": "string",
+            "description": "Existing entry id. When set, channelId/phone/bsuid are ignored."
+          },
+          "channelId": {
+            "type": "string",
+            "description": "Channel id. Required when entryId is omitted."
+          },
+          "phone": {
+            "type": "string",
+            "description": "E.164 phone to remove."
+          },
+          "bsuid": {
+            "type": "string",
+            "description": "BSUID to remove."
+          }
+        }
+      },
+      "StoplistKeywordsListDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StoplistKeywordResponseDto"
+            }
+          },
+          "customStopRemaining": {
+            "type": "number",
+            "description": "How many custom (non-protected) stop words remain allowed."
+          }
+        },
+        "required": [
+          "items",
+          "customStopRemaining"
+        ]
+      },
+      "AddStoplistKeywordDto": {
+        "type": "object",
+        "properties": {
+          "channelId": {
+            "type": "string",
+            "description": "Channel id."
+          },
+          "value": {
+            "type": "string",
+            "description": "Custom stop keyword display text (1–64 chars after trim).",
+            "minLength": 1,
+            "maxLength": 64
+          }
+        },
+        "required": [
+          "channelId",
+          "value"
+        ]
+      },
+      "StoplistKeywordResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "channelId": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "stop",
+              "start"
+            ]
+          },
+          "displayValue": {
+            "type": "string"
+          },
+          "normalizedValue": {
+            "type": "string"
+          },
+          "isProtected": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "channelId",
+          "kind",
+          "displayValue",
+          "normalizedValue",
+          "isProtected",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "StoplistSettingsResponseDto": {
+        "type": "object",
+        "properties": {
+          "channelId": {
+            "type": "string"
+          },
+          "blockUtilityAuth": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "channelId",
+          "blockUtilityAuth"
+        ]
+      },
+      "PatchStoplistSettingsDto": {
+        "type": "object",
+        "properties": {
+          "channelId": {
+            "type": "string",
+            "description": "Channel id."
+          },
+          "blockUtilityAuth": {
+            "type": "boolean",
+            "description": "When true, UTILITY and AUTHENTICATION template campaigns also suppress stoplisted recipients."
+          }
+        },
+        "required": [
+          "channelId",
+          "blockUtilityAuth"
+        ]
+      },
+      "CampaignCostExpensesReportResponseDto": {
+        "type": "object",
+        "properties": {
+          "rows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignCostExpenseReportRowDto"
+            }
+          }
+        },
+        "required": [
+          "rows"
+        ]
+      },
+      "CampaignCostForecastResponseDto": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "example": "cm3campaign01"
+          },
+          "rateCardVersionId": {
+            "type": "string",
+            "description": "Active whatsapp_list_rate_versions id used for this estimate."
+          },
+          "templateCategory": {
+            "type": "string",
+            "enum": [
+              "MARKETING",
+              "UTILITY",
+              "AUTHENTICATION"
+            ]
+          },
+          "billingRoute": {
+            "type": "string",
+            "enum": [
+              "DIRECT_META",
+              "PLATFORM_1MSG"
+            ],
+            "example": "PLATFORM_1MSG",
+            "description": "Channel billing route: DIRECT_META (own WABA / BYOW) or PLATFORM_1MSG (1msg platform channel)."
+          },
+          "total": {
+            "description": "Final estimated campaign cost in USD, BRL, and RUB.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TriCurrencyMoneyDto"
+              }
+            ]
+          },
+          "breakdown": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignCostBreakdownLineDto"
+            }
+          }
+        },
+        "required": [
+          "campaignId",
+          "rateCardVersionId",
+          "templateCategory",
+          "billingRoute",
+          "total",
+          "breakdown"
+        ]
+      },
+      "CampaignCostActualResponseDto": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "example": "cm3campaign01"
+          },
+          "rateCardVersionId": {
+            "type": "string",
+            "description": "Active whatsapp_list_rate_versions id used for this estimate."
+          },
+          "templateCategory": {
+            "type": "string",
+            "enum": [
+              "MARKETING",
+              "UTILITY",
+              "AUTHENTICATION"
+            ]
+          },
+          "billingRoute": {
+            "type": "string",
+            "enum": [
+              "DIRECT_META",
+              "PLATFORM_1MSG"
+            ],
+            "example": "PLATFORM_1MSG",
+            "description": "Channel billing route: DIRECT_META (own WABA / BYOW) or PLATFORM_1MSG (1msg platform channel)."
+          },
+          "total": {
+            "description": "Final estimated campaign cost in USD, BRL, and RUB.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TriCurrencyMoneyDto"
+              }
+            ]
+          },
+          "breakdown": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignCostBreakdownLineDto"
+            }
+          },
+          "snapshotId": {
+            "type": "string",
+            "description": "campaign_cost_snapshots id. Rates are the ones frozen at completion."
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the snapshot was written, aligned with completion."
+          }
+        },
+        "required": [
+          "campaignId",
+          "rateCardVersionId",
+          "templateCategory",
+          "billingRoute",
+          "total",
+          "breakdown",
+          "snapshotId",
+          "completedAt"
+        ]
+      },
       "CreateCampaignDto": {
         "type": "object",
         "properties": {
@@ -1846,7 +3953,8 @@
           },
           "segmentId": {
             "type": "string",
-            "description": "Segment id from POST /campaigns/segments. Members are copied when you send."
+            "nullable": true,
+            "description": "Segment id from POST /campaigns/segments. Omit or send null while drafting; required before send. Members are copied when you send."
           },
           "content": {
             "description": "template or text. For a template set templateName, language, and params.",
@@ -1862,12 +3970,26 @@
               "draft"
             ],
             "description": "Only draft is accepted. Omit to store draft."
+          },
+          "dailyLimit": {
+            "type": "number",
+            "nullable": true,
+            "description": "Optional client cap for this campaign. An integer of 1 or more, or null to clear the saved cap. Stored as dailyLimitOverride. Omit on create to leave the cap unset. Omit on update or send to keep the stored cap. Does not write the tier snapshot dailyLimit. A value above the numeric channel tier is rejected with daily_limit_exceeds_tier and max."
+          },
+          "excludeStoplist": {
+            "type": "boolean",
+            "default": true,
+            "description": "Suppress recipients on the channel stoplist at send time. Always enforced as true for MARKETING templates."
+          },
+          "excludeBlocked": {
+            "type": "boolean",
+            "default": true,
+            "description": "Exclude contacts whose Inbox dialog on the campaign channel is blocked."
           }
         },
         "required": [
           "name",
           "channelId",
-          "segmentId",
           "content"
         ]
       },
@@ -1891,7 +4013,8 @@
           },
           "segmentId": {
             "type": "string",
-            "description": "Segment used as the audience.",
+            "nullable": true,
+            "description": "Segment used as the audience, or null while unset on a draft.",
             "example": "cm3segment01"
           },
           "status": {
@@ -1907,7 +4030,6 @@
             "description": "Campaign status."
           },
           "content": {
-            "type": "object",
             "description": "Template or session text stored on the campaign.",
             "oneOf": [
               {
@@ -1920,6 +4042,16 @@
                 "$ref": "#/components/schemas/CampaignTemplateVariablesContentResponseDto"
               }
             ]
+          },
+          "excludeStoplist": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether recipients on the channel stoplist are suppressed at send time (always enforced as true for MARKETING templates)."
+          },
+          "excludeBlocked": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether contacts whose Inbox dialog on the campaign channel is blocked are excluded."
           },
           "sentAt": {
             "type": "string",
@@ -1945,10 +4077,15 @@
             "description": "Template sends already started in the current tier window.",
             "example": 0
           },
+          "dailyLimitOverride": {
+            "type": "number",
+            "nullable": true,
+            "description": "Client cap stored for this campaign. Null when unset. This is not the tier snapshot."
+          },
           "dailyLimit": {
             "type": "number",
             "nullable": true,
-            "description": "How many template sends this channel may start in a rolling 24 hours. Taken from the channel tier (waba_info.current_limit), not from a campaign setting. Null when the tier is unknown or unlimited. Session text is not counted.",
+            "description": "Tier snapshot written at send: how many template sends this channel may start in a rolling 24 hours (waba_info.current_limit). Null when the tier was unknown or unlimited at send, and null before send. The client cap is dailyLimitOverride. Session text is not counted.",
             "example": 1000
           },
           "nextPortionAt": {
@@ -1956,6 +4093,13 @@
             "nullable": true,
             "format": "date-time",
             "description": "When the next template portion can start after the tier window is full. Null when a portion is not waiting.",
+            "example": null
+          },
+          "estimatedEndsAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "Estimated completion from queuedRemaining and the effective 24h cap (override and/or tier snapshot), using nextPortionAt or a rolling 24h window. Null when the queue is empty or the cap is unlimited/unknown.",
             "example": null
           },
           "createdAt": {
@@ -1969,6 +4113,14 @@
             "format": "date-time",
             "description": "When the campaign was last updated.",
             "example": "2026-11-01T09:00:00.000Z"
+          },
+          "stats": {
+            "description": "Recipient funnel counts for list tables. All campaign responses include this object; the list endpoint loads live aggregates; non-list endpoints return zero-filled stats.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CampaignListStatsDto"
+              }
+            ]
           }
         },
         "required": [
@@ -1978,14 +4130,19 @@
           "segmentId",
           "status",
           "content",
+          "excludeStoplist",
+          "excludeBlocked",
           "sentAt",
           "scheduledAt",
           "queuedRemaining",
           "sentThisPortion",
+          "dailyLimitOverride",
           "dailyLimit",
           "nextPortionAt",
+          "estimatedEndsAt",
           "createdAt",
-          "updatedAt"
+          "updatedAt",
+          "stats"
         ]
       },
       "CampaignPageDto": {
@@ -2020,7 +4177,8 @@
           },
           "segmentId": {
             "type": "string",
-            "description": "Segment id used as the audience.",
+            "nullable": true,
+            "description": "Segment id used as the audience, or null when unset on a draft.",
             "example": "cm3segment01"
           },
           "contentMode": {
@@ -2044,8 +4202,7 @@
           "tierDailyLimit": {
             "type": "number",
             "nullable": true,
-            "description": "How many template sends this channel may start in a rolling 24 hours. Taken from the channel tier, not from a field you set. Null when the tier is unknown or unlimited.",
-            "example": 1000
+            "description": "Effective daily cap used when sending. The channel tier when dailyLimit is unset, the client dailyLimit when the tier is unlimited or unknown, and the lower of the two when both are numeric. Null only when there is no override and the tier is unknown or unlimited."
           },
           "exceedsTierDailyLimit": {
             "type": "boolean",
@@ -2077,7 +4234,12 @@
           "scheduledAt": {
             "type": "string",
             "nullable": true,
-            "description": "Future ISO-8601 instant with a Z or a numeric offset, for example 2026-11-01T09:00:00Z. Omit or null to start now. There is no per-day field. Template sends use the channel tier."
+            "description": "Future ISO-8601 instant with a Z or a numeric offset, for example 2026-11-01T09:00:00Z. Omit or null to start now. Template sends use the effective daily cap: dailyLimit when set, otherwise the channel tier."
+          },
+          "dailyLimit": {
+            "type": "number",
+            "nullable": true,
+            "description": "Optional client cap for this campaign. An integer of 1 or more, or null to clear the saved cap. Stored as dailyLimitOverride. Omit on create to leave the cap unset. Omit on update or send to keep the stored cap. Does not write the tier snapshot dailyLimit. A value above the numeric channel tier is rejected with daily_limit_exceeds_tier and max."
           }
         }
       },
@@ -2103,6 +4265,21 @@
           "bsuid": {
             "type": "string",
             "description": "Provider BSUID, for example ab.abc123xyz. A trailing @lid is accepted. Send exactly one of phone or bsuid."
+          },
+          "name": {
+            "type": "string",
+            "description": "Optional sample recipient name used to resolve segment.name template bindings for this test send. Falls back to phone or bsuid when omitted.",
+            "example": "Ada Lovelace"
+          },
+          "attributes": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "example": {
+              "order_id": "ORD-123"
+            },
+            "description": "Optional sample attributes used to resolve template bindings for this test send. Same shape as segment member attributes. Does not change the segment."
           }
         }
       },
@@ -2175,12 +4352,45 @@
           "providerMessageId"
         ]
       },
+      "ValidateVariablesResponseDto": {
+        "type": "object",
+        "properties": {
+          "valid": {
+            "type": "boolean",
+            "description": "True when every segment member can fill all required template slots.",
+            "example": true
+          },
+          "total": {
+            "type": "number",
+            "description": "Number of segment members checked.",
+            "example": 150
+          },
+          "invalidCount": {
+            "type": "number",
+            "description": "Number of members with at least one missing slot.",
+            "example": 3
+          },
+          "invalidRecipients": {
+            "description": "Members that still have unresolved required slots after bindings and static variables.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvalidRecipientDto"
+            }
+          }
+        },
+        "required": [
+          "valid",
+          "total",
+          "invalidCount",
+          "invalidRecipients"
+        ]
+      },
       "UpdateCampaignDto": {
         "type": "object",
         "properties": {
           "name": {
             "type": "string",
-            "description": "New title. Send at least one of name, channelId, segmentId, or content. Only a draft can be changed."
+            "description": "New title. Send at least one of name, channelId, segmentId, content, dailyLimit, excludeStoplist, or excludeBlocked. Only a draft can be changed."
           },
           "channelId": {
             "type": "string",
@@ -2188,7 +4398,8 @@
           },
           "segmentId": {
             "type": "string",
-            "description": "Another segment id. The new members are copied when you send."
+            "nullable": true,
+            "description": "Another segment id, or null to clear the draft audience. The new members are copied when you send."
           },
           "content": {
             "description": "Replaces the whole content object. Same template and text rules as create.",
@@ -2197,6 +4408,74 @@
                 "$ref": "#/components/schemas/CampaignContentDto"
               }
             ]
+          },
+          "dailyLimit": {
+            "type": "number",
+            "nullable": true,
+            "description": "Optional client cap for this campaign. An integer of 1 or more, or null to clear the saved cap. Stored as dailyLimitOverride. Omit on create to leave the cap unset. Omit on update or send to keep the stored cap. Does not write the tier snapshot dailyLimit. A value above the numeric channel tier is rejected with daily_limit_exceeds_tier and max."
+          },
+          "excludeStoplist": {
+            "type": "boolean",
+            "default": true,
+            "description": "Suppress recipients on the channel stoplist at send time. Always enforced as true for MARKETING templates."
+          },
+          "excludeBlocked": {
+            "type": "boolean",
+            "default": true,
+            "description": "Exclude contacts whose Inbox dialog on the campaign channel is blocked."
+          }
+        }
+      },
+      "CampaignSegmentRulesDto": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "number",
+            "description": "Rules document version. Currently only 1 is supported.",
+            "example": 1
+          },
+          "channelId": {
+            "type": "string",
+            "description": "Inbox channel id. Required. Automatic segments are Inbox-only (dialogs).",
+            "example": "cm3channel01"
+          },
+          "match": {
+            "type": "string",
+            "enum": [
+              "all",
+              "any"
+            ],
+            "description": "Combine predicates with AND (all) or OR (any). Defaults to all.",
+            "example": "all"
+          },
+          "predicates": {
+            "description": "Filter predicates over Inbox dialogs.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SegmentPredicateDto"
+            }
+          },
+          "exclude": {
+            "$ref": "#/components/schemas/SegmentRulesExcludeDto"
+          }
+        },
+        "required": [
+          "channelId",
+          "predicates"
+        ]
+      },
+      "SegmentRulesExcludeDto": {
+        "type": "object",
+        "properties": {
+          "stoplist": {
+            "type": "boolean",
+            "deprecated": true,
+            "description": "Deprecated no-op kept for backward compatibility. Configure excludeStoplist and excludeBlocked on the campaign instead."
+          },
+          "dialogBlocked": {
+            "type": "boolean",
+            "deprecated": true,
+            "description": "Deprecated no-op kept for backward compatibility. Configure excludeStoplist and excludeBlocked on the campaign instead."
           }
         }
       },
@@ -2218,17 +4497,58 @@
             "nullable": true,
             "description": "Optional note, up to 2000 characters, or null when none was stored."
           },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "manual",
+              "automatic"
+            ],
+            "description": "Segment kind.",
+            "example": "manual"
+          },
           "memberCount": {
             "type": "number",
-            "description": "How many people are in the segment.",
+            "description": "How many people are in the segment. For automatic this is the last materialized member count (may be 0).",
             "example": 12
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the segment was created.",
+            "example": "2026-11-01T09:00:00.000Z"
           }
         },
         "required": [
           "id",
           "name",
           "description",
-          "memberCount"
+          "kind",
+          "memberCount",
+          "createdAt"
+        ]
+      },
+      "CampaignSegmentPreviewSampleDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Ada Lovelace"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "example": "+5511999990001"
+          },
+          "bsuid": {
+            "type": "string",
+            "nullable": true,
+            "example": null
+          }
+        },
+        "required": [
+          "name",
+          "phone",
+          "bsuid"
         ]
       },
       "CampaignSegmentMemberInputDto": {
@@ -2246,10 +4566,51 @@
           "bsuid": {
             "type": "string",
             "description": "Provider BSUID, for example ab.abc123xyz. A trailing @lid is accepted and stored without it. Phone or BSUID is required."
+          },
+          "attributes": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "example": {
+              "order_id": "ORD-1001",
+              "city": "São Paulo"
+            },
+            "description": "Flat JSON object of string key-value pairs for per-recipient data. Max 50 keys, key up to 64 chars matching [a-zA-Z_][a-zA-Z0-9_]*, value up to 1024 chars, total JSON up to 10KB. Used with template variable bindings."
           }
         },
         "required": [
           "name"
+        ]
+      },
+      "CampaignSegmentMembersImportErrorDto": {
+        "type": "object",
+        "properties": {
+          "row": {
+            "type": "number",
+            "description": "1-based CSV row number. 0 means a file-level error.",
+            "example": 2
+          },
+          "code": {
+            "type": "string",
+            "description": "Machine-readable error code.",
+            "example": "invalid_phone"
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable error message.",
+            "example": "phone must be E.164"
+          },
+          "column": {
+            "type": "string",
+            "description": "Column name when the error is column-specific.",
+            "example": "phone"
+          }
+        },
+        "required": [
+          "row",
+          "code",
+          "message"
         ]
       },
       "CampaignAnalyticsRatesDto": {
@@ -2435,6 +4796,13 @@
                 "example": "2026-11-01T09:00:00.000Z"
               }
             }
+          },
+          "unsubscribedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "When this recipient was attributed as unsubscribed for this campaign (channel stoplist audit added after send, within the next-campaign-or-24h window), or null.",
+            "example": "2026-11-01T10:30:00.000Z"
           }
         },
         "required": [
@@ -2450,7 +4818,8 @@
           "deliveredAt",
           "readAt",
           "replies",
-          "error"
+          "error",
+          "unsubscribedAt"
         ]
       },
       "CampaignAnalyticsReplyItemDto": {
@@ -2595,6 +4964,121 @@
           "hasMore"
         ]
       },
+      "CampaignCostExpenseReportRowDto": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string"
+          },
+          "campaignName": {
+            "type": "object",
+            "description": "Campaign name from campaigns.name"
+          },
+          "channelId": {
+            "type": "string"
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "countryCode": {
+            "type": "string",
+            "example": "BR"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "MARKETING",
+              "UTILITY",
+              "AUTHENTICATION"
+            ]
+          },
+          "total": {
+            "description": "Final estimated delivered cost for this country in USD, BRL, and RUB.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TriCurrencyMoneyDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "campaignId",
+          "channelId",
+          "completedAt",
+          "countryCode",
+          "category",
+          "total"
+        ]
+      },
+      "TriCurrencyMoneyDto": {
+        "type": "object",
+        "properties": {
+          "usd": {
+            "type": "string",
+            "example": "0.0604",
+            "description": "USD amount. Cabinet primary currency. Decimal string from the rate card scale."
+          },
+          "brl": {
+            "type": "string",
+            "example": "0.3109",
+            "description": "BRL amount from the list-rate row. Not converted from USD."
+          },
+          "rub": {
+            "type": "string",
+            "example": "4.9404",
+            "description": "RUB amount. USD × rubPerUsd stored on the rate-card version."
+          }
+        },
+        "required": [
+          "usd",
+          "brl",
+          "rub"
+        ]
+      },
+      "CampaignCostBreakdownLineDto": {
+        "type": "object",
+        "properties": {
+          "countryCode": {
+            "type": "string",
+            "example": "BR",
+            "description": "ISO 3166-1 alpha-2, or OTHER when the phone country cannot be resolved."
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "MARKETING",
+              "UTILITY",
+              "AUTHENTICATION"
+            ]
+          },
+          "recipientCount": {
+            "type": "number",
+            "example": 10,
+            "description": "Recipients in this country. Forecast line cost uses this count (everyone is assumed delivered)."
+          },
+          "deliveredCount": {
+            "type": "number",
+            "example": 4,
+            "description": "Recipients whose deliveryStatus is delivered. Read does not count. Forecast reports this for information and still prices recipientCount. Actual prices this count."
+          },
+          "lineTotal": {
+            "description": "Final estimated cost for the line in USD, BRL, and RUB.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TriCurrencyMoneyDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "countryCode",
+          "category",
+          "recipientCount",
+          "deliveredCount",
+          "lineTotal"
+        ]
+      },
       "CampaignContentDto": {
         "type": "object",
         "properties": {
@@ -2622,7 +5106,7 @@
             "example": {
               "1": "Ana"
             },
-            "description": "Flat body placeholders only, for example { \"1\": \"Ana\" }. A numeric key fills the body. Header, buttons, and carousel are not filled here — use params. Ignored when params is set."
+            "description": "Flat template slot values: numeric keys (\"1\", \"2\", … or \"body_1\") fill BODY {{N}}; \"header_1\", \"header_2\", … fill text HEADER {{N}}; \"header_media_url\" sets the media URL for IMAGE/VIDEO/DOCUMENT headers; \"button_url_0\", … fill dynamic URL button suffixes. Ignored when params is set."
           },
           "params": {
             "type": "array",
@@ -2654,6 +5138,25 @@
             "type": "number",
             "example": 86400,
             "description": "How many seconds WhatsApp keeps trying to deliver this template. Same field as sendTemplate messageSendTtlSeconds. It sits beside params, not inside the params array. Omit it to use the template default."
+          },
+          "bindings": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "example": {
+              "1": "segment.name",
+              "2": "segment.attributes.order_id"
+            },
+            "description": "Maps template slot keys to data source refs. Only works with the variables path (not params). Keys follow the same format as variables: numeric (\"1\" or \"body_N\") for body, header_N, header_media_url, button_url_N. Values are source references like segment.name or segment.attributes.<key>. When set alongside params, returns 400."
+          },
+          "onMissing": {
+            "type": "string",
+            "enum": [
+              "skip_recipient"
+            ],
+            "default": "skip_recipient",
+            "description": "What to do when a binding cannot be resolved for a recipient. skip_recipient (default): skip the recipient and record the reason."
           },
           "text": {
             "type": "string",
@@ -2779,6 +5282,49 @@
           "variables"
         ]
       },
+      "CampaignListStatsDto": {
+        "type": "object",
+        "properties": {
+          "recipients": {
+            "type": "number",
+            "description": "Total campaign recipients.",
+            "example": 1200
+          },
+          "sent": {
+            "type": "number",
+            "description": "Recipients with delivery status sent, delivered, or read.",
+            "example": 1150
+          },
+          "delivered": {
+            "type": "number",
+            "description": "Recipients with delivery status delivered or read.",
+            "example": 1100
+          },
+          "read": {
+            "type": "number",
+            "description": "Recipients with delivery status read.",
+            "example": 420
+          },
+          "replied": {
+            "type": "number",
+            "description": "Distinct recipients with at least one reply on this campaign.",
+            "example": 85
+          },
+          "errors": {
+            "type": "number",
+            "description": "Recipients with delivery status failed, skipped, or suppressed.",
+            "example": 12
+          }
+        },
+        "required": [
+          "recipients",
+          "sent",
+          "delivered",
+          "read",
+          "replied",
+          "errors"
+        ]
+      },
       "CampaignPreviewWarningDto": {
         "type": "object",
         "properties": {
@@ -2801,6 +5347,61 @@
         "required": [
           "code",
           "message"
+        ]
+      },
+      "InvalidRecipientDto": {
+        "type": "object",
+        "properties": {
+          "memberId": {
+            "type": "string",
+            "description": "Segment member id.",
+            "example": "cm3member01"
+          },
+          "name": {
+            "type": "string",
+            "description": "Segment member display name.",
+            "example": "Ana Silva"
+          },
+          "missingSlots": {
+            "description": "Required template slots that could not be filled for this member.",
+            "example": [
+              "2",
+              "button_url_0"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "memberId",
+          "name",
+          "missingSlots"
+        ]
+      },
+      "SegmentPredicateDto": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "description": "Predicate field (Inbox dialog attributes only).",
+            "example": "lastCustomerMessageAt"
+          },
+          "op": {
+            "type": "string",
+            "description": "Operator for the field.",
+            "example": "gte"
+          },
+          "value": {
+            "type": "object",
+            "description": "Value shape depends on field/op (string, boolean, or string array).",
+            "example": "P30D"
+          }
+        },
+        "required": [
+          "field",
+          "op"
         ]
       },
       "CampaignAnalyticsRecipientReplyDto": {
