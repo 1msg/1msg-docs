@@ -7,6 +7,8 @@ A broadcast sends one WhatsApp message to many recipients at once from a connect
 
 **Where to find it:** [platform.1msg.io](https://platform.1msg.io/) → **Campaigns**. The list shows each broadcast's status, recipient count, sent, delivered, read, replies, and errors.
 
+<video class="docs-video" controls src="./assets/campaign-ui-screencast.mp4"></video>
+
 ## Quick start
 
 **Before you start.** The WhatsApp channel must be connected.

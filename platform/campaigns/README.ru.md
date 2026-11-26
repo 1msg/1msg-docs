@@ -7,6 +7,8 @@ description: Одно сообщение WhatsApp сразу многим пол
 
 **Где найти:** [platform.1msg.io](https://platform.1msg.io/) → **Campaigns**. В списке для каждой рассылки показаны статус, число получателей, отправленные, доставленные, прочитанные, ответы и ошибки.
 
+<video class="docs-video" controls src="./assets/campaign-ui-screencast.mp4"></video>
+
 ## Быстрый старт
 
 **Перед началом.** Канал WhatsApp должен быть подключён.
