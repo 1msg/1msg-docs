@@ -10,4 +10,5 @@ description: "Основы платформы 1MSG: аккаунт, беспла
   - [Тарифные планы](./billing/subscription-plans.ru.md) — Basic Plan, продление и первые 30 дней для Own WABA.
   - [Стоимость сообщений](./billing/messaging-costs.ru.md) — сколько стоят сообщения WhatsApp.
 - [Рассылки](./campaigns/README.ru.md) — одно сообщение WhatsApp сразу многим получателям.
+  - [Создание сегмента](./campaigns/segment.ru.md) — фиксированный или динамический список получателей.
 - [Поддержка](./support.ru.md) — как с нами связаться.
