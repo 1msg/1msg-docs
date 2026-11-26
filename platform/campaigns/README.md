@@ -19,6 +19,8 @@ A campaign sends one WhatsApp message to many recipients at once from a connecte
 3. **Create the campaign.** To create one, open [Campaigns](https://platform.1msg.io/messaging/campaigns) and click **New campaign**. Choose the channel and the segment, and fill in the template or the text. Check the preview, send a test, then send now or schedule it.
 4. **View the statistics.** Open the campaign. The overview shows delivery and the actual cost. The Recipients, Replies, and Errors tabs show the detail.
 
+The guides: [Create a segment](./segment.md), [Create a campaign](./create.md), and [Campaign analytics](./analytics.md).
+
 > [!NOTE]
 > **For developers.** Campaigns have their own API. Methods, fields and examples are in the [API reference](https://1msg.io/docs/reference/campaigns).
 
