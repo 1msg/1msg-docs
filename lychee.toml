@@ -1,0 +1,2 @@
+# Same-tab links into the API reference. They are site paths, not files in this repo.
+exclude = ['^/(ru/|br/)?docs/reference/']
