@@ -7,15 +7,15 @@ A broadcast sends one WhatsApp message to many recipients at once from a connect
 
 **Where to find it:** [platform.1msg.io](https://platform.1msg.io/) → **Campaigns**. The list shows each broadcast's status, recipient count, sent, delivered, read, replies, and errors.
 
-<video class="docs-video" controls src="./assets/campaign-ui-screencast.mp4"></video>
+![Campaigns](./assets/campaign-ui-screencast.gif)
 
 ## Quick start
 
 **Before you start.** The WhatsApp channel must be connected.
 
 1. **Create a template.** Do it in the [Channels](https://platform.1msg.io/channels) section of the dashboard, through the API with [addTemplate](https://1msg.io/docs/reference/whatsapp/add-template), or from an assistant over [MCP](https://platform.1msg.io/developers/mcp). A marketing or utility broadcast needs an approved template. Plain text inside an open 24-hour window goes out without one.
-2. **Create a segment.** Open **Campaigns → Segments → New segment**. Add people by hand, from a CSV, or by a condition from Inbox, and set the attributes you want inserted into the message.
-3. **Create the broadcast.** Click **New campaign**, choose the channel and the segment, and fill in the template or the text. Check the preview, send a test, then send now or schedule it.
+2. **Create a segment.** Open **Campaigns → Segments → [New segment](https://platform.1msg.io/messaging/campaigns/segments/new)**. Add people by hand, from a CSV, or by a condition from Inbox, and set the attributes you want inserted into the message.
+3. **Create the broadcast.** Click **[New campaign](https://platform.1msg.io/messaging/campaigns)**, choose the channel and the segment, and fill in the template or the text. Check the preview, send a test, then send now or schedule it.
 4. **View the statistics.** Open the broadcast. The overview shows delivery and the actual cost. The Recipients, Replies, and Errors tabs show the detail.
 
 ## Capabilities
