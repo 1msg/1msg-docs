@@ -5,6 +5,9 @@ description: Send one WhatsApp message to many recipients at once from a connect
 
 A broadcast sends one WhatsApp message to many recipients at once from a connected channel. You choose the audience, the message, and when it goes out, and after it starts you see delivery and cost on the same screen.
 
+> [!NOTE]
+> **For developers.** Broadcasts have their own API. Methods, fields and examples are in the [API reference](https://1msg.io/docs/reference/campaigns).
+
 **Where to find it:** [platform.1msg.io](https://platform.1msg.io/) → **Campaigns**. The list shows each broadcast's status, recipient count, sent, delivered, read, replies, and errors.
 
 ![Campaigns](./assets/campaign-ui-screencast.gif)
@@ -17,6 +20,9 @@ A broadcast sends one WhatsApp message to many recipients at once from a connect
 2. **Create a segment.** Open **Campaigns → Segments → [New segment](https://platform.1msg.io/messaging/campaigns/segments/new)**. Add people by hand, from a CSV, or by a condition from Inbox, and set the attributes you want inserted into the message.
 3. **Create the broadcast.** Click **[New campaign](https://platform.1msg.io/messaging/campaigns)**, choose the channel and the segment, and fill in the template or the text. Check the preview, send a test, then send now or schedule it.
 4. **View the statistics.** Open the broadcast. The overview shows delivery and the actual cost. The Recipients, Replies, and Errors tabs show the detail.
+
+> [!NOTE]
+> **For developers.** Broadcasts have their own API. Methods, fields and examples are in the [API reference](https://1msg.io/docs/reference/campaigns).
 
 ## Capabilities
 
