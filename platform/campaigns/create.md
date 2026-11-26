@@ -1,22 +1,48 @@
 ---
 title: Create a broadcast
-description: Four steps — a template, a segment, sending, and the statistics.
+description: A broadcast draft in four steps — message, audience, schedule, and review.
 ---
 
-The WhatsApp channel must already be connected. Then there are four steps.
+Open [Campaigns](https://platform.1msg.io/messaging/campaigns) and click **New campaign**. The draft has four steps. **Save draft** keeps it, and **Back to campaigns** returns to the list.
 
-## 1. Create a template
+## 1. Message
 
-Do it in the [Channels](https://platform.1msg.io/channels) section of the dashboard, through the API with [addTemplate](https://1msg.io/docs/reference/whatsapp/add-template), or from an assistant over [MCP](https://platform.1msg.io/developers/mcp). A marketing or utility broadcast needs an approved template. Plain text inside an open 24-hour window goes out without one.
+Set the broadcast name, the channel, and the message type. For a template, choose it and fill in the variables. A variable is either the same text for every recipient or a person's attribute. Write the attribute name without braces or a prefix, for example `order`. The value comes from the segment on the next step.
 
-## 2. Create a segment
+The preview on the right shows the message as the recipient will see it.
 
-The segment decides who receives the message. A fixed list is one you build yourself: by hand, from a CSV, or by a selection from Inbox. A dynamic list is taken from Inbox when the broadcast is sent.
+**Delivery window (seconds)** sets how many seconds the message stays relevant.
 
-## 3. Create the broadcast
+Under **Exclusions** you can skip people on the stoplist and blocked contacts.
 
-Open [Campaigns](https://platform.1msg.io/messaging/campaigns) and click **New campaign**. Choose the channel and the segment, and fill in the template or the text. Check the preview and send a test to your phone. Then send now or pick a time, and the broadcast goes out on its own. You see the cost forecast before sending, and you pay only for delivered messages.
+![Message step](./assets/create-message.png)
 
-## 4. View the statistics
+## 2. Audience
 
-Open the broadcast. The overview shows delivery and the actual cost. The Recipients, Replies, and Errors tabs show the detail: who read, replied, or unsubscribed, who was skipped, and where an error happened.
+Use an audience you already have, or build one here.
+
+**Ready segment.** Choose a segment that already exists and click **Select segment**. On the chosen one the button becomes **Selected**.
+
+![Choose a ready segment](./assets/create-ready-segment.png)
+
+**Dynamic list.** Set the conditions in the draft. The segment is saved on its own, under the broadcast's name, and selected for this send. Recipients come from Inbox dialogs and are calculated again when the broadcast is sent. **All conditions (AND)** keeps people who match every condition. **Any condition (OR)** keeps people who match any one of them. For example, a channel and an open dialog. Then click **Create segment and select**.
+
+![Dynamic list in the draft](./assets/create-dynamic.png)
+
+## 3. Schedule
+
+**Send now** starts sending right after you confirm it on the next step.
+
+**Schedule** sets a date and time. The time is in your time zone.
+
+**Daily sending limit** is how many messages go out per day. The rest receive the message on the following days. An empty field means the WABA number's own limit.
+
+![Schedule step](./assets/create-schedule.png)
+
+## 4. Review
+
+Check the name, channel, segment, recipient count, daily limit, template, and variables. You also see whether everyone has the data the template needs, and the cost forecast.
+
+You can save the draft again. If a time was chosen, sending starts with **Launch on schedule**.
+
+![Review step](./assets/create-review.png)
