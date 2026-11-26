@@ -6,7 +6,7 @@ description: Send one WhatsApp message to many recipients at once from a connect
 A broadcast sends one WhatsApp message to many recipients at once from a connected channel. You choose the audience, the message, and when it goes out, and after it starts you see delivery and cost on the same screen.
 
 > [!NOTE]
-> **For developers.** Broadcasts have their own API. Methods, fields and examples are in the [API reference](https://1msg.io/docs/reference/campaigns).
+> **For developers.** You can use the [Campaigns API](/docs/reference/campaigns). Every capability described below is available in the API. Choose the option that suits you: the dashboard or the API.
 
 ![Campaigns](./assets/campaign-ui-screencast.gif)
 

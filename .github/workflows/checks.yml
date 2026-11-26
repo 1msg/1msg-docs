@@ -24,11 +24,13 @@ jobs:
       # Offline: relative links between articles, to assets/ and to translations (name.ru.md),
       # and their #anchors, which lychee derives from headings the way GitHub and the site do.
       # A site-absolute link (/docs/...) fails too: it is broken on GitHub.
+      # Links into the API reference are the exception: /docs/reference and /ru/docs/reference
+      # stay on this site and open in the same tab, the way the docs menu does.
       # External links are checked weekly by external-links.yml.
       - name: Check links
         uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
         with:
-          args: --offline --include-fragments --no-progress './**/*.md'
+          args: --offline --include-fragments --no-progress --exclude '^/(ru/|br/)?docs/reference/' './**/*.md'
 
   images:
     name: Image sizes
