@@ -9,7 +9,8 @@ On [platform.1msg.io](https://platform.1msg.io/) you create an account, test the
 - [Pricing and Billing](./billing/README.md) — the platform subscription and the WhatsApp conversation balance.
   - [Subscription plans](./billing/subscription-plans.md) — the Basic Plan, renewal and the free 30 days for Own WABA.
   - [Messaging costs](./billing/messaging-costs.md) — what WhatsApp messages cost.
-- [Broadcasts](./campaigns/README.md) — one WhatsApp message to many recipients at once.
+- [Campaigns](./campaigns/README.md) — one WhatsApp message to many recipients at once.
   - [Create a segment](./campaigns/segment.md) — a fixed list, a CSV, an Inbox selection, or a dynamic segment.
-  - [Create a broadcast](./campaigns/create.md) — message, audience, schedule, and review.
+  - [Create a campaign](./campaigns/create.md) — message, audience, schedule, and review.
+  - [Campaign analytics](./campaigns/analytics.md) — delivery, reads, replies, errors, and the actual cost.
 - [Support](./support.md) — how to reach us.

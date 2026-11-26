@@ -1,13 +1,13 @@
 ---
 title: Create a segment
-description: How to build a broadcast audience — a fixed list, a CSV, an Inbox selection, or a dynamic segment.
+description: How to build a campaign audience — a fixed list, a CSV, an Inbox selection, or a dynamic segment.
 ---
 
-A segment is who receives the broadcast. You can write the list once, or build it from Inbox rules at the moment of sending.
+A segment is who receives the campaign. You can write the list once, or build it from Inbox rules at the moment of sending.
 
 ## Fixed list
 
-You add the people yourself. Until you change the list, the broadcast goes to exactly them.
+You add the people yourself. Until you change the list, the campaign goes to exactly them.
 
 **By hand.** In [New segment](https://platform.1msg.io/messaging/campaigns/segments/new) choose **Fixed list** and the **Manually** tab. For each person, enter a name and a phone number or a BSUID. The number and the BSUID are the recipient's address; one of them is enough.
 
@@ -33,7 +33,7 @@ Choose **Dynamic**. Above the conditions it says: this kind of segment takes onl
 
 ![Dynamic list conditions](./assets/segment-dynamic.png)
 
-The list is not stored ahead of time. When the broadcast is sent, it is taken from Inbox again and fixed. The segment works only for people who use Inbox.
+The list is not stored ahead of time. When the campaign is sent, it is taken from Inbox again and fixed. The segment works only for people who use Inbox.
 
 Before you save, open the preview and see who would be on the list now. By the time of sending the set may be different: it is taken again.
 
@@ -45,6 +45,6 @@ Open the segment: the list that is in it now is there. You can edit a person sep
 
 ## What next
 
-The segment is ready. You can go on to create the broadcast. How to do that is described in [Create a broadcast](./create.md).
+The segment is ready. You can go on to create the campaign. How to do that is described in [Create a campaign](./create.md).
 
 [Platform → Campaigns](https://platform.1msg.io/messaging/campaigns). Open the [campaign list](https://platform.1msg.io/messaging/campaigns) right away.
