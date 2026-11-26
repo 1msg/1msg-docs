@@ -61,3 +61,7 @@ Check the name, channel, segment, recipient count, daily limit, template, and va
 You can save the draft again. If a time was chosen, sending starts with **Launch on schedule** and sets the schedule. Otherwise it sends right away.
 
 ![Review step](./assets/create-review.png)
+
+## What next
+
+When the campaign has gone out, open [Campaign analytics](./analytics.md): delivery, replies, and errors are there.

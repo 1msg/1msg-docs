@@ -15,13 +15,13 @@ In the campaign details, right under the title, you see the status badge, the se
 
 The **Delivery** cards build the funnel. Each one shows a count and its share of all recipients.
 
-- **Recipients** — how many people were in this send
-- **Sent** — how many messages went out
-- **Delivered** — how many reached the phone
-- **Read** — how many were read
-- **Replied** — how many replied
-- **Failed** — how many were not sent
-- **Skipped** — how many the campaign skipped
+- **Recipients** — how many recipients are in this send
+- **Sent** — how many messages were sent
+- **Delivered** — how many of the sent ones were delivered
+- **Read** — how many of the delivered ones were read
+- **Replied** — how many recipients replied
+- **Failed** — how many could not be sent
+- **Skipped** — how many recipients were skipped and were not sent a message
 - **Unsubscribed** — how many unsubscribed
 
 The bars next to the numbers show the same thing at a glance. For example, the message went to three people and reached three, and one person read it.
