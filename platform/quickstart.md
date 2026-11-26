@@ -96,7 +96,7 @@ Ready to launch for real customers?
 1. In the left menu, go to **Add new channel**.
 2. Choose a plan for your channel and pay the subscription via Stripe in the dashboard.
 3. Connect your own number: use the Embedded Signup flow to register your business number with Meta quickly.
-4. Configure API, webhooks, and message templates — then start broadcasts, chatbots, and everything else the 1MSG API offers.
+4. Configure API, webhooks, and message templates — then start campaigns, chatbots, and everything else the 1MSG API offers.
 
 For a tutorial on connecting a WABA channel, see:
 

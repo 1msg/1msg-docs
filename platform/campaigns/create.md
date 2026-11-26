@@ -1,13 +1,13 @@
 ---
-title: Create a broadcast
-description: A broadcast draft in four steps — message, audience, schedule, and review.
+title: Create a campaign
+description: A campaign draft in four steps — message, audience, schedule, and review.
 ---
 
 Open [Campaigns](https://platform.1msg.io/messaging/campaigns) and click **New campaign**. The draft has four steps. **Save draft** keeps it, and **Back to campaigns** returns to the list.
 
 ## 1. Message
 
-Set the broadcast name, the channel, and the message type. If it is a template, choose it and fill in the variables. A variable has two options:
+Set the campaign name, the channel, and the message type. If it is a template, choose it and fill in the variables. A variable has two options:
 
 - the same text for every recipient
 - Contact name
@@ -32,7 +32,7 @@ Use an audience you already have, or build one here.
 
 ![Choose a ready segment](./assets/create-ready-segment.png)
 
-**Dynamic list.** Set the conditions right in the draft. The segment is saved on its own, under the broadcast's name, and selected for this send. Recipients come from Inbox dialogs and are calculated again when the broadcast is sent.
+**Dynamic list.** Set the conditions right in the draft. The segment is saved on its own, under the campaign's name, and selected for this send. Recipients come from Inbox dialogs and are calculated again when the campaign is sent.
 
 **All conditions (AND)** keeps people who match every condition at once.
 
@@ -50,7 +50,7 @@ Then click **Create segment and select**.
 
 **Daily sending limit** is how many messages go out per day. The rest receive the message on the following days. An empty field means the WABA number's own limit.
 
-For example, your WABA number limit is 2000 dialogs / 24h. You uploaded 3500 contacts. On the first day the broadcast goes to 2000 contacts, and on the next day to another 1500.
+For example, your WABA number limit is 2000 dialogs / 24h. You uploaded 3500 contacts. On the first day the campaign goes to 2000 contacts, and on the next day to another 1500.
 
 ![Schedule step](./assets/create-schedule.png)
 
