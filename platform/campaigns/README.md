@@ -86,23 +86,23 @@ A campaign takes one WhatsApp message and sends it at once to every recipient yo
 
 <table>
 <tr>
-<td><img src="./assets/cost.png" alt="Cost without surprises" style="height: 55px !important; width: auto !important"></td>
+<td><img src="./assets/cost.png" alt="Cost without surprises"></td>
 <td><strong>Cost without surprises</strong><br>You see the cost forecast before sending, and you pay only for delivered messages.</td>
 </tr>
 <tr>
-<td><img src="./assets/result.png" alt="The result on one screen" style="height: 55px !important; width: auto !important"></td>
+<td><img src="./assets/result.png" alt="The result on one screen"></td>
 <td><strong>The result on one screen</strong><br>How many were sent, delivered, and read, and how many replies and errors there were.</td>
 </tr>
 <tr>
-<td><img src="./assets/analytics.png" alt="Detailed analytics" style="height: 55px !important; width: auto !important"></td>
+<td><img src="./assets/analytics.png" alt="Detailed analytics"></td>
 <td><strong>Detailed analytics</strong><br>You see not only the overall statistics, but the detail for each recipient.<br>When the message was delivered and when it was read.<br>Who replied, and when.<br>All replies: both a button tap and free text.<br>The list of recipients the message did not arrive for, and which error.</td>
 </tr>
 <tr>
-<td><img src="./assets/retry.png" alt="Retry for undelivered" style="height: 55px !important; width: auto !important"></td>
+<td><img src="./assets/retry.png" alt="Retry for undelivered"></td>
 <td><strong>Retry for undelivered</strong><br>In one step, create a new campaign only from the recipients the message did not reach.</td>
 </tr>
 <tr>
-<td><img src="./assets/report.png" alt="Expense report" style="height: 55px !important; width: auto !important"></td>
+<td><img src="./assets/report.png" alt="Expense report"></td>
 <td><strong>Expense report</strong><br>Gather spend by channel, period, or the campaigns you select.</td>
 </tr>
 </table>
