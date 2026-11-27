@@ -86,23 +86,23 @@ description: Одно сообщение WhatsApp сразу многим пол
 
 <table>
 <tr>
-<td><img src="./assets/cost.png" alt="Стоимость без сюрпризов" style="height: 55px !important; width: auto !important"></td>
+<td><img src="./assets/cost.png" alt="Стоимость без сюрпризов"></td>
 <td><strong>Стоимость без сюрпризов</strong><br>Прогноз расходов виден до отправки, а платите вы только за доставленные сообщения.</td>
 </tr>
 <tr>
-<td><img src="./assets/result.png" alt="Результат на одном экране" style="height: 55px !important; width: auto !important"></td>
+<td><img src="./assets/result.png" alt="Результат на одном экране"></td>
 <td><strong>Результат на одном экране</strong><br>Сколько отправлено, доставлено, прочитано, сколько ответов и ошибок.</td>
 </tr>
 <tr>
-<td><img src="./assets/analytics.png" alt="Подробная аналитика" style="height: 55px !important; width: auto !important"></td>
+<td><img src="./assets/analytics.png" alt="Подробная аналитика"></td>
 <td><strong>Подробная аналитика</strong><br>Вы видите не только общую статистику, а детали по каждому получателю.<br>Когда сообщение доставлено и когда прочитано.<br>Кто ответил и когда.<br>Все ответы: и нажатие кнопки, и свободный текст.<br>Список получателей, которым сообщение не пришло, и какая ошибка.</td>
 </tr>
 <tr>
-<td><img src="./assets/retry.png" alt="Повтор для недоставленных" style="height: 55px !important; width: auto !important"></td>
+<td><img src="./assets/retry.png" alt="Повтор для недоставленных"></td>
 <td><strong>Повтор для недоставленных</strong><br>Одним действием создайте новую рассылку только из получателей, которым сообщение не дошло.</td>
 </tr>
 <tr>
-<td><img src="./assets/report.png" alt="Отчёт о расходах" style="height: 55px !important; width: auto !important"></td>
+<td><img src="./assets/report.png" alt="Отчёт о расходах"></td>
 <td><strong>Отчёт о расходах</strong><br>Соберите траты по каналу, периоду или выбранным рассылкам.</td>
 </tr>
 </table>
