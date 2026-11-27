@@ -5,8 +5,6 @@ description: Delivery, reads, replies, errors, and the actual cost of a sent cam
 
 ![Statistics in the campaign list](./assets/analytics-list.png)
 
-The same numbers are already in the campaign list, before you open a campaign. The row shows **Recipients**, **Sent**, **Delivery %**, **Read %**, **Replies %**, and **Errors**. A draft has a dash instead of percentages. A finished campaign, for example, went to three people, delivery 100%, read 33.3%, replies 33.3%, errors 0.
-
 Open a sent campaign in [Campaigns](https://platform.1msg.io/messaging/campaigns).
 
 In the campaign details, right under the title, you see the status badge, the send time, the channel, the template, the language, and the segment.
